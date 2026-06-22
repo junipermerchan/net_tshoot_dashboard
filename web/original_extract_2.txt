@@ -1,0 +1,15 @@
+Created At: 2026-06-01T21:17:17Z
+Completed At: 2026-06-01T21:17:17Z
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":45,"LineContent":"        this.renderSidebar();"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":54,"LineContent":"        this.renderSidebarVariables();"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":55,"LineContent":"        this.renderSidebarNotes();"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":141,"LineContent":"        this.renderSidebar();"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":144,"LineContent":"    renderSidebar() {"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":209,"LineContent":"        this.renderSidebar(); // Redraws to highlight active"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":591,"LineContent":"        this.renderSidebarVariables();"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":748,"LineContent":"        this.renderSidebarNotes();"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":756,"LineContent":"            this.renderSidebarNotes();"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":770,"LineContent":"            this.renderSidebarVariables();"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":771,"LineContent":"            this.renderSidebarNotes();"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":784,"LineContent":"    renderSidebarVariables() {"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":802,"LineContent":"    renderSidebarNotes() {"}

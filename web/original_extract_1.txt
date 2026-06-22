@@ -1,0 +1,103 @@
+Created At: 2026-06-01T19:45:13Z
+Completed At: 2026-06-01T19:45:13Z
+File Path: `file:///home/joalmeca/net_tshoot_dashboard/web/app.js`
+Total Lines: 1279
+Total Bytes: 51538
+Showing lines 1 to 800
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: /**
+2:  * NET-TSHOOT — Network Troubleshooting Dashboard Web App Engine
+3:  * Pure Vanilla JS, client-side state management.
+4:  */
+5: 
+6: class WebApp {
+7:     constructor() {
+8:         this.data = NET_TSHOOT_DATA;
+9:         
+10:         // App State
+11:         this.activeView = 'home'; // home, flow, simulator, search
+12:         this.activeSidebarTab = 'ts'; // ts, config
+13:         
+14:         this.activeTech = null;
+15:         this.activeVendor = null;
+16:         this.activeTier = 3; // Default Tier 3
+17:         this.currentStepKey = null;
+18:         this.history = [];
+19:         
+20:         this.sessionVariables = {};
+21:         this.notesLog = [];
+22:         
+23:         this.activeTheoryTab = 'definition';
+24:         this.theoryCollapsed = true;
+25:         
+26:         this.activeSimScenario = null;
+27:         this.activeSimStepIdx = 0;
+28:         this.collapsedSimLayers = {};
+29:         
+30:         this.techFilterQuery = '';
+31:         this.globalSearchQuery = '';
+32:         this.theme = 'dark';
+33:     }
+34: 
+35:     init() {
+36:         console.log("Inicializando aplicación web NET-TSHOOT...");
+37:         
+38:         // Load persistent session from LocalStorage
+39:         this.loadSessionFromStorage();
+40:         
+41:         // Set Initial Select values
+42:         document.getElementById('session-tier-select').value = this.activeTier;
+43:         
+44:         // Render menus
+45:         this.renderSidebar();
+46:         
+47:         // Init Lucide icons
+48:         lucide.createIcons();
+49:         
+50:         // Setup initial view
+51:     
+<truncated 32508 bytes>
+  // If active screen is the deleted note, clear textarea
+759:             if (this.activeTech === tech && this.currentStepKey === step) {
+760:                 document.getElementById('step-note-textarea').value = '';
+761:             }
+762:         }
+763:     }
+764: 
+765:     clearAllNotes() {
+766:         if (confirm("¿Está seguro de que desea limpiar todas las anotaciones y variables de la bitácora de la sesión?")) {
+767:             this.notesLog = [];
+768:             this.sessionVariables = {};
+769:             this.saveSessionToStorage();
+770:             this.renderSidebarVariables();
+771:             this.renderSidebarNotes();
+772:             
+773:             // Clear active note text area
+774:             const notesTextarea = document.getElementById('step-note-textarea');
+775:             if (notesTextarea) notesTextarea.value = '';
+776:             
+777:             // Redraw variables in flow if visible
+778:             if (this.activeView === 'flow') {
+779:                 this.renderCurrentStep();
+780:             }
+781:         }
+782:     }
+783: 
+784:     renderSidebarVariables() {
+785:         const list = document.getElementById('sidebar-vars-list');
+786:         list.innerHTML = '';
+787:         
+788:         const keys = Object.keys(this.sessionVariables);
+789:         if (keys.length === 0) {
+790:             list.innerHTML = '<span class="empty-msg">No hay variables configuradas</span>';
+791:             return;
+792:         }
+793:         
+794:         keys.forEach(k => {
+795:             const item = document.createElement('div');
+796:             item.className = 'sidebar-var-item';
+797:             item.innerHTML = `<span class="var-key">&lt;${k}&gt;</span><span class="var-val">${this.escapeHtml(this.sessionVariables[k])}</span>`;
+798:             list.appendChild(item);
+799:         });
+800:     }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

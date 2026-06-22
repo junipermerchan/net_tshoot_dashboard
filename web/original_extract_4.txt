@@ -1,0 +1,86 @@
+Created At: 2026-06-01T21:40:21Z
+Completed At: 2026-06-01T21:40:23Z
+
+				The command completed successfully.
+				Output:
+				<truncated 1 lines>
+48:         lucide.createIcons();
+49:
+50:         // Setup initial view
+51:
+<truncated 32508 bytes>
+  // If active screen is the deleted note, clear textarea
+759:             if (this.activeTech === tech && this.currentStepKey === step) {
+760:                 document.getElementById('step-note-textarea').value = '';
+761:             }
+762:         }
+763:     }
+764:
+765:     clearAllNotes() {
+766:         if (confirm("¿Está seguro de que desea limpiar todas las anotacione
+s y variables de la bitácora de la sesión?")) {
+767:             this.notesLog = [];
+768:             this.sessionVariables = {};
+769:             this.saveSessionToStorage();
+770:             this.renderSidebarVariables();
+771:             this.renderSidebarNotes();
+772:
+773:             // Clear active note text area
+774:             const notesTextarea = document.getElementById('step-note-textar
+ea');
+775:             if (notesTextarea) notesTextarea.value = '';
+776:
+777:             // Redraw variables in flow if visible
+778:             if (this.activeView === 'flow') {
+779:                 this.renderCurrentStep();
+780:             }
+781:         }
+782:     }
+783:
+784:     renderSidebarVariables() {
+785:         const list = document.getElementById('sidebar-vars-list');
+786:         list.innerHTML = '';
+787:
+788:         const keys = Object.keys(this.sessionVariables);
+789:         if (keys.length === 0) {
+790:             list.innerHTML = '<span class="empty-msg">No hay variables conf
+iguradas</span>';
+791:             return;
+792:         }
+793:
+794:         keys.forEach(k => {
+795:             const item = document.createElement('div');
+796:             item.className = 'sidebar-var-item';
+797:             item.innerHTML = `<span class="var-key">&lt;${k}&gt;</span><spa
+n class="var-val">${this.escapeHtml(this.sessionVariables[k])}</span>`;
+798:             list.appendChild(item);
+799:       
+<truncated 4224 bytes>
+arVariables();\"}\n{\"File\":
+\"/home/joalmeca/net_tshoot_dashboard/web/app.js\",\"LineNumber\":104,\"LineCont
+ent\":\"            if (savedVars) this.sessionVariables = JSON.parse(savedVars)
+;\"}\n{\"File\":\"/home/joalmeca/net_tshoot_dashboard/web/app.js\",\"LineNumber\
+":128,\"LineContent\":\"            localStorage.setItem('net_tshoot_vars', JSON
+.stringify(this.sessionVariables));\"}\n{\"File\":\"/home/joalmeca/net_tshoot_da
+shboard/web/app.js\",\"LineNumber\":429,\"LineContent\":\"        bodyHtml = thi
+s.applyVariablesToText(bodyHtml);\"}\n{\"File\":\"/home/joalmeca/net_tshoot_dash
+board/web/app.js\",\"LineNumber\":438,\"LineContent\":\"        this.renderVaria
+blesForm(placeholders);\"}\n{\"File\":\"/home/joalmeca/net_tshoot_dashboard/web/
+app.js\",\"LineNumber\":446,\"LineContent\":\"            const processedCmds =
+cmds.map(c =\\u003e this.applyVariablesToText(c));\"}\n{\"File\":\"/home/joalmec
+a/net_tshoot_dashboard/web/app.js\",\"LineNumber\":465,\"LineContent\":\"
+ const appliedExpected = this.applyVariablesToText(this.getLocalizedText(step, '
+expected') || 'N/A');\"}\n{\"File\":\"/home/joalmeca/net_tshoot_dashboard/web/ap
+p.js\",\"LineNumber\":912,\"LineContent\":\"        this.renderSidebarVariables(
+);\"}\n{\"File\":\"/home/joalmeca/net_tshoot_dashboard/web/app.js\",\"LineNumber
+\":1154,\"LineContent\":\"        // Variables header\"}\n{\"File\":\"/home/joal
+meca/net_tshoot_dashboard/web/app.js\",\"LineNumber\":1297,\"LineContent\":\"
+     bitacoraActiveVars: \\\"Variables Configuradas\\\",\"}\n{\"File\":\"/home/j
+oalmeca/net_tshoot_dashboard/web/app.js\",\"LineNumber\":1311,\"LineContent\":\"
+        lblVarsBoxTitle: \\\"Variables de Comandos en este Paso\\\",\"}\n{\"File
+\":\"/home/joalmeca/net_tshoot_dashboard/web/app.js\",\"LineNumber\":1369,\"Line
+Content\":\"        bitacoraActiveVars: \\\"Configured Variables\\\",\"}\n{\"Fil
+e\":\"/home/joalmeca/net_tshoot_dashboard/web/app.js\",\"LineNumber\":1383,\"Lin
+eContent\":\"        lblVarsBoxTitle: \\\"Command Variables in this Step\\\",\"}
+"}
+

@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NET-TSHOOT — Dashboard Web de Troubleshooting de Redes</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css?v=1.0.1">
+</head>
+<body class="dark-theme">
+    <div id="app-container">
+        <!-- HEADER -->
+        <header id="app-header">
+            <div class="header-logo" onclick="app.goHome()">
+                <div class="logo-icon">
+                    <i data-lucide="activity"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>NET-TSHOOT</h1>
+                    <span>Architect & Tier 3 Diagnostics</span>
+                </div>
+            </div>
+            
+            <!-- Global Search -->
+            <div class="search-bar-container">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="global-search-input" placeholder="Buscar comandos, conceptos, tecnologías..." oninput="app.handleGlobalSearch(event)">
+                <button id="clear-search-btn" class="hidden" onclick="app.clearSearch()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            
+            <!-- Header Controls -->
+            <div class="header-controls">
+                <!-- Language Selector -->
+                <div class="lang-selector-wrapper">
+                    <button class="lang-btn active" id="lang-btn-es" onclick="app.switchLanguage('es')">ES</button>
+                    <button class="lang-btn" id="lang-btn-en" onclick="app.switchLanguage('en')">EN</button>
+                </div>
+                
+                <div class="tier-indicator">
+                    <span class="label" id="lbl-session-tier">Nivel de Sesión:</span>
+                    <select id="session-tier-select" onchange="app.changeSessionTier(event)">
+                        <option value="1" id="opt-tier1">Tier 1 — Operador NOC</option>
+                        <option value="2" id="opt-tier2">Tier 2 — Soporte Técnico</option>
+                        <option value="3" id="opt-tier3" selected>Tier 3 — Escalación</option>
+                        <option value="4" id="opt-tier4">Tier 4 — Arquitecto</option>
+                    </select>
+                </div>
+                <div class="confidence-indicator" id="confidence-indicator">
+                    <span class="label">Confianza:</span>
+                    <div class="confidence-bar-wrapper">
+                        <div class="confidence-bar" id="confidence-bar-fill" style="width: 50%"></div>
+                    </div>
+                    <span class="confidence-value" id="confidence-value-text">50%</span>
+                </div>
+                <button class="theme-toggle" onclick="app.toggleTheme()">
+                    <i data-lucide="sun" id="theme-sun-icon"></i>
+                    <i data-lucide="moon" id="theme-moon-icon" class="hidden"></i>
+                </button>
+            </div>
+        </header>
+
+        <div id="main-content-area">
+            <!-- LEFT SIDEBAR: Technologies Menu -->
+            <aside id="sidebar-left">
+                <div class="sidebar-header">
+                    <h2>Tecnologías</h2>
+                    <div class="tech-filter-container">
+                        <input type="text" id="tech-filter" placeholder="Filtrar tecnologías..." oninput="app.filterTechList(event)">
+                        <i data-lucide="filter"></i>
+                    </div>
+                </div>
+                <div class="sidebar-menu-wrapper">
+                    <!-- Nav tabs -->
+                    <div class="sidebar-tabs">
+                        <button class="tab-btn active" id="tab-btn-ts" onclick="app.switchSidebarTab('ts')">Troubleshooting</button>
+                        <button class="tab-btn" id="tab-btn-config" onclick="app.switchSidebarTab('config')">Configuración</button>
+                    </div>
+
+                    <!-- Tech List Group: Troubleshooting -->
+                    <div class="tech-list-group" id="tech-list-ts">
+                        <!-- Dynamic list -->
+                    </div>
+
+                    <!-- Tech List Group: Configuration -->
+                    <div class="tech-list-group hidden" id="tech-list-config">
+                        <!-- Dynamic list -->
+                    </div>
+                    
+                    <!-- OSI Simulations Button -->
+                    <div class="simulator-trigger-wrapper">
+                        <button class="simulator-btn" onclick="app.openSimulatorView()">
+                            <i data-lucide="layers"></i>
+                            <span>Simulaciones por Capas OSI</span>
+                        </button>
+                    </div>
+
+                    <!-- Network Automation Button -->
+                    <div class="simulator-trigger-wrapper" style="margin-top: 8px;">
+                        <button class="simulator-btn" id="btn-automation-trigger" onclick="app.openAutomationView()" style="background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);">
+                            <i data-lucide="terminal"></i>
+                            <span>Automatización de TS</span>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- CENTRAL STAGE -->
+            <main id="central-stage">
+                <!-- VIEW 1: HOME/WELCOME -->
+                <section id="view-home" class="content-view active">
+                    <div class="welcome-card hero-gradient">
+                        <div class="welcome-badge">PLATAFORMA ARQUITECTÓNICA DE RED</div>
+                        <h2>Guías Diagnósticas y de Configuración de Multi-Vendor</h2>
+                        <p>Plataforma interactiva para ingenieros Tier 3 y Arquitectos de Redes. Diseñada para guiar paso a paso el diagnóstico de fallas y despliegues complejos en MPLS, BGP, EVPN, VXLAN y NAT en múltiples vendors sin ejecutar comandos directamente en los equipos.</p>
+                        <div class="welcome-actions">
+                            <button class="btn-primary" onclick="app.focusSearch()">
+                                <i data-lucide="search"></i>
+                                <span>Iniciar Búsqueda Global</span>
+                            </button>
+                            <button class="btn-secondary" onclick="app.openSimulatorView()">
+                                <i data-lucide="play-circle"></i>
+                                <span>Ver Simulaciones OSI</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="quick-stats-grid">
+                        <div class="stat-card">
+                            <div class="card-icon cyan-icon"><i data-lucide="cpu"></i></div>
+                            <div class="card-info">
+                                <h3>5+ Vendors Clave</h3>
+                                <p>Juniper JunOS, Cisco IOS-XE/XR, Fortinet, MikroTik, ADTRAN, Huawei/ZTE.</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="card-icon purple-icon"><i data-lucide="network"></i></div>
+                            <div class="card-info">
+                                <h3>30+ Tecnologías</h3>
+                                <p>Soporte completo desde capas de transporte MPLS hasta direccionamiento BGP y NAT.</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="card-icon yellow-icon"><i data-lucide="terminal"></i></div>
+                            <div class="card-info">
+                                <h3>Comandos Dinámicos</h3>
+                                <p>Copia y pega comandos reales introduciendo variables directas en el navegador.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="home-tech-section">
+                        <h3>Acceso Rápido a Tecnologías Comunes</h3>
+                        <div class="tech-cards-grid">
+                            <div class="tech-card-item" onclick="app.selectTechnology('nat')">
+                                <span class="badge ts-badge">Troubleshooting</span>
+                                <h4>NAT (Source, Dest, Static)</h4>
+                                <p>Diagnóstico de agotamiento de puertos, tablas de sesión y depuración.</p>
+                            </div>
+                            <div class="tech-card-item" onclick="app.selectTechnology('nat_config')">
+                                <span class="badge config-badge">Configuración</span>
+                                <h4>NAT Avanzado</h4>
+                                <p>Configuración de reglas Source NAT, Destination NAT y Static NAT.</p>
+                            </div>
+                            <div class="tech-card-item" onclick="app.selectTechnology('bgp')">
+                                <span class="badge ts-badge">Troubleshooting</span>
+                                <h4>BGP (Border Gateway Protocol)</h4>
+                                <p>Establecimiento de sesiones TCP, estados de peers, y enrutamiento vector-ruta.</p>
+                            </div>
+                            <div class="tech-card-item" onclick="app.selectTechnology('bgp_config')">
+                                <span class="badge config-badge">Configuración</span>
+                                <h4>Políticas BGP Avanzadas</h4>
+                                <p>Configuración eBGP, iBGP, filtros de prefijos, políticas de exportación y communities.</p>
+                            </div>
+                            <div class="tech-card-item" onclick="app.selectTechnology('mpls')">
+                                <span class="badge ts-badge">Troubleshooting</span>
+                                <h4>MPLS & LDP</h4>
+                                <p>Verificación de tablas LFIB, intercambio de etiquetas, PHP y sesiones LDP.</p>
+                            </div>
+                            <div class="tech-card-item" onclick="app.selectTechnology('evpn')">
+                                <span class="badge ts-badge">Troubleshooting</span>
+                                <h4>EVPN / VXLAN Control Plane</h4>
+                                <p>Túneles VTEP, tablas MAC/IP de rutas EVPN (Tipo 2 y Tipo 3) en core IP.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 2: GUIDED DIAGNOSTIC/CONFIG FLOW -->
+                <section id="view-flow" class="content-view">
+                    <!-- Flow Header -->
+                    <div id="flow-header-card">
+                        <div class="flow-header-meta">
+                            <div class="tech-title-group">
+                                <span id="flow-tech-category-badge" class="badge">Category</span>
+                                <h2 id="flow-tech-name">Nombre de Tecnología</h2>
+                            </div>
+                            <button id="context-switch-btn" class="btn-context" onclick="app.handleContextSwitch()">
+                                <i data-lucide="arrow-left-right"></i>
+                                <span id="context-switch-label">Ver Configuración / TS</span>
+                            </button>
+                        </div>
+                        <p id="flow-tech-desc" class="tech-description">Descripción de la tecnología...</p>
+                    </div>
+
+                    <!-- Selection Bars -->
+                    <div class="selector-bar-card">
+                        <div class="vendor-selector-group">
+                            <label>Seleccionar Vendor:</label>
+                            <div id="vendor-btn-container" class="vendor-btn-list">
+                                <!-- Dynamic vendor buttons -->
+                            </div>
+                        </div>
+                        <div class="tier-selector-group">
+                            <label>Intensidad (Tier):</label>
+                            <div id="tier-radio-container" class="tier-radio-list">
+                                <button class="tier-btn" data-tier="1" onclick="app.changeFlowTier(1)">Tier 1</button>
+                                <button class="tier-btn" data-tier="2" onclick="app.changeFlowTier(2)">Tier 2</button>
+                                <button class="tier-btn active" data-tier="3" onclick="app.changeFlowTier(3)">Tier 3</button>
+                                <button class="tier-btn" data-tier="4" onclick="app.changeFlowTier(4)">Arch</button>
+                            </div>
+                        </div>
+                        <div class="scientific-mode-group">
+                            <label id="lbl-scientific-mode">Modo Científico:</label>
+                            <div id="scientific-mode-radio-container" class="scientific-mode-list">
+                                <button class="scientific-btn active" data-mode="normal" onclick="app.changeScientificMode('normal')">Normal</button>
+                                <button class="scientific-btn" data-mode="semi_strict" onclick="app.changeScientificMode('semi_strict')">Semi-Estricto</button>
+                                <button class="scientific-btn" data-mode="strict" onclick="app.changeScientificMode('strict')">Estricto</button>
+                            </div>
+                            <div id="scientific-mode-desc" class="scientific-mode-desc"></div>
+                        </div>
+                    </div>
+
+                    <!-- Toggleable Theory / Concepts Panel -->
+                    <div class="collapsible-card" id="theory-collapsible">
+                        <button class="collapsible-header" onclick="app.toggleTheoryCollapse()">
+                            <div class="header-left">
+                                <i data-lucide="book-open" class="header-icon"></i>
+                                <h3>Conceptos y Definiciones de Arquitectura</h3>
+                            </div>
+                            <i data-lucide="chevron-down" class="chevron-icon"></i>
+                        </button>
+                        <div class="collapsible-content">
+                            <div class="concepts-tabs">
+                                <button class="concept-tab-btn active" onclick="app.switchConceptTab('definition', event)">Definición</button>
+                                <button class="concept-tab-btn" onclick="app.switchConceptTab('key_concepts', event)">Conceptos Clave</button>
+                                <button class="concept-tab-btn" onclick="app.switchConceptTab('architecture', event)">Arquitectura</button>
+                                <button class="concept-tab-btn" onclick="app.switchConceptTab('control_vs_data', event)">Control vs Datos</button>
+                                <button class="concept-tab-btn" onclick="app.switchConceptTab('troubleshooting_strategy', event)">Estrategia de TS</button>
+                                <button class="concept-tab-btn" onclick="app.switchConceptTab('configuration_basics', event)">Fundamentos</button>
+                            </div>
+                            <div class="concept-tab-panel" id="concept-panel-content">
+                                <!-- Dynamic concepts text -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scientific Alert Box -->
+                    <div id="scientific-alert-box" class="scientific-alert-container hidden"></div>
+
+                    <!-- Current Step Container -->
+                    <div id="current-step-card" class="step-card">
+                        <!-- Breadcrumbs -->
+                        <div id="step-breadcrumbs" class="step-breadcrumbs"></div>
+                        <!-- Step Title & Description -->
+                        <div class="step-header">
+                            <div class="step-title-wrapper">
+                                <div class="step-num-badge" id="step-number-badge">Step X</div>
+                                <h3 id="step-title">Título del Paso</h3>
+                            </div>
+                            <div class="step-tier-badge" id="step-tier-badge">Tier 3</div>
+                        </div>
+                        <!-- Hierarchies Badges -->
+                        <div id="step-hierarchies-container" class="step-hierarchies-box">
+                            <span class="hierarchy-badge osi" id="badge-hierarchy-osi">
+                                <i data-lucide="layers"></i> <span id="text-hierarchy-osi">Capa OSI</span>
+                            </span>
+                            <span class="hierarchy-badge domain" id="badge-hierarchy-domain">
+                                <i data-lucide="globe"></i> <span id="text-hierarchy-domain">Segmento</span>
+                            </span>
+                            <span class="hierarchy-badge methodology" id="badge-hierarchy-methodology">
+                                <i data-lucide="settings"></i> <span id="text-hierarchy-methodology">Metodología</span>
+                            </span>
+                        </div>
+                        
+                        <div class="step-description-content" id="step-body-content">
+                            <!-- Step Body text (Rendered markdown) -->
+                        </div>
+
+                        <!-- Scientific Method Fields (Injected if present) -->
+                        <div id="step-scientific-container" class="scientific-container hidden"></div>
+
+                        <!-- Variables Form Injected Here -->
+                        <div id="step-variables-container" class="step-variables-box hidden">
+                            <div class="vars-box-header">
+                                <i data-lucide="sliders"></i>
+                                <h4>Variables de Comandos en este Paso</h4>
+                            </div>
+                            <div id="variables-inputs-grid" class="variables-grid">
+                                <!-- Dynamic input fields -->
+                            </div>
+                        </div>
+
+                        <!-- CLI Terminal Block -->
+                        <!-- CLI Terminal Block -->
+                        <div class="terminal-container">
+                            <div class="terminal-header">
+                                <div class="terminal-header-left">
+                                    <div class="terminal-dots">
+                                        <span class="dot red"></span>
+                                        <span class="dot yellow"></span>
+                                        <span class="dot green"></span>
+                                    </div>
+                                    <span class="terminal-title" id="terminal-vendor-title">Terminal — Vendor</span>
+                                </div>
+                                <div class="terminal-header-right">
+                                    <div class="terminal-mode-selector">
+                                        <button class="terminal-mode-btn active" id="term-mode-cmds" onclick="app.setTerminalMode('cmds')">
+                                            <i data-lucide="terminal"></i>
+                                            <span id="lbl-term-mode-cmds">Comandos</span>
+                                        </button>
+                                        <button class="terminal-mode-btn" id="term-mode-sim" onclick="app.setTerminalMode('sim')">
+                                            <i data-lucide="play"></i>
+                                            <span id="lbl-term-mode-sim">Ejecutar Simulación</span>
+                                        </button>
+                                    </div>
+                                    <button class="btn-copy" id="btn-copy-cmds" onclick="app.copyCommandsToClipboard()">
+                                        <i data-lucide="copy"></i>
+                                        <span>Copiar Comandos</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="terminal-body">
+                                <div id="terminal-commands-wrapper">
+                                    <pre><code id="terminal-commands-code"># Comandos cargando...</code></pre>
+                                </div>
+                                <div id="terminal-simulation-wrapper" class="hidden">
+                                    <div class="sim-terminal-screen">
+                                        <div class="sim-terminal-toolbar">
+                                            <button class="btn-run-sim" id="btn-run-sim" onclick="app.runCommandSimulation()">
+                                                <i data-lucide="play-circle"></i>
+                                                <span id="lbl-run-sim">Ejecutar Diagnóstico</span>
+                                            </button>
+                                            <button class="btn-golden-sim" id="btn-golden-sim" onclick="app.openGoldenModal()" style="display: none;">
+                                                <i data-lucide="scale" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i>
+                                                <span id="lbl-golden-sim">Comparar Línea Base</span>
+                                            </button>
+                                            <button class="btn-rfc-sim" id="btn-rfc-sim" onclick="app.openRfcModal()">
+                                                <i data-lucide="receipt" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i>
+                                                <span id="lbl-rfc-sim">Historial de Cambios (RFC)</span>
+                                            </button>
+                                            <button class="btn-clear-sim" id="btn-clear-sim" onclick="app.clearSimulationScreen()">
+                                                <i data-lucide="refresh-cw"></i>
+                                                <span id="lbl-clear-sim">Limpiar Consola</span>
+                                            </button>
+                                        </div>
+                                        <div class="sim-terminal-output" id="terminal-simulation-output">
+                                            <!-- Simulated interactive execution output -->
+                                        </div>
+                                        <div class="sim-terminal-input-wrapper">
+                                            <span class="sim-prompt-host" id="interactive-prompt-host">Router#</span>
+                                            <input type="text" id="interactive-terminal-input" placeholder="Escriba un comando y presione Enter (ej. show version)..." autocomplete="off" onkeydown="app.handleInteractiveTerminalKey(event)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Expected Outcome Block -->
+                        <div class="expected-container">
+                            <div class="expected-header">
+                                <i data-lucide="check-circle2"></i>
+                                <h4>Resultado Esperado / Qué Buscar</h4>
+                            </div>
+                            <div class="expected-body" id="expected-text">
+                                <!-- Expected output outcome text -->
+                            </div>
+                        </div>
+
+                        <!-- Step Note Input -->
+                        <div class="step-note-container">
+                            <label for="step-note-textarea">
+                                <i data-lucide="file-signature"></i>
+                                <span>Anotaciones y Hallazgos para este paso:</span>
+                            </label>
+                            <div class="note-input-wrapper">
+                                <textarea id="step-note-textarea" placeholder="Escribe tus observaciones aquí (se guardará automáticamente en tu bitácora de sesión)..." oninput="app.saveCurrentStepNote(event)"></textarea>
+                                <div id="note-saved-indicator" class="saved-indicator hidden">
+                                    <i data-lucide="check"></i> Guardado
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step Navigation / Choices -->
+                        <div class="step-navigation-box">
+                            <h4>¿Qué deseas hacer a continuación?</h4>
+                            <div id="choices-btn-container" class="choices-flex">
+                                <!-- Dynamic Choice Buttons -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 3: OSI SIMULATION VIEW -->
+                <section id="view-simulator" class="content-view">
+                    <div class="simulator-header-card hero-gradient">
+                        <div class="header-content">
+                            <span class="badge simulator-badge">OSI Simulation Plane</span>
+                            <h2 id="lbl-sim-title">Simulación de Flujo de Paquetes por Capas OSI</h2>
+                            <p id="lbl-sim-desc">Visualiza el recorrido físico y lógico de los paquetes en la red. Analiza cabeceras, verifique contadores en interfaces y comprenda los posibles descartes y anomalías en cada capa del modelo de referencia.</p>
+                        </div>
+                        <div class="simulator-header-controls">
+                            <div class="scenario-selector-box">
+                                <label id="lbl-active-scenario-title">Escenario Activo:</label>
+                                <button id="custom-scenario-select-btn" onclick="app.toggleScenarioModal(true)">
+                                    <div class="selected-scenario-info">
+                                        <i data-lucide="network" class="btn-icon"></i>
+                                        <span id="selected-scenario-name">Seleccionar Escenario...</span>
+                                    </div>
+                                    <i data-lucide="chevron-down" class="chevron-down-icon"></i>
+                                </button>
+                            </div>
+                            <div class="scenario-state-box">
+                                <label id="lbl-scenario-state-title">Estado del Escenario:</label>
+                                <div class="scenario-state-selector">
+                                    <button class="scenario-state-btn active" id="sim-state-fail" onclick="app.setSimulatorState('fail')">
+                                        <i data-lucide="alert-triangle"></i>
+                                        <span id="lbl-sim-state-fail">Con Falla</span>
+                                    </button>
+                                    <button class="scenario-state-btn" id="sim-state-ok" onclick="app.setSimulatorState('ok')">
+                                        <i data-lucide="check-circle"></i>
+                                        <span id="lbl-sim-state-ok">Solucionado</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulator Central Stage -->
+                    <div id="simulator-main-layout">
+                        <!-- Navigation Steps Timeline -->
+                        <div id="simulator-timeline-card">
+                            <h3>Línea de Tiempo del Flujo</h3>
+                            <div id="sim-timeline-steps-list">
+                                <!-- Dynamic timeline nodes -->
+                            </div>
+                        </div>
+
+                        <!-- active step details -->
+                        <div id="simulator-details-container">
+                            <div class="sim-step-meta-card">
+                                <div class="device-badge-wrapper">
+                                    <span class="sim-step-num" id="sim-step-badge-num">Paso 1 de X</span>
+                                    <span class="state-status-badge fail" id="sim-step-state-badge">Con Falla</span>
+                                    <h3 id="sim-step-title-text">Título del Paso del Simulador</h3>
+                                </div>
+                                <div class="device-location">
+                                    <i data-lucide="server"></i>
+                                    <span id="sim-step-device-name">Dispositivo</span>
+                                </div>
+                            </div>
+
+                            <!-- Action and Notes Card -->
+                            <div class="action-notes-grid">
+                                <div class="action-box">
+                                    <h4>Acción Ejecutada</h4>
+                                    <p id="sim-step-action-desc">Descripción de la acción...</p>
+                                </div>
+                                <div class="note-box">
+                                    <h4>Nota del Arquitecto</h4>
+                                    <p id="sim-step-note-desc">Notas teóricas sobre este paso...</p>
+                                </div>
+                            </div>
+
+                            <!-- Layers Container -->
+                            <div class="layers-title-row">
+                                <h3>Análisis de Encapsulación en Capas OSI</h3>
+                            </div>
+                            
+                            <div id="sim-layers-list">
+                                <!-- Dynamic layer panels -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 4: GLOBAL SEARCH RESULTS -->
+                <section id="view-search-results" class="content-view">
+                    <div class="search-header-card">
+                        <h2>Resultados de Búsqueda Global</h2>
+                        <p>Mostrando coincidencias encontradas para: <strong id="search-query-highlight">"..."</strong> (<span id="search-results-count">0</span> resultados)</p>
+                    </div>
+                    <div id="search-results-wrapper" class="results-wrapper">
+                        <!-- Dynamic search results lists -->
+                    </div>
+                </section>
+
+                <!-- VIEW 5: AUTOMATION CORNER -->
+                <section id="view-automation" class="content-view">
+                    <div class="automation-header-card hero-gradient">
+                        <div class="auto-header-left">
+                            <i data-lucide="cpu" class="header-icon"></i>
+                            <div>
+                                <h2 id="auto-header-title">Automatización de Diagnóstico (NetDevOps)</h2>
+                                <p id="auto-header-desc">Aprenda a diseñar, programar y ejecutar remediaciones autónomas y auditorías de estado multi-vendor.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sub-tabs for Automation View -->
+                    <div class="automation-tabs-bar">
+                        <button class="auto-tab-btn active" id="auto-btn-concepts" onclick="app.switchAutomationSubTab('concepts')">
+                            <i data-lucide="book-open"></i>
+                            <span id="lbl-auto-concepts">Conceptos de Automatización</span>
+                        </button>
+                        <button class="auto-tab-btn" id="auto-btn-vendors" onclick="app.switchAutomationSubTab('vendors')">
+                            <i data-lucide="layers"></i>
+                            <span id="lbl-auto-vendors">Soporte por Vendor & Tecnologías</span>
+                        </button>
+                        <button class="auto-tab-btn" id="auto-btn-library" onclick="app.switchAutomationSubTab('library')">
+                            <i data-lucide="terminal"></i>
+                            <span id="lbl-auto-library">Biblioteca de Scripts</span>
+                        </button>
+                    </div>
+
+                    <!-- SUBVIEW 1: Concepts -->
+                    <div id="auto-subview-concepts" class="auto-subview active">
+                        <div class="auto-intro-card">
+                            <h3>Paradigmas de Automatización de Diagnóstico</h3>
+                            <p>El troubleshooting moderno de redes trasciende la ejecución manual de comandos. Al automatizar diagnósticos, los ingenieros Tier 3 y Arquitectos estructuran y normalizan la validación del estado de red usando metodologías deterministas.</p>
+                        </div>
+                        
+                        <div class="automation-concepts-grid">
+                            <div class="concept-card">
+                                <div class="concept-card-icon green"><i data-lucide="terminal"></i></div>
+                                <h4>1. CLI Screen Scraping</h4>
+                                <p><strong>Cómo funciona:</strong> Abre una sesión SSH, envía comandos de consola de texto plano y lee la respuesta completa como un gran string.</p>
+                                <p><strong>Librerías comunes:</strong> Netmiko, Paramiko.</p>
+                                <div class="concept-pros-cons">
+                                    <span class="pro">PRO: Compatible con cualquier equipo legado.</span>
+                                    <span class="con">CON: Muy frágil; cambios de formato o banners rompen los regex de análisis.</span>
+                                </div>
+                            </div>
+
+                            <div class="concept-card">
+                                <div class="concept-card-icon blue"><i data-lucide="file-json"></i></div>
+                                <h4>2. Structured Output Parsing</h4>
+                                <p><strong>Cómo funciona:</strong> Toma el texto de salida plano de la CLI y lo procesa mediante plantillas regulares para generar diccionarios estructurados (JSON/YAML).</p>
+                                <p><strong>Librerías comunes:</strong> TextFSM, pyATS (Genie), TTP.</p>
+                                <div class="concept-pros-cons">
+                                    <span class="pro">PRO: Permite aserciones de software (ej. assert status == 'Established').</span>
+                                    <span class="con">CON: Requiere mantener actualizadas las plantillas de parsing ante upgrades de OS.</span>
+                                </div>
+                            </div>
+
+                            <div class="concept-card">
+                                <div class="concept-card-icon purple"><i data-lucide="server"></i></div>
+                                <h4>3. Model-Driven APIs (NETCONF / RESTCONF)</h4>
+                                <p><strong>Cómo funciona:</strong> Interactúa con APIs estructuradas nativas del equipo que se comunican mediante XML (NETCONF) o JSON (RESTCONF) siguiendo esquemas de datos definidos en YANG.</p>
+                                <p><strong>Modelos:</strong> RFCs, OpenConfig, Vendor-Native.</p>
+                                <div class="concept-pros-cons">
+                                    <span class="pro">PRO: Formato estandarizado, transacciones seguras y validación de sintaxis nativa.</span>
+                                    <span class="con">CON: Consume más recursos de CPU/Memoria en el plano de control del router.</span>
+                                </div>
+                            </div>
+
+                            <div class="concept-card">
+                                <div class="concept-card-icon cyan"><i data-lucide="activity"></i></div>
+                                <h4>4. Streaming Telemetry (gNMI)</h4>
+                                <p><strong>Cómo funciona:</strong> El router envía (push) flujos continuos de datos estructurados YANG hacia un recolector central usando HTTP/2 sobre gRPC, en lugar de ser consultado periódicamente (pull).</p>
+                                <p><strong>Protocolos:</strong> gNMI, TCP Dial-out.</p>
+                                <div class="concept-pros-cons">
+                                    <span class="pro">PRO: Ultra-alto rendimiento, sub-segundo, no satura el plano de control.</span>
+                                    <span class="con">CON: Complejidad de infraestructura de recolección (Telegraf, InfluxDB).</span>
+                                </div>
+                            </div>
+
+                            <div class="concept-card">
+                                <div class="concept-card-icon yellow"><i data-lucide="shield-check"></i></div>
+                                <h4>5. Verificación Estática (Batfish)</h4>
+                                <p><strong>Cómo funciona:</strong> Analiza matemáticamente los archivos de configuración sin conectarse a la red física. Construye el plano de control en memoria para simular ruteo y ACLs.</p>
+                                <p><strong>Entorno:</strong> Pipelines CI/CD (Pre-Deployment).</p>
+                                <div class="concept-pros-cons">
+                                    <span class="pro">PRO: Previene loops de enrutamiento y fallas de seguridad antes de aplicar cambios.</span>
+                                    <span class="con">CON: No detecta fallas de hardware en vivo ni degradaciones ópticas.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SUBVIEW 2: Vendors & Technologies Selector -->
+                    <div id="auto-subview-vendors" class="auto-subview hidden">
+                        <div class="auto-intro-card">
+                            <h3 id="lbl-auto-matrix-title">Matriz Interactiva de Automatización Multi-Vendor</h3>
+                            <p id="lbl-auto-matrix-desc">Seleccione una Tecnología y un Vendor para visualizar la estrategia arquitectónica, APIs clave, y la lógica de aserción recomendada para automatizar su diagnóstico.</p>
+                        </div>
+
+                        <!-- Selector Grid -->
+                        <div class="auto-matrix-selectors">
+                            <div class="matrix-select-group">
+                                <label for="auto-matrix-tech" id="lbl-matrix-tech">Tecnología:</label>
+                                <select id="auto-matrix-tech" onchange="app.renderVendorMatrixDetails()">
+                                    <option value="bgp">BGP (Border Gateway Protocol)</option>
+                                    <option value="ospf">OSPF (Open Shortest Path First)</option>
+                                    <option value="nat">NAT / PAT (Network Address Translation)</option>
+                                    <option value="mpls">MPLS & LDP (Label Distribution Protocol)</option>
+                                    <option value="evpn">EVPN / VXLAN Control Plane</option>
+                                    <option value="gpon">GPON / ONT Fiber Link</option>
+                                    <option value="linux">Linux Networking (Kernel & Sockets)</option>
+                                </select>
+                            </div>
+                            <div class="matrix-select-group">
+                                <label for="auto-matrix-vendor" id="lbl-matrix-vendor">Vendor / Plataforma:</label>
+                                <select id="auto-matrix-vendor" onchange="app.renderVendorMatrixDetails()">
+                                    <option value="cisco_xe">Cisco IOS-XE (Catalyst / ASR)</option>
+                                    <option value="cisco_xr">Cisco IOS-XR (NCS / CRS)</option>
+                                    <option value="juniper">Juniper JunOS (MX / PTX)</option>
+                                    <option value="fortinet">Fortinet FortiOS (FortiGate)</option>
+                                    <option value="mikrotik">MikroTik RouterOS</option>
+                                    <option value="huawei">Huawei VRP</option>
+                                    <option value="linux">GNU/Linux Server</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Matrix Render Area -->
+                        <div id="auto-matrix-details-card" class="auto-matrix-render-card glass-panel">
+                            <!-- Injected dynamically by app.js -->
+                        </div>
+                    </div>
+
+                    <!-- SUBVIEW 3: Library (Existing Workspace) -->
+                    <div id="auto-subview-library" class="auto-subview hidden">
+                        <div class="automation-workspace">
+                            <!-- Sidebar inside workspace to choose script -->
+                            <div class="auto-sidebar">
+                                <h3 id="lbl-auto-sidebar-title">Bibliotecas y Scripts</h3>
+                                <div class="auto-filter-box">
+                                    <input type="text" id="auto-script-search" placeholder="Filtrar scripts..." oninput="app.filterAutoScripts(event)">
+                                </div>
+                                <div id="auto-scripts-list" class="auto-scripts-list">
+                                    <!-- Dynamic scripts list -->
+                                </div>
+                            </div>
+                            
+                            <!-- Main stage for script detail -->
+                            <div class="auto-main-stage">
+                                <div id="auto-script-detail-empty" class="auto-detail-empty">
+                                    <i data-lucide="code"></i>
+                                    <p id="lbl-auto-empty-state">Seleccione un script de la biblioteca para visualizar su código, variables, y detalles de arquitectura.</p>
+                                </div>
+                                
+                                <div id="auto-script-detail-content" class="auto-detail-content hidden">
+                                    <div class="auto-detail-header">
+                                        <div class="auto-detail-title-row">
+                                            <span id="auto-tech-badge" class="auto-badge">BGP</span>
+                                            <h3 id="auto-script-title">Nombre del Script</h3>
+                                        </div>
+                                        <p id="auto-script-desc" class="auto-desc">Descripción del script</p>
+                                    </div>
+                                    
+                                    <div class="auto-variables-section">
+                                        <h4 id="lbl-auto-vars-title">Variables de Configuración del Script</h4>
+                                        <div id="auto-variables-form" class="auto-variables-form">
+                                            <!-- Dynamic inputs to customize the script in real-time -->
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="auto-architect-note">
+                                        <div class="note-title">
+                                            <i data-lucide="shield-alert"></i>
+                                            <span id="lbl-auto-note-title">Nota del Arquitecto de Soluciones</span>
+                                        </div>
+                                        <p id="auto-architect-note-text">Nota de diseño y recomendaciones de infraestructura de automatización...</p>
+                                    </div>
+                                    
+                                    <div class="auto-code-container">
+                                        <div class="code-header">
+                                            <!-- Code format tabs -->
+                                            <div class="code-tabs">
+                                                <button class="code-tab-btn active" id="code-tab-python" onclick="app.switchAutoCodeFormat('python')">Python (Netmiko)</button>
+                                                <button class="code-tab-btn" id="code-tab-ansible" onclick="app.switchAutoCodeFormat('ansible')">Ansible Playbook</button>
+                                                <button class="code-tab-btn" id="code-tab-api" onclick="app.switchAutoCodeFormat('api')">REST API / cURL</button>
+                                            </div>
+                                            <button class="btn-copy-auto" id="btn-copy-auto" onclick="app.copyAutoScriptToClipboard()">
+                                                <i data-lucide="copy"></i>
+                                                <span id="lbl-copy-auto-text">Copiar Script</span>
+                                            </button>
+                                        </div>
+                                        <pre class="auto-pre"><code id="auto-code-display" class="language-python"># Código de automatización</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- RIGHT SIDEBAR: Notes Log (Bitácora) -->
+            <aside id="sidebar-right">
+                <div class="sidebar-header">
+                    <h2>Bitácora de Sesión</h2>
+                    <button class="btn-clear-all" onclick="app.clearAllNotes()" title="Limpiar todas las notas">
+                        <i data-lucide="trash-2"></i>
+                    </button>
+                </div>
+                <div class="notes-wrapper">
+                    <!-- Configured variables section -->
+                    <div class="active-vars-section" id="sidebar-vars-section">
+                        <h3>Variables Configuradas</h3>
+                        <div id="sidebar-vars-list" class="sidebar-vars-list">
+                            <span class="empty-msg">No hay variables configuradas en esta sesión.</span>
+                        </div>
+                    </div>
+
+                    <!-- Scientific hypotheses tree -->
+                    <div class="scientific-tree-section">
+                        <h3>Árbol de Hipótesis</h3>
+                        <div id="sidebar-hypotheses-list" class="sidebar-hypotheses-list">
+                            <span class="empty-msg">Navega pasos con hipótesis científicas para ver el árbol de verificación.</span>
+                        </div>
+                    </div>
+
+                    <!-- Notes logger section -->
+                    <div class="notes-log-section">
+                        <h3>Notas Registradas</h3>
+                        <div id="sidebar-notes-list" class="sidebar-notes-list">
+                            <span class="empty-msg">No has tomado notas en ningún paso aún. Escribe en la caja de anotaciones de un paso para guardar un registro.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-footer">
+                    <button class="btn-export" onclick="app.exportSessionReport()">
+                        <i data-lucide="download"></i>
+                        <span>Exportar Reporte (.md)</span>
+                    </button>
+                    <button class="btn-export btn-export-json" onclick="app.exportSessionJSON()">
+                        <i data-lucide="file-json"></i>
+                        <span>Exportar JSON (.json)</span>
+                    </button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Scenario Selection Modal / Panel Overlay -->
+    <div id="scenario-modal-overlay" class="modal-overlay hidden" onclick="app.handleOverlayClick(event)">
+        <div class="scenario-modal-card glass-panel">
+            <div class="modal-header">
+                <div class="header-left">
+                    <i data-lucide="layers" class="modal-title-icon"></i>
+                    <h2 id="modal-title-text">Catálogo de Escenarios de Simulación</h2>
+                </div>
+                <button class="btn-close" onclick="app.toggleScenarioModal(false)">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            
+            <div class="modal-search-bar">
+                <i data-lucide="search" class="modal-search-icon"></i>
+                <input type="text" id="modal-scenario-search" placeholder="Filtrar escenarios por tecnología o nombre..." oninput="app.filterModalScenarios(event)">
+            </div>
+            
+            <div class="modal-content-scroll" id="modal-scenarios-categories-container">
+                <!-- Grouped categories and scenario cards will be dynamically injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- RCA 5 Whys Modal Overlay -->
+    <div id="rca-modal-overlay" class="modal-overlay hidden" onclick="app.handleRcaOverlayClick(event)">
+        <div class="rca-modal-card glass-panel">
+            <div class="modal-header">
+                <div class="header-left">
+                    <i data-lucide="search-code" class="modal-title-icon"></i>
+                    <h2 id="rca-modal-title-text">Análisis de Causa Raíz (RCA - 5 Porqués)</h2>
+                </div>
+                <button class="btn-close" onclick="app.toggleRcaModal(false)">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="modal-body-scroll">
+                <p class="modal-instruction-text">
+                    La metodología de los 5 Porqués le ayuda a profundizar en la causa raíz lógica de una falla para evitar reparaciones temporales ineficaces.
+                </p>
+                <div class="rca-form-group">
+                    <label for="rca-input-sintoma" id="lbl-rca-sintoma">1. Síntoma o problema inicial:</label>
+                    <input type="text" id="rca-input-sintoma" placeholder="Ej. El cliente reporta desconexión total en L3VPN...">
+                </div>
+                <div class="rca-porques-chain">
+                    <h4>Identificación del origen (Preguntas consecutivas):</h4>
+                    <div class="rca-form-group">
+                        <label for="rca-input-p1">¿Por qué ocurrió el síntoma?:</label>
+                        <input type="text" id="rca-input-p1" placeholder="Respuesta al 1er Porqué...">
+                    </div>
+                    <div class="rca-form-group">
+                        <label for="rca-input-p2">¿Por qué ocurrió eso?:</label>
+                        <input type="text" id="rca-input-p2" placeholder="Respuesta al 2do Porqué...">
+                    </div>
+                    <div class="rca-form-group">
+                        <label for="rca-input-p3">¿Por qué ocurrió eso?:</label>
+                        <input type="text" id="rca-input-p3" placeholder="Respuesta al 3er Porqué (Opcional)...">
+                    </div>
+                    <div class="rca-form-group">
+                        <label for="rca-input-p4">¿Por qué ocurrió eso?:</label>
+                        <input type="text" id="rca-input-p4" placeholder="Respuesta al 4to Porqué (Opcional)...">
+                    </div>
+                    <div class="rca-form-group">
+                        <label for="rca-input-p5">¿Por qué ocurrió eso?:</label>
+                        <input type="text" id="rca-input-p5" placeholder="Respuesta al 5to Porqué (Opcional)...">
+                    </div>
+                </div>
+                <div class="rca-form-group border-top">
+                    <label for="rca-input-causa" id="lbl-rca-causa">2. Causa Raíz lógica de la falla:</label>
+                    <input type="text" id="rca-input-causa" placeholder="Ej. Cambio de configuración no registrado en el backbone...">
+                </div>
+                <div class="rca-form-group">
+                    <label for="rca-input-solucion" id="lbl-rca-solucion">3. Solución Definitiva / Plan de Acción:</label>
+                    <textarea id="rca-input-solucion" placeholder="Ej. Configurar validación obligatoria y revertir cambio temporal..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="app.toggleRcaModal(false)">Cancelar</button>
+                <button class="btn-primary" onclick="app.saveRcaAnalysis()">Guardar en Bitácora</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Golden Config Diff Modal Overlay -->
+    <div id="golden-modal-overlay" class="modal-overlay hidden" onclick="app.handleGoldenOverlayClick(event)">
+        <div class="golden-modal-card glass-panel" style="max-width: 900px; width: 90%;">
+            <div class="modal-header">
+                <div class="header-left">
+                    <i data-lucide="scale" class="modal-title-icon" style="color: var(--accent-cyan);"></i>
+                    <h2 id="golden-modal-title-text">Comparación con Línea Base (Golden Config)</h2>
+                </div>
+                <button class="btn-close" onclick="app.toggleGoldenModal(false)">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="modal-body-scroll">
+                <p class="modal-instruction-text">
+                    Compare la salida del diagnóstico con falla (Actual) contra la configuración de referencia esperada (Línea Base) para detectar discrepancias y fallos silenciosos.
+                </p>
+                <div id="golden-comparison-container" class="golden-comparison-container">
+                    <!-- Dynamic side-by-side or line diff view will be injected here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="app.toggleGoldenModal(false)">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RFC Log Modal Overlay -->
+    <div id="rfc-modal-overlay" class="modal-overlay hidden" onclick="app.handleRfcOverlayClick(event)">
+        <div class="rfc-modal-card glass-panel" style="max-width: 850px; width: 90%;">
+            <div class="modal-header">
+                <div class="header-left">
+                    <i data-lucide="receipt" class="modal-title-icon" style="color: var(--accent-yellow);"></i>
+                    <h2 id="rfc-modal-title-text">Historial de Cambios Recientes (RFC Log)</h2>
+                </div>
+                <button class="btn-close" onclick="app.toggleRfcModal(false)">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="modal-body-scroll">
+                <p class="modal-instruction-text">
+                    <strong>Regla del Cambio Reciente:</strong> El 80% de las fallas se asocian a un cambio de configuración en las últimas 24 horas. Revise el historial de cambios del nodo para aislar fallas.
+                </p>
+                <div class="rfc-list-container" id="rfc-list-container">
+                    <!-- Dynamic RFC cards will be injected here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="app.toggleRfcModal(false)">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loaded Data -->
+    <script src="data.js"></script>
+    
+    <!-- Application Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

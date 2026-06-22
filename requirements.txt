@@ -1,0 +1,2 @@
+# Opcional pero recomendado para una experiencia de terminal profesional
+rich>=13.0.0

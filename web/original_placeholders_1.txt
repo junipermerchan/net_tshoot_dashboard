@@ -1,0 +1,5 @@
+Created At: 2026-06-01T21:36:31Z
+Completed At: 2026-06-01T21:36:31Z
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":436,"LineContent":"        // Extract placeholders"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":437,"LineContent":"        const placeholders = this.getPlaceholdersFromCommands(cmds);"}
+{"File":"/home/joalmeca/net_tshoot_dashboard/web/app.js","LineNumber":438,"LineContent":"        this.renderVariablesForm(placeholders);"}
