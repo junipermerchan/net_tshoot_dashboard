@@ -44,6 +44,7 @@ class WebApp {
         this.simScenarioState = 'fail'; // Default scenario state
         this.simRunning = false;
         this.noteSavedTimeout = null;
+        this.activeIpVersion = 'ipv4'; // Default IP version
     }
 
     init() {
@@ -3320,10 +3321,10 @@ Active Alarms   : none detected
 
     flattenCommandsByTier(raw) {
         if (!raw) return [];
+        let cmds = [];
         if (Array.isArray(raw)) {
-            return raw;
-        }
-        if (typeof raw === 'object') {
+            cmds = raw;
+        } else if (typeof raw === 'object') {
             const result = [];
             const tiers = ["tier1", "tier2", "tier3", "arch"];
             for (const lvl of tiers) {
@@ -3334,9 +3335,74 @@ Active Alarms   : none detected
                     }
                 }
             }
-            return result;
+            cmds = result;
         }
-        return [];
+        return this.filterCommandsByIpVersion(cmds, this.activeIpVersion);
+    }
+
+    setIpVersion(version) {
+        if (version !== 'ipv4' && version !== 'ipv6') return;
+        this.activeIpVersion = version;
+        
+        // Update active class on buttons
+        const btnV4 = document.getElementById('ip-btn-v4');
+        const btnV6 = document.getElementById('ip-btn-v6');
+        if (btnV4 && btnV6) {
+            if (version === 'ipv4') {
+                btnV4.classList.add('active');
+                btnV6.classList.remove('active');
+            } else {
+                btnV6.classList.add('active');
+                btnV4.classList.remove('active');
+            }
+        }
+        
+        // Re-render current step to apply filtering
+        this.renderCurrentStep();
+    }
+
+    filterCommandsByIpVersion(cmds, version) {
+        if (!cmds) return [];
+        return cmds.filter(cmd => {
+            const clean = cmd.toLowerCase();
+            
+            // Determine if it is specifically an IPv6 command
+            const isIpv6Cmd = clean.includes('ipv6') || 
+                               clean.includes('ospf3') || 
+                               clean.includes('ospfv3') || 
+                               clean.includes('mld') || 
+                               clean.includes('static6') || 
+                               clean.includes('inet6') || 
+                               clean.includes('raguard') || 
+                               clean.includes('/ipv6') ||
+                               clean.includes('ndp') ||
+                               (clean.includes(' nd ') || clean.startsWith('nd ')) ||
+                               clean.includes('dhcp6') ||
+                               clean.includes('dhcpv6') ||
+                               clean.includes('vpnv6') ||
+                               clean.includes('2001:db8') ||
+                               clean.includes('fe80::');
+                               
+            if (version === 'ipv6') {
+                // For IPv6, filter out explicit IPv4 commands. Keep generic or IPv6-specific commands.
+                const isIpv4Cmd = clean.includes('ip route') || 
+                                   clean.includes('ip ospf') || 
+                                   clean.includes('show ip bgp') || 
+                                   clean.includes('show ip interface') || 
+                                   clean.includes('show ip neighbor') || 
+                                   clean.includes(' arp ') || clean.startsWith('arp ') ||
+                                   clean.includes('igmp') ||
+                                   clean.includes('/ip route') ||
+                                   clean.includes('192.168.') ||
+                                   clean.includes('10.10.');
+                                   
+                if (isIpv4Cmd) return false;
+                return true;
+            } else {
+                // For IPv4, filter out IPv6 commands
+                return !isIpv6Cmd;
+            }
+        });
     }
 
     applyVariablesToText(text) {

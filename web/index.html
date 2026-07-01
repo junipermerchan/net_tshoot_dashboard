@@ -324,6 +324,11 @@
                                     <span class="terminal-title" id="terminal-vendor-title">Terminal — Vendor</span>
                                 </div>
                                 <div class="terminal-header-right">
+                                    <!-- IP Version Toggle Selector -->
+                                    <div class="ip-version-selector" id="ip-version-toggle-container">
+                                        <button class="ip-version-btn active" id="ip-btn-v4" onclick="app.setIpVersion('ipv4')">IPv4</button>
+                                        <button class="ip-version-btn" id="ip-btn-v6" onclick="app.setIpVersion('ipv6')">IPv6</button>
+                                    </div>
                                     <div class="terminal-mode-selector">
                                         <button class="terminal-mode-btn active" id="term-mode-cmds" onclick="app.setTerminalMode('cmds')">
                                             <i data-lucide="terminal"></i>

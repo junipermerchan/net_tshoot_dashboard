@@ -3556,6 +3556,32 @@ ui-tooltip {
     font-weight: 600;
 }
 
-
-
-
+/* IP Version Toggle selector */
+.ip-version-selector {
+    display: flex;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--border-radius-md);
+    padding: 2px;
+}
+.ip-version-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    font-size: 0.72rem;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-fast);
+}
+.ip-version-btn.active {
+    background: var(--accent-purple);
+    color: var(--bg-dark);
+    font-weight: 600;
+}
+.ip-version-btn:hover:not(.active) {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
