@@ -1637,7 +1637,7 @@ const NET_TSHOOT_DATA = {
         "l3vpn_start": {
           "title": "1. Ámbito del problema L3VPN",
           "tier": 1,
-          "body": "**Dónde:** El problema se manifiesta en el CE (sin conectividad), en el PE (sin rutas VPN), o entre PEs (MP-BGP caído).\n\n**Cómo:** Usuario reporta que no puede alcanzar sitios remotos. En el PE, \"show bgp summary\" indica peers VPNv4 caídos, o las tablas VRF no tienen rutas.\n\n**Cuándo:** Tras cambios de configuración en VRF, upgrades de software, o cuando se migra un CE a otro PE.\n\n**Por qué:** Fallas comunes: RD/RT mal configurados, MP-BGP AF VPNv4 no activa, políticas de redistribución omitidas, o next-hop inalcanzable.\n\n**Para qué:** Determinar si la falla está en el CE-PE, en el control plane MP-BGP entre PEs, o en el forwarding VRF.",
+          "body": "**Dónde:** El problema se manifiesta en el CE (sin conectividad), en el PE (sin rutas VPN), o entre PEs (MP-BGP caído).\n\n**Cómo:** Usuario reporta que no puede alcanzar sitios remotos. En el PE, \"show bgp summary\" indica peers VPNv4 caídos, o las tablas VRF no tienen rutas.\n\n**Cuándo:** Tras cambios de configuración en VRF, upgrades de software, o cuando se migra un CE a otro PE.\n\n**Por qué:** Fallas comunes: RD/RT mal configurados, MP-BGP AF VPNv4 no activa, políticas de redistribución omitidas, o next-hop inalcanzable.\n\n**Para qué:** Determinar si la falla está en el CE-PE, en el control plane MP-BGP entre PEs, o en el forwarding VRF.\n\n**Operación de 6VPE (IPv6 VPN over MPLS):**\n- 6VPE mapea direcciones IPv6 de clientes dentro de VRFs a prefijos VPNv6 (AFI 2, SAFI 128) de 196 bits (RD + IPv6).\n- **Pila de Etiquetas MPLS:** Al enviar un paquete 6VPE, se utilizan dos etiquetas: una etiqueta interna (BGP VPNv6) que identifica el VRF de destino en el PE remoto, y una etiqueta externa (LDP / Segment Routing) que define el camino de tránsito por el core IPv4. Asegúrese de que el router PE local resuelva el Next-Hop IPv4 del PE remoto usando el túnel MPLS.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -1649,7 +1649,8 @@ const NET_TSHOOT_DATA = {
               "tier2": [
                 "show bgp neighbor",
                 "show route table inet.0",
-                "show route table bgp.l3vpn.0"
+                "show route table bgp.l3vpn.0",
+                "show route table bgp.l3vpn-inet6.0"
               ],
               "tier3": [
                 "show log messages | match bgp | last 20",
@@ -1669,7 +1670,8 @@ const NET_TSHOOT_DATA = {
               "tier2": [
                 "show route vrf all",
                 "show cef summary",
-                "show bgp vpnv4 unicast summary"
+                "show bgp vpnv4 unicast summary",
+                "show bgp vpnv6 unicast summary"
               ],
               "tier3": [
                 "show logging | include BGP",
@@ -1689,7 +1691,8 @@ const NET_TSHOOT_DATA = {
               "tier2": [
                 "show ip cef summary",
                 "show ip route summary",
-                "show ip bgp vpnv4 all summary"
+                "show ip bgp vpnv4 all summary",
+                "show bgp vpnv6 unicast all summary"
               ],
               "tier3": [
                 "show logging | include %BGP",
@@ -2818,7 +2821,7 @@ const NET_TSHOOT_DATA = {
         "l3vpn_mpbgp_noroutes": {
           "title": "3.2 Peers UP pero sin intercambio de rutas VPN",
           "tier": 3,
-          "body": "**Dónde:** BGP NLRI filtrado, next-hop reachability, o RIB-failure en el PE receptor.\n\n**Cómo:** Peer Established, \"show bgp vpnv4 unicast neighbor <peer> routes\" muestra rutas, pero no se instalan o no se re-advertisen.\n\n**Cuándo:** Tras cambios de policies, cuando el next-hop MPLS subyacente falla, o al alcanzar maximum-prefix.\n\n**Por qué:** Policies inbound descartan. Next-hop inalcanzable (falta label/LDP hacia PE origen). Cluster-id/originator-id loop. Maximum-prefix exceeded.\n\n**Para qué:** Identificar por qué las rutas VPN no se instalan en la RIB ni se propagan a los CEs.",
+          "body": "**Dónde:** BGP NLRI filtrado, next-hop reachability, o RIB-failure en el PE receptor.\n\n**Cómo:** Peer Established, \"show bgp vpnv4 unicast neighbor <peer> routes\" muestra rutas, pero no se instalan o no se re-advertisen.\n\n**Cuándo:** Tras cambios de policies, cuando el next-hop MPLS subyacente falla, o al alcanzar maximum-prefix.\n\n**Por qué:** Policies inbound descartan. Next-hop inalcanzable (falta label/LDP hacia PE origen). Cluster-id/originator-id loop. Maximum-prefix exceeded.\n\n**Para qué:** Identificar por qué las rutas VPN no se instalan en la RIB ni se propagan a los CEs.\n\n**Operación de 6VPE (IPv6 VPN over MPLS):**\n- 6VPE mapea direcciones IPv6 de clientes dentro de VRFs a prefijos VPNv6 (AFI 2, SAFI 128) de 196 bits (RD + IPv6).\n- **Pila de Etiquetas MPLS:** Al enviar un paquete 6VPE, se utilizan dos etiquetas: una etiqueta interna (BGP VPNv6) que identifica el VRF de destino en el PE remoto, y una etiqueta externa (LDP / Segment Routing) que define el camino de tránsito por el core IPv4. Asegúrese de que el router PE local resuelva el Next-Hop IPv4 del PE remoto usando el túnel MPLS.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -2828,7 +2831,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier2": [
                 "show bgp neighbor <peer> | match prefix",
-                "show route table bgp.l3vpn.0 | match prefix"
+                "show route table bgp.l3vpn.0 | match prefix",
+                "show route table bgp.l3vpn-inet6.0"
               ],
               "tier3": [
                 "show route table bgp.l3vpn.0 extensive | match community",
@@ -2848,7 +2852,8 @@ const NET_TSHOOT_DATA = {
               "tier2": [
                 "show policy-map <name>",
                 "show bgp vpnv4 unicast neighbors <peer> routes",
-                "show bgp vpnv4 unicast neighbors <peer> advertised-routes"
+                "show bgp vpnv4 unicast neighbors <peer> advertised-routes",
+                "show bgp vpnv6 unicast summary"
               ],
               "tier3": [
                 "debug bgp vpnv4 unicast updates",
@@ -2868,7 +2873,8 @@ const NET_TSHOOT_DATA = {
               "tier2": [
                 "show route-map",
                 "show ip bgp vpnv4 all neighbors <peer> routes",
-                "show ip bgp vpnv4 all neighbors <peer> advertised-routes"
+                "show ip bgp vpnv4 all neighbors <peer> advertised-routes",
+                "show bgp vpnv6 unicast all summary"
               ],
               "tier3": [
                 "debug ip bgp vpnv4 updates",
@@ -6361,7 +6367,7 @@ const NET_TSHOOT_DATA = {
         "ospf_start": {
           "title": "1. Ámbito del problema OSPF",
           "tier": 1,
-          "body": "**Dónde:** Problemas en vecindades OSPF, base de datos, áreas, redistribución, autenticación, o rendimiento.\n\n**Cómo:** Vecinos caídos, rutas ausentes, alta CPU por SPF recalculaciones, o autenticación fallando.\n\n**Cuándo:** Tras cambios de área, upgrades, o aplicación de nuevas políticas de redistribución.\n\n**Por qué:** Requisitos de adjacency no cumplidos, LSA partitioning, redistribución con loops, o timers/MTU/auth mismatch.\n\n**Para qué:** Clasificar el síntoma para enfocar el troubleshooting en vecindades, database, áreas, policies, o rendimiento.\n\n**Soporte de IPv6 (OSPFv3):** OSPFv3 (RFC 5340) se utiliza para enrutar prefijos IPv6. Se ejecuta sobre enlaces IPv6 usando direcciones Link-Local (fe80::/10) como siguiente salto. El enrutamiento debe estar explícitamente habilitado.",
+          "body": "**Dónde:** Problemas en vecindades OSPF, base de datos, áreas, redistribución, autenticación, o rendimiento.\n\n**Cómo:** Vecinos caídos, rutas ausentes, alta CPU por SPF recalculaciones, o autenticación fallando.\n\n**Cuándo:** Tras cambios de área, upgrades, o aplicación de nuevas políticas de redistribución.\n\n**Por qué:** Requisitos de adjacency no cumplidos, LSA partitioning, redistribución con loops, o timers/MTU/auth mismatch.\n\n**Para qué:** Clasificar el síntoma para enfocar el troubleshooting en vecindades, database, áreas, policies, o rendimiento.\n\n**Soporte Avanzado de OSPFv3 (RFC 5340 & RFC 5838):**\n- **Direccionamiento Link-Local:** OSPFv3 forma adyacencias utilizando únicamente direcciones link-local (fe80::/10). Si el link-local no está configurado de forma determinista o tiene duplicados, la sesión se quedará en DOWN/INIT.\n- **Independencia de Address-Family:** Admite múltiples instancias en el mismo enlace. OSPFv3 permite encapsular tanto prefijos IPv4 como IPv6 utilizando campos de Address Family específicos (RFC 5838).\n- **LSA Database Split:** OSPFv3 retira la información de prefijos de los LSAs de Router (Type 1) y Network (Type 2). Los prefijos se anuncian ahora en nuevos tipos de LSAs: **Link LSA (Type 8)** (informa la dirección link-local del router y sus prefijos asociados) e **Intra-Area-Prefix LSA (Type 9)** (lleva las subredes asociadas a los routers o redes del área).",
           "commands": {
             "juniper": {
               "tier1": [
@@ -6725,7 +6731,7 @@ const NET_TSHOOT_DATA = {
         "ospf_auth": {
           "title": "2.A Autenticación, MTU, Timers y Hello/Dead",
           "tier": 2,
-          "body": "**Dónde:** Configuración de autenticación, MTU, Hello/Dead timers, y network type en interfaces OSPF.\n\n**Cómo:** Vecinos caídos con mensajes de auth error. Vecinos no se descubren. MTU mismatch detectado en logs.\n\n**Cuándo:** Tras aplicar nuevas claves de autenticación, cambiar timers, o migrar de una interface a otra.\n\n**Por qué:** OSPF requiere exactamente los mismos parámetros en ambos extremos: auth type, key, Hello/Dead, MTU, area, stub flag, y network type.\n\n**Para qué:** Verificar que todos los parámetros de interfaz sean simétricos para permitir la formación de adjacencies.\n\n**Autenticación en OSPFv3 (IPv6):** OSPFv3 no posee mecanismos nativos de autenticación. Depende directamente de IPsec SA (Security Associations) y cabeceras AH/ESP configuradas bajo la interfaz.",
+          "body": "**Dónde:** Configuración de autenticación, MTU, Hello/Dead timers, y network type en interfaces OSPF.\n\n**Cómo:** Vecinos caídos con mensajes de auth error. Vecinos no se descubren. MTU mismatch detectado en logs.\n\n**Cuándo:** Tras aplicar nuevas claves de autenticación, cambiar timers, o migrar de una interface a otra.\n\n**Por qué:** OSPF requiere exactamente los mismos parámetros en ambos extremos: auth type, key, Hello/Dead, MTU, area, stub flag, y network type.\n\n**Para qué:** Verificar que todos los parámetros de interfaz sean simétricos para permitir la formación de adjacencies.\n\n**Mecanismo de Autenticación de OSPFv3:**\nA diferencia de OSPFv2 (que usa MD5/SHA en la cabecera del protocolo), OSPFv3 delegó la seguridad a la suite de IPsec. Para autenticar vecinos OSPFv3, se configuran asociaciones de seguridad (SA) manuales (AH o ESP) directamente en la interfaz o en el área (compartidas por SPI). Si hay un desajuste de SPI (Security Parameter Index) o llaves hexadecimales, los routers descartarán los paquetes Hello sin generar logs informativos de adyacencia.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -6876,7 +6882,7 @@ const NET_TSHOOT_DATA = {
         "ospf_database": {
           "title": "3. Base de datos OSPF y RIB",
           "tier": 2,
-          "body": "**Dónde:** LSA database, SPF tree, y RIB.\n\n**Cómo:** Rutas ausentes aunque las LSAs existen. \"show ip ospf database\" incompleta. Rutas en database pero no en forwarding.\n\n**Cuándo:** Tras particionamiento de área, cambios de ABR/ASBR, o redistribución.\n\n**Por qué:** LSA Type-3/4/5/7 pueden faltar si el ABR/ASBR falla. Next-hop inalcanzable impide instalar en RIB. Administrative distance mayor de otro protocolo.\n\n**Para qué:** Asegurar que la base de datos OSPF esté completa y que las rutas se instalen correctamente en la RIB.",
+          "body": "**Dónde:** LSA database, SPF tree, y RIB.\n\n**Cómo:** Rutas ausentes aunque las LSAs existen. \"show ip ospf database\" incompleta. Rutas en database pero no en forwarding.\n\n**Cuándo:** Tras particionamiento de área, cambios de ABR/ASBR, o redistribución.\n\n**Por qué:** LSA Type-3/4/5/7 pueden faltar si el ABR/ASBR falla. Next-hop inalcanzable impide instalar en RIB. Administrative distance mayor de otro protocolo.\n\n**Para qué:** Asegurar que la base de datos OSPF esté completa y que las rutas se instalen correctamente en la RIB.\n\n**Análisis de la Base de Datos OSPFv3:**\n- **LSA Tipo 8 (Link):** Debe existir un LSA de tipo Link generado por cada interfaz link-local conectada al segmento. Este LSA publica la dirección link-local del router vecino y la lista de prefijos IPv6 configurados en esa interfaz.\n- **LSA Tipo 9 (Intra-Area-Prefix):** Contiene los prefijos IPv6 de las redes stub o de tránsito conectadas al router. Si el vecino está en FULL pero no aprendes rutas, verifica la presencia de LSAs de tipo 9.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -6889,7 +6895,9 @@ const NET_TSHOOT_DATA = {
                 "show ospf database extensive | match Type",
                 "show ospf database router lsa-detail",
                 "show ospf database detail",
-                "show ospf database summary"
+                "show ospf database summary",
+                "show ospf3 database link extensive",
+                "show ospf3 database intra-area-prefix extensive"
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"ospf\" | no-more",
@@ -6930,7 +6938,9 @@ const NET_TSHOOT_DATA = {
               "tier2": [
                 "show ip ospf database detail",
                 "show ip ospf database router",
-                "show ip ospf database summary"
+                "show ip ospf database summary",
+                "show ospfv3 database link",
+                "show ospfv3 database intra-area-prefix"
               ],
               "tier3": [
                 "debug ip ospf database",
@@ -7807,7 +7817,7 @@ const NET_TSHOOT_DATA = {
         "isis_adj": {
           "title": "2. Adyacencias IS-IS",
           "tier": 1,
-          "body": "**Dónde:** Interfaces IS-IS y exchange de IIHs (IS-IS Hello) entre routers.\n\n**Cómo:** Adyacencia en Init (recibe IIH pero no matching) o Down. No pasa a Up.\n\n**Cuándo:** Tras cambios de área, autenticación, o MTU.\n\n**Por qué:** IS-IS requiere: mismo área (L1) o área contigua (L2), misma MTU, mismos auth params, y System-ID único.\n\n**Para qué:** Diagnosticar por qué las adyacencias IS-IS no se establecen o se mantienen estables.",
+          "body": "**Dónde:** Interfaces IS-IS y exchange de IIHs (IS-IS Hello) entre routers.\n\n**Cómo:** Adyacencia en Init (recibe IIH pero no matching) o Down. No pasa a Up.\n\n**Cuándo:** Tras cambios de área, autenticación, o MTU.\n\n**Por qué:** IS-IS requiere: mismo área (L1) o área contigua (L2), misma MTU, mismos auth params, y System-ID único.\n\n**Para qué:** Diagnosticar por qué las adyacencias IS-IS no se establecen o se mantienen estables.\n\n**Adyacencia IS-IS sobre IPv6:**\nIS-IS se ejecuta directamente sobre capa 2 utilizando tramas 802.3 link-state. Por ende, la adyacencia IS-IS se mantendrá estable incluso si el direccionamiento IPv6 local está roto o desajustado. La única forma de detectar problemas en IPv6 es validando la tabla de vecinos IS-IS y confirmando el intercambio de TLVs de direccionamiento IP.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -7971,7 +7981,7 @@ const NET_TSHOOT_DATA = {
         "isis_database": {
           "title": "3. LSP Database y RIB",
           "tier": 2,
-          "body": "**Dónde:** LSP database (IS-IS Link State PDUs) y RIB.\n\n**Cómo:** LSPs faltantes. Rutas IS-IS no en RIB. CSNP/PSNP exchange incompleto.\n\n**Cuándo:** Tras particionamiento de red, o cuando un router no refresca sus LSPs.\n\n**Por qué:** Cada router genera un LSP. Si falta uno, la topología está incompleta. Max-age sin refresh causa purge.\n\n**Para qué:** Asegurar que todos los LSPs estén presentes y que las rutas IS-IS se instalen correctamente.\n\n**Multi-Topology (MT) en IS-IS IPv6:** Asegúrese de que la base de datos de LSPs contenga el TLV 236 (IPv6 Reachability) y el TLV 229 (MT-IS-IS). Sin la configuración de Multi-Topology, IS-IS asume una topología única y el enrutamiento IPv6 fallará si no hay simetría exacta con IPv4.",
+          "body": "**Dónde:** LSP database (IS-IS Link State PDUs) y RIB.\n\n**Cómo:** LSPs faltantes. Rutas IS-IS no en RIB. CSNP/PSNP exchange incompleto.\n\n**Cuándo:** Tras particionamiento de red, o cuando un router no refresca sus LSPs.\n\n**Por qué:** Cada router genera un LSP. Si falta uno, la topología está incompleta. Max-age sin refresh causa purge.\n\n**Para qué:** Asegurar que todos los LSPs estén presentes y que las rutas IS-IS se instalen correctamente.\n\n**Single-Topology vs. Multi-Topology en IS-IS:**\n- **Single-Topology (Default):** Asume que IPv4 e IPv6 comparten exactamente los mismos enlaces, interfaces y métricas. Si un enlace no tiene configurado IPv6, pero sí IPv4, la SPF de IPv6 fallará de todas formas, enviando tráfico por agujeros negros.\n- **Multi-Topology (MT) (RFC 5120):** Permite ejecutar árboles SPF completamente separados para IPv4 e IPv6. Es la práctica estándar en redes de producción para evitar caídas de tráfico. Verifique la activación de la capability Multi-Topology y compruebe los LSPs buscando el **TLV 229 (MT-IS-IS)** y el **TLV 236 (IPv6 Reachability)**.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -7983,7 +7993,8 @@ const NET_TSHOOT_DATA = {
               "tier2": [
                 "show isis database detail",
                 "show isis database",
-                "show isis route"
+                "show isis route",
+                "show isis database extensive | match \"Multi-topology\""
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"isis\" | no-more",
@@ -8024,7 +8035,8 @@ const NET_TSHOOT_DATA = {
               "tier2": [
                 "show isis database detail",
                 "show isis database",
-                "show isis routes"
+                "show isis routes",
+                "show isis database detail | include Multi-Topology"
               ],
               "tier3": [
                 "debug isis lsp",
@@ -8304,7 +8316,7 @@ const NET_TSHOOT_DATA = {
         "bgp_start": {
           "title": "1. Ámbito del problema BGP",
           "tier": 1,
-          "body": "**Dónde:** Sesiones BGP, path selection, route reflectors, confederations, policies, y next-hop.\n\n**Cómo:** Peers en Idle/Active. Peers UP pero sin rutas. Bestpath inesperado. RR no refleja.\n\n**Cuándo:** Tras cambios de peerings, aplicación de route-maps, o problemas de reachability.\n\n**Por qué:** TCP 179 bloqueado, AS/TTL mismatch, policies descartan rutas, AFI/SAFI no activo, o path selection elige ruta alternativa.\n\n**Para qué:** Clasificar si la falla es de peering, de propagación de rutas, o de path selection/policies.",
+          "body": "**Dónde:** Sesiones BGP, path selection, route reflectors, confederations, policies, y next-hop.\n\n**Cómo:** Peers en Idle/Active. Peers UP pero sin rutas. Bestpath inesperado. RR no refleja.\n\n**Cuándo:** Tras cambios de peerings, aplicación de route-maps, o problemas de reachability.\n\n**Por qué:** TCP 179 bloqueado, AS/TTL mismatch, policies descartan rutas, AFI/SAFI no activo, o path selection elige ruta alternativa.\n\n**Para qué:** Clasificar si la falla es de peering, de propagación de rutas, o de path selection/policies.\n\n**Problemas de Next-Hop en MP-BGP IPv6 (RFC 2545):**\n- Cuando se levanta una sesión BGP utilizando direccionamiento IPv4 pero se anuncia la Address-Family IPv6 (AFI 2, SAFI 1), BGP enviará un Next-Hop con un formato IPv4 mapeado a IPv6 (ej: `::ffff:10.0.0.1`), el cual no se puede resolver en la tabla de enrutamiento local y las rutas quedarán en estado **Hidden** o **Invalid**.\n- **Solución:** Aplicar una política de exportación (`route-map` / `policy-statement`) para forzar un Next-Hop IPv6 válido, o habilitar la negociación de Extended Next-Hop Encoding (RFC 8950) en ambos extremos del peer.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -8321,7 +8333,8 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "show bgp neighbor <peer> | match prefix",
                 "show log messages | match bgp | last 20",
-                "monitor traffic interface <if> matching \"bgp\" | no-more"
+                "monitor traffic interface <if> matching \"bgp\" | no-more",
+                "show route table inet6.0 hidden protocol bgp"
               ],
               "arch": [
                 "show configuration protocols bgp | display set",
@@ -8343,7 +8356,8 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "show bgp neighbors <peer> | include prefix",
                 "show logging | include BGP",
-                "debug bgp updates"
+                "debug bgp updates",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config router bgp",
@@ -8365,7 +8379,8 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "show ip bgp neighbors <peer> | include prefix",
                 "show logging | include %BGP",
-                "debug ip bgp updates"
+                "debug ip bgp updates",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config | section router bgp",
@@ -8491,7 +8506,7 @@ const NET_TSHOOT_DATA = {
         "bgp_neighbor": {
           "title": "2. Peers BGP caídos",
           "tier": 1,
-          "body": "**Dónde:** Sesión TCP/179 entre peers BGP, update-source, y reachability.\n\n**Cómo:** Peer en Active/Idle/Connect. \"show bgp neighbor\" indica state down o TCP timeout.\n\n**Cuándo:** Tras cambios de loopback, ACLs, o configuración de multihop/TTL.\n\n**Por qué:** BGP requiere reachability al update-source. TCP 179 no debe estar filtrado. AS number debe coincidir. eBGP multihop requiere TTL suficiente.\n\n**Para qué:** Establecer la sesión BGP antes de diagnosticar problemas de rutas o políticas.",
+          "body": "**Dónde:** Sesión TCP/179 entre peers BGP, update-source, y reachability.\n\n**Cómo:** Peer en Active/Idle/Connect. \"show bgp neighbor\" indica state down o TCP timeout.\n\n**Cuándo:** Tras cambios de loopback, ACLs, o configuración de multihop/TTL.\n\n**Por qué:** BGP requiere reachability al update-source. TCP 179 no debe estar filtrado. AS number debe coincidir. eBGP multihop requiere TTL suficiente.\n\n**Para qué:** Establecer la sesión BGP antes de diagnosticar problemas de rutas o políticas.\n\n**Problemas de Next-Hop en MP-BGP IPv6 (RFC 2545):**\n- Cuando se levanta una sesión BGP utilizando direccionamiento IPv4 pero se anuncia la Address-Family IPv6 (AFI 2, SAFI 1), BGP enviará un Next-Hop con un formato IPv4 mapeado a IPv6 (ej: `::ffff:10.0.0.1`), el cual no se puede resolver en la tabla de enrutamiento local y las rutas quedarán en estado **Hidden** o **Invalid**.\n- **Solución:** Aplicar una política de exportación (`route-map` / `policy-statement`) para forzar un Next-Hop IPv6 válido, o habilitar la negociación de Extended Next-Hop Encoding (RFC 8950) en ambos extremos del peer.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -8507,7 +8522,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
-                "show log messages | match bgp | last 50"
+                "show log messages | match bgp | last 50",
+                "show route table inet6.0 hidden protocol bgp"
               ],
               "arch": [
                 "show configuration protocols bgp | display set | match peer"
@@ -8526,7 +8542,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug bgp updates",
-                "show logging | include BGP"
+                "show logging | include BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config router bgp | match neighbor"
@@ -8545,7 +8562,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug ip bgp updates",
-                "show logging | include %BGP"
+                "show logging | include %BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config | section router bgp | match neighbor"
@@ -8674,7 +8692,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
-                "show bgp neighbor <peer> | match prefix"
+                "show bgp neighbor <peer> | match prefix",
+                "show route table inet6.0 hidden protocol bgp"
               ],
               "arch": [
                 "show configuration protocols bgp | display set | match policy",
@@ -8696,7 +8715,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug bgp updates",
-                "show logging | include BGP"
+                "show logging | include BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config router bgp | match policy",
@@ -8717,7 +8737,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug ip bgp updates",
-                "show logging | include %BGP"
+                "show logging | include %BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config | section router bgp | match policy",
@@ -8850,7 +8871,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
-                "show log messages | match bgp | last 50"
+                "show log messages | match bgp | last 50",
+                "show route table inet6.0 hidden protocol bgp"
               ],
               "arch": [
                 "show configuration policy-options | display set | match localpref"
@@ -8869,7 +8891,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug bgp updates",
-                "show logging | include BGP"
+                "show logging | include BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config route-policy | match localpref"
@@ -8888,7 +8911,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug ip bgp updates",
-                "show logging | include %BGP"
+                "show logging | include %BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config | section route-map | match localpref"
@@ -9011,7 +9035,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
-                "show log messages | match bgp | last 50"
+                "show log messages | match bgp | last 50",
+                "show route table inet6.0 hidden protocol bgp"
               ],
               "arch": [
                 "show configuration protocols bgp | display set | match cluster"
@@ -9031,7 +9056,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug bgp updates",
-                "show logging | include BGP"
+                "show logging | include BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config router bgp | match cluster"
@@ -9051,7 +9077,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug ip bgp updates",
-                "show logging | include %BGP"
+                "show logging | include %BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config | section router bgp | match cluster"
@@ -9173,7 +9200,8 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
                 "show log messages | match policy | last 20",
-                "show log messages | match policy | last 50"
+                "show log messages | match policy | last 50",
+                "show route table inet6.0 hidden protocol bgp"
               ],
               "arch": [
                 "show configuration policy-options | display set | match community",
@@ -9194,7 +9222,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug bgp updates",
-                "show logging | include BGP"
+                "show logging | include BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config route-policy | match community",
@@ -9215,7 +9244,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug ip bgp updates",
-                "show logging | include %BGP"
+                "show logging | include %BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config | section route-map | match community",
@@ -11107,7 +11137,7 @@ const NET_TSHOOT_DATA = {
         "mcast_start": {
           "title": "1. Ámbito del problema Multicast",
           "tier": 1,
-          "body": "**Dónde:** IGMP en hosts, PIM en routers, RP, MSDP, MBGP, y forwarding multicast.\n\n**Cómo:** Hosts no reciben multicast. PIM neighbors caídos. RP inalcanzable. MSDP SA no propagadas.\n\n**Cuándo:** Tras cambios de RP, aplicación de IGMP snooping, o reconfiguración de PIM.\n\n**Por qué:** IGMP requiere querier. PIM requiere neighbors en todos los links. RP debe ser conocido por todos. MSDP requiere MBGP.\n\n**Para qué:** Clasificar el dominio del problema: host (IGMP), router (PIM), core (RP/MSDP), o forwarding (RPF/SPT).",
+          "body": "**Dónde:** IGMP en hosts, PIM en routers, RP, MSDP, MBGP, y forwarding multicast.\n\n**Cómo:** Hosts no reciben multicast. PIM neighbors caídos. RP inalcanzable. MSDP SA no propagadas.\n\n**Cuándo:** Tras cambios de RP, aplicación de IGMP snooping, o reconfiguración de PIM.\n\n**Por qué:** IGMP requiere querier. PIM requiere neighbors en todos los links. RP debe ser conocido por todos. MSDP requiere MBGP.\n\n**Para qué:** Clasificar el dominio del problema: host (IGMP), router (PIM), core (RP/MSDP), o forwarding (RPF/SPT).\n\n**Multicast en IPv6 (MLD vs IGMP):**\nIPv6 no soporta broadcast; depende puramente de multicast. En IPv6, el protocolo **MLD (Multicast Listener Discovery)** (RFC 3810) reemplaza a IGMP. MLDv1 equivale a IGMPv2, y MLDv2 equivale a IGMPv3. MLD se encapsula directamente sobre paquetes ICMPv6 (tipos 130, 131 y 132 para v1, y 143 para v2). Si bloqueas ICMPv6 por seguridad de forma descuidada, romperás por completo el tráfico Multicast IPv6 y los protocolos de descubrimiento.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -11312,7 +11342,7 @@ const NET_TSHOOT_DATA = {
         "mcast_igmp": {
           "title": "2. IGMP: Hosts no reciben multicast",
           "tier": 1,
-          "body": "**Dónde:** Segmento L2 entre hosts y primer router multicast (querier).\n\n**Cómo:** Hosts no reciben tráfico multicast aunque el source está activo. \"show igmp groups\" vacío.\n\n**Cuándo:** Tras agregar/quitar hosts, cambiar versión IGMP, o aplicar IGMP snooping.\n\n**Por qué:** Hosts deben enviar IGMP Membership Reports. El querier debe estar activo. IGMP snooping puede bloquear puertos incorrectamente.\n\n**Para qué:** Asegurar que los hosts se unan correctamente al grupo multicast y que el router reciba los joins.",
+          "body": "**Dónde:** Segmento L2 entre hosts y primer router multicast (querier).\n\n**Cómo:** Hosts no reciben tráfico multicast aunque el source está activo. \"show igmp groups\" vacío.\n\n**Cuándo:** Tras agregar/quitar hosts, cambiar versión IGMP, o aplicar IGMP snooping.\n\n**Por qué:** Hosts deben enviar IGMP Membership Reports. El querier debe estar activo. IGMP snooping puede bloquear puertos incorrectamente.\n\n**Para qué:** Asegurar que los hosts se unan correctamente al grupo multicast y que el router reciba los joins.\n\n**Multicast en IPv6 (MLD vs IGMP):**\nIPv6 no soporta broadcast; depende puramente de multicast. En IPv6, el protocolo **MLD (Multicast Listener Discovery)** (RFC 3810) reemplaza a IGMP. MLDv1 equivale a IGMPv2, y MLDv2 equivale a IGMPv3. MLD se encapsula directamente sobre paquetes ICMPv6 (tipos 130, 131 y 132 para v1, y 143 para v2). Si bloqueas ICMPv6 por seguridad de forma descuidada, romperás por completo el tráfico Multicast IPv6 y los protocolos de descubrimiento.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -11502,7 +11532,7 @@ const NET_TSHOOT_DATA = {
         "mcast_pim": {
           "title": "3. PIM: Vecinos y Topology",
           "tier": 2,
-          "body": "**Dónde:** Links entre routers PIM, PIM neighbor table, y PIM topology.\n\n**Cómo:** PIM neighbors ausentes. Join/Prune no fluyen. (*,G) o (S,G) entries incompletas.\n\n**Cuándo:** Tras cambios de interfaces, aplicación de ACLs, o fallas de enlace.\n\n**Por qué:** PIM requiere neighbors en todas las interfaces del path multicast. Si un link no tiene PIM habilitado, el árbol se rompe.\n\n**Para qué:** Verificar que la topología PIM esté completa para construir el shared tree (RPT) y el shortest path tree (SPT).",
+          "body": "**Dónde:** Links entre routers PIM, PIM neighbor table, y PIM topology.\n\n**Cómo:** PIM neighbors ausentes. Join/Prune no fluyen. (*,G) o (S,G) entries incompletas.\n\n**Cuándo:** Tras cambios de interfaces, aplicación de ACLs, o fallas de enlace.\n\n**Por qué:** PIM requiere neighbors en todas las interfaces del path multicast. Si un link no tiene PIM habilitado, el árbol se rompe.\n\n**Para qué:** Verificar que la topología PIM esté completa para construir el shared tree (RPT) y el shortest path tree (SPT).\n\n**Multicast en IPv6 (MLD vs IGMP):**\nIPv6 no soporta broadcast; depende puramente de multicast. En IPv6, el protocolo **MLD (Multicast Listener Discovery)** (RFC 3810) reemplaza a IGMP. MLDv1 equivale a IGMPv2, y MLDv2 equivale a IGMPv3. MLD se encapsula directamente sobre paquetes ICMPv6 (tipos 130, 131 y 132 para v1, y 143 para v2). Si bloqueas ICMPv6 por seguridad de forma descuidada, romperás por completo el tráfico Multicast IPv6 y los protocolos de descubrimiento.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -11691,7 +11721,7 @@ const NET_TSHOOT_DATA = {
         "mcast_rp": {
           "title": "4. Rendezvous Point (RP)",
           "tier": 2,
-          "body": "**Dónde:** Rendezvous Point en PIM-SM, estático o dinámico (BSR/Auto-RP).\n\n**Cómo:** RP inalcanzable. Routers no conocen el RP para un grupo. BSR/Auto-RP no convergen.\n\n**Cuándo:** Tras cambios de RP, agregar nuevos grupos, o falla del RP actual.\n\n**Por qué:** Todos los routers PIM-SM deben conocer el mismo RP. BSR requiere que el candidato-RP y el BSR se alcancen.\n\n**Para qué:** Garantizar que el RP esté disponible y correctamente anunciado para todos los routers del dominio.",
+          "body": "**Dónde:** Rendezvous Point en PIM-SM, estático o dinámico (BSR/Auto-RP).\n\n**Cómo:** RP inalcanzable. Routers no conocen el RP para un grupo. BSR/Auto-RP no convergen.\n\n**Cuándo:** Tras cambios de RP, agregar nuevos grupos, o falla del RP actual.\n\n**Por qué:** Todos los routers PIM-SM deben conocer el mismo RP. BSR requiere que el candidato-RP y el BSR se alcancen.\n\n**Para qué:** Garantizar que el RP esté disponible y correctamente anunciado para todos los routers del dominio.\n\n**Multicast en IPv6 (MLD vs IGMP):**\nIPv6 no soporta broadcast; depende puramente de multicast. En IPv6, el protocolo **MLD (Multicast Listener Discovery)** (RFC 3810) reemplaza a IGMP. MLDv1 equivale a IGMPv2, y MLDv2 equivale a IGMPv3. MLD se encapsula directamente sobre paquetes ICMPv6 (tipos 130, 131 y 132 para v1, y 143 para v2). Si bloqueas ICMPv6 por seguridad de forma descuidada, romperás por completo el tráfico Multicast IPv6 y los protocolos de descubrimiento.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -11872,7 +11902,7 @@ const NET_TSHOOT_DATA = {
         "mcast_msdp": {
           "title": "5. MSDP: Inter-domain Multicast",
           "tier": 3,
-          "body": "**Dónde:** Peers MSDP entre RPs de diferentes dominios PIM-SM.\n\n**Cómo:** SA messages no llegan. Grupos remotos no visibles. MSDP peer en Down.\n\n**Cuándo:** Tras configurar MSDP, o cuando cambia la reachability entre RPs.\n\n**Por qué:** MSDP requiere reachability IP entre RPs (usualmente vía MBGP). SA messages anuncian (S,G) activos.\n\n**Para qué:** Asegurar que el multicast inter-dominio se propague correctamente vía MSDP.",
+          "body": "**Dónde:** Peers MSDP entre RPs de diferentes dominios PIM-SM.\n\n**Cómo:** SA messages no llegan. Grupos remotos no visibles. MSDP peer en Down.\n\n**Cuándo:** Tras configurar MSDP, o cuando cambia la reachability entre RPs.\n\n**Por qué:** MSDP requiere reachability IP entre RPs (usualmente vía MBGP). SA messages anuncian (S,G) activos.\n\n**Para qué:** Asegurar que el multicast inter-dominio se propague correctamente vía MSDP.\n\n**Multicast en IPv6 (MLD vs IGMP):**\nIPv6 no soporta broadcast; depende puramente de multicast. En IPv6, el protocolo **MLD (Multicast Listener Discovery)** (RFC 3810) reemplaza a IGMP. MLDv1 equivale a IGMPv2, y MLDv2 equivale a IGMPv3. MLD se encapsula directamente sobre paquetes ICMPv6 (tipos 130, 131 y 132 para v1, y 143 para v2). Si bloqueas ICMPv6 por seguridad de forma descuidada, romperás por completo el tráfico Multicast IPv6 y los protocolos de descubrimiento.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -12057,7 +12087,7 @@ const NET_TSHOOT_DATA = {
         "mcast_fwd": {
           "title": "6. Forwarding / SPT (Shortest Path Tree)",
           "tier": 3,
-          "body": "**Dónde:** Multicast forwarding table, RPF check, y Shortest Path Tree.\n\n**Cómo:** Tráfico multicast no llega a receivers. (S,G) entry existe pero no fluye.\n\n**Cuándo:** Tras cambios de routing unicast (afecta RPF), o cuando el SPT no se construye.\n\n**Por qué:** RPF check falla si la ruta al source no pasa por la interfaz incoming. SPT requiere que el receiver envíe S,G Join.\n\n**Para qué:** Verificar que el data plane multicast pueda entregar tráfico desde source hasta receivers.",
+          "body": "**Dónde:** Multicast forwarding table, RPF check, y Shortest Path Tree.\n\n**Cómo:** Tráfico multicast no llega a receivers. (S,G) entry existe pero no fluye.\n\n**Cuándo:** Tras cambios de routing unicast (afecta RPF), o cuando el SPT no se construye.\n\n**Por qué:** RPF check falla si la ruta al source no pasa por la interfaz incoming. SPT requiere que el receiver envíe S,G Join.\n\n**Para qué:** Verificar que el data plane multicast pueda entregar tráfico desde source hasta receivers.\n\n**Multicast en IPv6 (MLD vs IGMP):**\nIPv6 no soporta broadcast; depende puramente de multicast. En IPv6, el protocolo **MLD (Multicast Listener Discovery)** (RFC 3810) reemplaza a IGMP. MLDv1 equivale a IGMPv2, y MLDv2 equivale a IGMPv3. MLD se encapsula directamente sobre paquetes ICMPv6 (tipos 130, 131 y 132 para v1, y 143 para v2). Si bloqueas ICMPv6 por seguridad de forma descuidada, romperás por completo el tráfico Multicast IPv6 y los protocolos de descubrimiento.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -12256,7 +12286,7 @@ const NET_TSHOOT_DATA = {
         "mpbgp_start": {
           "title": "1. Ámbito del problema MP-BGP",
           "tier": 1,
-          "body": "**Dónde:** Address-families MP-BGP: IPv4/IPv6 unicast/multicast, VPNv4/VPNv6, labeled-unicast, EVPN.\n\n**Cómo:** AFI/SAFI no negociado. Labeled-unicast sin labels. VPNv4 sin rutas. IPv6 BGP caído.\n\n**Cuándo:** Tras habilitar una nueva AF, migrar a BGP EVPN, o interconectar AS con labeled-unicast.\n\n**Por qué:** Cada AF requiere activación explícita en ambos peers. Algunas plataformas requieren \"address-family\" por separado.\n\n**Para qué:** Clasificar qué address-family falla para enfocar el troubleshooting en AFI/SAFI, labeled routes, VPN, o IPv6.",
+          "body": "**Dónde:** Address-families MP-BGP: IPv4/IPv6 unicast/multicast, VPNv4/VPNv6, labeled-unicast, EVPN.\n\n**Cómo:** AFI/SAFI no negociado. Labeled-unicast sin labels. VPNv4 sin rutas. IPv6 BGP caído.\n\n**Cuándo:** Tras habilitar una nueva AF, migrar a BGP EVPN, o interconectar AS con labeled-unicast.\n\n**Por qué:** Cada AF requiere activación explícita en ambos peers. Algunas plataformas requieren \"address-family\" por separado.\n\n**Para qué:** Clasificar qué address-family falla para enfocar el troubleshooting en AFI/SAFI, labeled routes, VPN, o IPv6.\n\n**Problemas de Next-Hop en MP-BGP IPv6 (RFC 2545):**\n- Cuando se levanta una sesión BGP utilizando direccionamiento IPv4 pero se anuncia la Address-Family IPv6 (AFI 2, SAFI 1), BGP enviará un Next-Hop con un formato IPv4 mapeado a IPv6 (ej: `::ffff:10.0.0.1`), el cual no se puede resolver en la tabla de enrutamiento local y las rutas quedarán en estado **Hidden** o **Invalid**.\n- **Solución:** Aplicar una política de exportación (`route-map` / `policy-statement`) para forzar un Next-Hop IPv6 válido, o habilitar la negociación de Extended Next-Hop Encoding (RFC 8950) en ambos extremos del peer.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -12272,7 +12302,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
-                "show log messages | match bgp | last 50"
+                "show log messages | match bgp | last 50",
+                "show route table inet6.0 hidden protocol bgp"
               ],
               "arch": [
                 "show configuration protocols bgp | display set | match family"
@@ -12292,7 +12323,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug bgp updates",
-                "show logging | include BGP"
+                "show logging | include BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config router bgp | match family"
@@ -12312,7 +12344,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug ip bgp updates",
-                "show logging | include %BGP"
+                "show logging | include %BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config | section router bgp | match family"
@@ -12433,7 +12466,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
-                "show log messages | match bgp | last 50"
+                "show log messages | match bgp | last 50",
+                "show route table inet6.0 hidden protocol bgp"
               ],
               "arch": [
                 "show configuration protocols bgp | display set | match family"
@@ -12453,7 +12487,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug bgp updates",
-                "show logging | include BGP"
+                "show logging | include BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config router bgp | match family"
@@ -12473,7 +12508,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug ip bgp updates",
-                "show logging | include %BGP"
+                "show logging | include %BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config | section router bgp | match family"
@@ -12545,7 +12581,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
-                "show log messages | match bgp | last 50"
+                "show log messages | match bgp | last 50",
+                "show route table inet6.0 hidden protocol bgp"
               ],
               "arch": [
                 "show configuration protocols bgp | display set | match labeled",
@@ -12567,7 +12604,8 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug bgp labeled-unicast updates",
                 "debug bgp updates",
-                "show logging | include BGP"
+                "show logging | include BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config router bgp | match labeled",
@@ -12589,7 +12627,8 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug bgp labeled-unicast updates",
                 "debug ip bgp updates",
-                "show logging | include %BGP"
+                "show logging | include %BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config | section router bgp | match labeled",
@@ -12666,7 +12705,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
-                "show log messages | match bgp | last 50"
+                "show log messages | match bgp | last 50",
+                "show route table inet6.0 hidden protocol bgp"
               ],
               "arch": [
                 "show configuration protocols bgp | display set | match vpnv4",
@@ -12688,7 +12728,8 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug bgp vpnv4 updates",
                 "debug bgp updates",
-                "show logging | include BGP"
+                "show logging | include BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config router bgp | match vpnv4",
@@ -12710,7 +12751,8 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug ip bgp vpnv4 updates",
                 "debug ip bgp updates",
-                "show logging | include %BGP"
+                "show logging | include %BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config | section router bgp | match vpnv4",
@@ -12787,7 +12829,8 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
-                "show log messages | match bgp | last 50"
+                "show log messages | match bgp | last 50",
+                "show route table inet6.0 hidden protocol bgp"
               ],
               "arch": [
                 "show configuration protocols bgp | display set | match inet6",
@@ -12808,7 +12851,8 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug bgp ipv6 updates",
                 "debug bgp updates",
-                "show logging | include BGP"
+                "show logging | include BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config router bgp | match ipv6",
@@ -12829,7 +12873,8 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug bgp ipv6 updates",
                 "debug ip bgp updates",
-                "show logging | include %BGP"
+                "show logging | include %BGP",
+                "show bgp ipv6 unicast neighbors <neighbor-ip> received-routes"
               ],
               "arch": [
                 "show running-config | section router bgp | match ipv6",
@@ -28092,7 +28137,7 @@ const NET_TSHOOT_DATA = {
           "methodology_en": "Bottom-Up Approach (Physical link -> Link-local reachability -> Global Unicast)"
         },
         "ipv6_ts_routing": {
-          "body": "**Objetivo:** Diagnosticar rutas IPv6 faltantes o incorrectas.\n\n**Problemas comunes:**\n- Ruta IPv6 no en RIB: mejor AD desde IPv4 o política de routing.\n- Next-hop no alcanzable en IPv6 pero sí en IPv4.\n- MP-BGP no negocia address-family IPv6.\n\n**Verificar:**\n- Tabla de rutas IPv6.\n- Protocolo de routing IPv6 activo (OSPFv3, ISIS, BGP).\n- Reachability de next-hop IPv6.",
+          "body": "**Objetivo:** Diagnosticar rutas IPv6 faltantes o incorrectas.\n\n**Problemas comunes:**\n- Ruta IPv6 no en RIB: mejor AD desde IPv4 o política de routing.\n- Next-hop no alcanzable en IPv6 pero sí en IPv4.\n- MP-BGP no negocia address-family IPv6.\n\n**Verificar:**\n- Tabla de rutas IPv6.\n- Protocolo de routing IPv6 activo (OSPFv3, ISIS, BGP).\n- Reachability de next-hop IPv6.\n\n**Banderas (Flags) en Router Advertisements (RA):**\nLos routers controlan cómo los hosts obtienen direccionamiento IPv6 mediante RAs:\n- **M-Flag (Managed Address Configuration - bit 1):** Si M=1, los hosts deben obtener su IP mediante un servidor DHCPv6 Stateful.\n- **O-Flag (Other Configuration - bit 2):** Si O=1, los hosts pueden configurar su IP por SLAAC (M=0) pero obtienen DNS y dominio desde un servidor DHCPv6 Stateless.\n- **A-Flag (Autonomous Address Autoconfiguration):** Configurado bajo el TLV de prefijo de RA. Si A=1 (por defecto), el host usará SLAAC para auto-configurar su IP con ese prefijo.",
           "choices": [
             {
               "label": "Verificar autoconfiguración / DHCPv6",
@@ -28275,7 +28320,7 @@ const NET_TSHOOT_DATA = {
           "methodology_en": "Bottom-Up Approach (Physical link -> Link-local reachability -> Global Unicast)"
         },
         "ipv6_ts_start": {
-          "body": "**Objetivo:** Confirmar que IPv6 está habilitado y hay conectividad de capa 2/3.\n\n**Problemas comunes:**\n- IPv6 no habilitado en interfaz.\n- Neighbor Discovery (ND) falla: RA no recibidos o NS/NA bloqueados.\n- Duplicate Address Detection (DAD) falla: dirección ya en uso.\n\n**Verificar:**\n- Dirección IPv6 en interfaz.\n- Vecinos IPv6 en ND cache.\n- Ping a gateway link-local y global.",
+          "body": "**Objetivo:** Confirmar que IPv6 está habilitado y hay conectividad de capa 2/3.\n\n**Problemas comunes:**\n- IPv6 no habilitado en interfaz.\n- Neighbor Discovery (ND) falla: RA no recibidos o NS/NA bloqueados.\n- Duplicate Address Detection (DAD) falla: dirección ya en uso.\n\n**Verificar:**\n- Dirección IPv6 en interfaz.\n- Vecinos IPv6 en ND cache.\n- Ping a gateway link-local y global.\n\n**Neighbor Discovery Protocol (NDP) (RFC 4861):**\n- NDP reemplaza a ARP en IPv6. Utiliza mensajes ICMPv6: **Neighbor Solicitation (NS - Tipo 135)** y **Neighbor Advertisement (NA - Tipo 136)** para resolución de direcciones MAC.\n- **Dirección Multicast de Nodo Solicitado (Solicited-Node Multicast):** Para evitar broadcast, los mensajes NS se envían a una dirección de nodo solicitado formada por el prefijo `ff02::1:ff00:0/104` unido a los últimos 24 bits de la dirección IPv6 del host destino. Si un switch bloquea multicast local, la resolución de direcciones NDP fallará y no habrá conectividad.",
           "choices": [
             {
               "label": "Verificar routing IPv6",
@@ -29099,7 +29144,7 @@ const NET_TSHOOT_DATA = {
           "methodology_en": "Bottom-Up Approach (Physical link -> Link-local reachability -> Global Unicast)"
         },
         "ipv6_config_start": {
-          "body": "**Objetivo:** Asignar direcciones IPv6.\n\n**Tipos:**\n- Link-local: FE80::/10.\n- Global unicast: 2000::/3.\n- Unique local: FC00::/7.",
+          "body": "**Objetivo:** Asignar direcciones IPv6.\n\n**Tipos:**\n- Link-local: FE80::/10.\n- Global unicast: 2000::/3.\n- Unique local: FC00::/7.\n\n**Asignación de WAN IPv6 en Redes de Acceso GPON:**\n- Los clientes residenciales (ONTs) típicamente adquieren su direccionamiento IPv6 a través de **DHCPv6 Prefix Delegation (DHCPv6-PD)**. El OLT delega un prefijo corto (ej: un `/56` o `/60`) a la ONT. El Router del cliente auto-subdivide ese prefijo en subredes `/64` para sus interfaces LAN internas, y activa SLAAC para los dispositivos locales.\n\n**Asignación de WAN IPv6 en Redes de Acceso GPON:**\n- Los clientes residenciales (ONTs) típicamente adquieren su direccionamiento IPv6 a través de **DHCPv6 Prefix Delegation (DHCPv6-PD)**. El OLT delega un prefijo corto (ej: un `/56` o `/60`) a la ONT. El Router del cliente auto-subdivide ese prefijo en subredes `/64` para sus interfaces LAN internas, y activa SLAAC para los dispositivos locales.\n\n**Asignación de WAN IPv6 en Redes de Acceso GPON:**\n- Los clientes residenciales (ONTs) típicamente adquieren su direccionamiento IPv6 a través de **DHCPv6 Prefix Delegation (DHCPv6-PD)**. El OLT delega un prefijo corto (ej: un `/56` o `/60`) a la ONT. El Router del cliente auto-subdivide ese prefijo en subredes `/64` para sus interfaces LAN internas, y activa SLAAC para los dispositivos locales.\n\n**Asignación de WAN IPv6 en Redes de Acceso GPON:**\n- Los clientes residenciales (ONTs) típicamente adquieren su direccionamiento IPv6 a través de **DHCPv6 Prefix Delegation (DHCPv6-PD)**. El OLT delega un prefijo corto (ej: un `/56` o `/60`) a la ONT. El Router del cliente auto-subdivide ese prefijo en subredes `/64` para sus interfaces LAN internas, y activa SLAAC para los dispositivos locales.\n\n**Asignación de WAN IPv6 en Redes de Acceso GPON:**\n- Los clientes residenciales (ONTs) típicamente adquieren su direccionamiento IPv6 a través de **DHCPv6 Prefix Delegation (DHCPv6-PD)**. El OLT delega un prefijo corto (ej: un `/56` o `/60`) a la ONT. El Router del cliente auto-subdivide ese prefijo en subredes `/64` para sus interfaces LAN internas, y activa SLAAC para los dispositivos locales.\n\n**Asignación de WAN IPv6 en Redes de Acceso GPON:**\n- Los clientes residenciales (ONTs) típicamente adquieren su direccionamiento IPv6 a través de **DHCPv6 Prefix Delegation (DHCPv6-PD)**. El OLT delega un prefijo corto (ej: un `/56` o `/60`) a la ONT. El Router del cliente auto-subdivide ese prefijo en subredes `/64` para sus interfaces LAN internas, y activa SLAAC para los dispositivos locales.",
           "choices": [
             {
               "label": "OSPFv3 / IS-IS IPv6",
@@ -29366,7 +29411,7 @@ const NET_TSHOOT_DATA = {
           "methodology_en": "Bottom-Up Approach (Physical link -> Link-local reachability -> Global Unicast)"
         },
         "ipv6_config_tunnels": {
-          "body": "**6to4:** prefix 2002::/16 derivado de IPv4.\n**GRE:** encapsula IPv6 en GRE sobre IPv4.\n\n**Seguridad IPv6 Avanzada (RA Guard e Inspection):**\n- Evite ataques de Man-in-the-Middle y autoconfiguración no autorizada mitigando Router Advertisements falsos.\n- **Cisco IOS-XE RA Guard:**\n  `ipv6 nd raguard policy RAGUARD-POLICY` \n  `interface GigabitEthernet0/1 \n   ipv6 nd raguard attach-policy RAGUARD-POLICY` \n- **Juniper RA Guard:**\n  `set switch-options secure-access-port interface ge-0/0/1.0 ipv6-ra-guard`",
+          "body": "**6to4:** prefix 2002::/16 derivado de IPv4.\n**GRE:** encapsula IPv6 en GRE sobre IPv4.\n\n**Seguridad IPv6 Avanzada (RA Guard e Inspection) (RFC 6105):**\n- **IPv6 RA Guard:** Bloquea de forma inteligente los paquetes Router Advertisement (RA) falsos o no autorizados enviados por usuarios maliciosos que intentan actuar como gateway de la red (ataques Man-in-the-Middle). Se debe aplicar en todos los puertos de acceso que no vayan conectados a routers autorizados.\n- **IPv6 Neighbor Discovery Inspection (ND Inspection):** Mantiene una tabla de bindings IPv6-MAC validada a través de DHCPv6 Snooping. Bloquea mensajes Neighbor Advertisement (NA) falsos que busquen envenenar la tabla de vecinos (NDP Cache Poisoning).",
           "choices": [
             {
               "label": "Finalizar",
