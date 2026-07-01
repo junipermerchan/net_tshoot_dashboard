@@ -3844,44 +3844,52 @@ def _kb() -> Dict[str, Any]:
                                               '**Para qué:** Diagnosticar por qué la adjacency OSPF no se establece o '
                                               'se mantiene estable.',
                                       'commands': {'juniper': {'tier1': ['show ospf neighbor extensive',
-                                                                         'show ospf interface detail'],
-                                                               'tier2': ['show configuration protocols ospf | display '
-                                                                         'set',
-                                                                         'show ospf interface detail',
-                                                                         'show ospf neighbor extensive | match state'],
-                                                               'tier3': ['monitor traffic interface <if> matching '
-                                                                         '"ospf" | no-more',
-                                                                         'show log messages | match ospf | last 50'],
-                                                               'arch': ['show configuration protocols ospf | display '
-                                                                        'set | match area',
-                                                                        'show configuration protocols ospf | display '
-                                                                        'set | match neighbor']},
+                                                                          'show ospf3 neighbor extensive',
+                                                                          'show ospf interface detail',
+                                                                          'show ospf3 interface detail'],
+                                                                'tier2': ['show configuration protocols ospf | display set',
+                                                                          'show configuration protocols ospf3 | display set',
+                                                                          'show ospf interface detail',
+                                                                          'show ospf3 interface detail',
+                                                                          'show ospf neighbor extensive | match state',
+                                                                          'show ospf3 neighbor extensive | match state'],
+                                                                'tier3': ['monitor traffic interface <if> matching "ospf" | no-more',
+                                                                          'monitor traffic interface <if> matching "ospf3" | no-more',
+                                                                          'show log messages | match ospf | last 50'],
+                                                                'arch': ['show configuration protocols ospf | display set | match area',
+                                                                         'show configuration protocols ospf3 | display set | match area']},
                                                    'cisco_iosxr': {'tier1': ['show ospf neighbor detail',
-                                                                             'show ospf interface'],
-                                                                   'tier2': ['show running-config router ospf',
+                                                                             'show ospfv3 neighbor detail',
                                                                              'show ospf interface',
-                                                                             'show ospf neighbor detail | include '
-                                                                             'state'],
+                                                                             'show ospfv3 interface'],
+                                                                   'tier2': ['show running-config router ospf',
+                                                                             'show running-config router ospfv3',
+                                                                             'show ospf interface',
+                                                                             'show ospfv3 interface',
+                                                                             'show ospf neighbor detail | include state',
+                                                                             'show ospfv3 neighbor detail | include state'],
                                                                    'tier3': ['debug ospf hello',
+                                                                             'debug ospfv3 hello',
                                                                              'show logging | include OSPF'],
-                                                                   'arch': ['show running-config router ospf | match '
-                                                                            'area',
-                                                                            'show running-config router ospf | match '
-                                                                            'neighbor']},
+                                                                   'arch': ['show running-config router ospf | match area',
+                                                                            'show running-config router ospfv3 | match area']},
                                                    'cisco_iosxe': {'tier1': ['show ip ospf neighbor detail',
-                                                                             'show ip ospf interface'],
-                                                                   'tier2': ['show running-config | section router '
-                                                                             'ospf',
+                                                                             'show ospfv3 neighbor detail',
                                                                              'show ip ospf interface',
-                                                                             'show ip ospf neighbor detail | include '
-                                                                             'state'],
+                                                                             'show ospfv3 interface'],
+                                                                   'tier2': ['show running-config | section router ospf',
+                                                                             'show running-config | section router ospfv3',
+                                                                             'show ip ospf interface',
+                                                                             'show ospfv3 interface',
+                                                                             'show ip ospf neighbor detail | include state',
+                                                                             'show ospfv3 neighbor detail | include state'],
                                                                    'tier3': ['debug ip ospf hello',
+                                                                             'debug ospfv3 hello',
                                                                              'show logging | include %OSPF'],
-                                                                   'arch': ['show running-config | section router ospf '
-                                                                            '| match area',
-                                                                            'show running-config | section router ospf '
-                                                                            '| match neighbor']},
+                                                                   'arch': ['show running-config | section router ospf | match area',
+                                                                            'show running-config | section router ospfv3 | match area']},
                                                    'mikrotik': {'tier1': ['/routing ospf neighbor print detail',
+                                                                          '/routing ospf v3 neighbor print detail',
                                                                           '/routing ospf interface print detail'],
                                                                 'tier2': ['/routing ospf instance print',
                                                                           '/routing ospf interface print detail',
@@ -8921,6 +8929,11 @@ def _kb() -> Dict[str, Any]:
 
     from . import config_guides
     base.update(config_guides.CONFIG_GUIDES)
+    
+    # Aplicar enriquecimiento de IPv6
+    from data.ipv6_enrichment import enrich_with_ipv6
+    enrich_with_ipv6(base)
+    
     # Enrich wireshark_tcpdump with missing vendors
     if 'wireshark_tcpdump' in base:
         base['wireshark_tcpdump']['vendors'] = ['juniper', 'cisco_iosxr', 'cisco_iosxe', 'mikrotik', 'fortinet', 'linux']

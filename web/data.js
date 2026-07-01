@@ -1643,7 +1643,8 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show route summary",
                 "show bgp summary",
-                "show route instance summary"
+                "show route instance summary",
+                "show route table <vrf-name>.inet6.0"
               ],
               "tier2": [
                 "show bgp neighbor",
@@ -1662,7 +1663,8 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show bgp all summary",
-                "show vrf all summary"
+                "show vrf all summary",
+                "show ipv6 route vrf <vrf-name>"
               ],
               "tier2": [
                 "show route vrf all",
@@ -1681,7 +1683,8 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip bgp all summary",
-                "show vrf detail"
+                "show vrf detail",
+                "show ipv6 route vrf <vrf-name>"
               ],
               "tier2": [
                 "show ip cef summary",
@@ -1719,7 +1722,8 @@ const NET_TSHOOT_DATA = {
             "fortinet": {
               "tier1": [
                 "get router info bgp summary",
-                "show system vrf"
+                "show system vrf",
+                "get router info6 routing-table vrf <vrf-name>"
               ],
               "tier2": [
                 "get router info routing-table all",
@@ -2819,7 +2823,8 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show route receive-protocol bgp <peer> table bgp.l3vpn.0",
-                "show route advertising-protocol bgp <peer> table bgp.l3vpn.0"
+                "show route advertising-protocol bgp <peer> table bgp.l3vpn.0",
+                "show route table <vrf-name>.inet6.0"
               ],
               "tier2": [
                 "show bgp neighbor <peer> | match prefix",
@@ -2837,7 +2842,8 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show bgp vpnv4 unicast neighbors <peer> routes",
-                "show bgp vpnv4 unicast neighbors <peer> advertised-routes"
+                "show bgp vpnv4 unicast neighbors <peer> advertised-routes",
+                "show ipv6 route vrf <vrf-name>"
               ],
               "tier2": [
                 "show policy-map <name>",
@@ -2856,7 +2862,8 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip bgp vpnv4 all neighbors <peer> routes",
-                "show ip bgp vpnv4 all neighbors <peer> advertised-routes"
+                "show ip bgp vpnv4 all neighbors <peer> advertised-routes",
+                "show ipv6 route vrf <vrf-name>"
               ],
               "tier2": [
                 "show route-map",
@@ -2890,7 +2897,8 @@ const NET_TSHOOT_DATA = {
             "fortinet": {
               "tier1": [
                 "get router info bgp neighbors <peer> advertised-routes",
-                "get router info bgp neighbors <peer> routes"
+                "get router info bgp neighbors <peer> routes",
+                "get router info6 routing-table vrf <vrf-name>"
               ],
               "tier2": [
                 "show router route-map",
@@ -6353,7 +6361,7 @@ const NET_TSHOOT_DATA = {
         "ospf_start": {
           "title": "1. Ámbito del problema OSPF",
           "tier": 1,
-          "body": "**Dónde:** Problemas en vecindades OSPF, base de datos, áreas, redistribución, autenticación, o rendimiento.\n\n**Cómo:** Vecinos caídos, rutas ausentes, alta CPU por SPF recalculaciones, o autenticación fallando.\n\n**Cuándo:** Tras cambios de área, upgrades, o aplicación de nuevas políticas de redistribución.\n\n**Por qué:** Requisitos de adjacency no cumplidos, LSA partitioning, redistribución con loops, o timers/MTU/auth mismatch.\n\n**Para qué:** Clasificar el síntoma para enfocar el troubleshooting en vecindades, database, áreas, policies, o rendimiento.",
+          "body": "**Dónde:** Problemas en vecindades OSPF, base de datos, áreas, redistribución, autenticación, o rendimiento.\n\n**Cómo:** Vecinos caídos, rutas ausentes, alta CPU por SPF recalculaciones, o autenticación fallando.\n\n**Cuándo:** Tras cambios de área, upgrades, o aplicación de nuevas políticas de redistribución.\n\n**Por qué:** Requisitos de adjacency no cumplidos, LSA partitioning, redistribución con loops, o timers/MTU/auth mismatch.\n\n**Para qué:** Clasificar el síntoma para enfocar el troubleshooting en vecindades, database, áreas, policies, o rendimiento.\n\n**Soporte de IPv6 (OSPFv3):** OSPFv3 (RFC 5340) se utiliza para enrutar prefijos IPv6. Se ejecuta sobre enlaces IPv6 usando direcciones Link-Local (fe80::/10) como siguiente salto. El enrutamiento debe estar explícitamente habilitado.",
           "commands": {
             "juniper": {
               "tier1": [
@@ -6541,69 +6549,89 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show ospf neighbor extensive",
-                "show ospf interface detail"
+                "show ospf3 neighbor extensive",
+                "show ospf interface detail",
+                "show ospf3 interface detail"
               ],
               "tier2": [
                 "show configuration protocols ospf | display set",
+                "show configuration protocols ospf3 | display set",
                 "show ospf interface detail",
-                "show ospf neighbor extensive | match state"
+                "show ospf3 interface detail",
+                "show ospf neighbor extensive | match state",
+                "show ospf3 neighbor extensive | match state"
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"ospf\" | no-more",
+                "monitor traffic interface <if> matching \"ospf3\" | no-more",
                 "show log messages | match ospf | last 50"
               ],
               "arch": [
                 "show configuration protocols ospf | display set | match area",
-                "show configuration protocols ospf | display set | match neighbor"
+                "show configuration protocols ospf3 | display set | match area"
               ]
             },
             "cisco_iosxr": {
               "tier1": [
                 "show ospf neighbor detail",
-                "show ospf interface"
+                "show ospfv3 neighbor detail",
+                "show ospf interface",
+                "show ospfv3 interface"
               ],
               "tier2": [
                 "show running-config router ospf",
+                "show running-config router ospfv3",
                 "show ospf interface",
-                "show ospf neighbor detail | include state"
+                "show ospfv3 interface",
+                "show ospf neighbor detail | include state",
+                "show ospfv3 neighbor detail | include state"
               ],
               "tier3": [
                 "debug ospf hello",
+                "debug ospfv3 hello",
                 "show logging | include OSPF"
               ],
               "arch": [
                 "show running-config router ospf | match area",
-                "show running-config router ospf | match neighbor"
+                "show running-config router ospfv3 | match area"
               ]
             },
             "cisco_iosxe": {
               "tier1": [
                 "show ip ospf neighbor detail",
-                "show ip ospf interface"
+                "show ospfv3 neighbor detail",
+                "show ip ospf interface",
+                "show ospfv3 interface"
               ],
               "tier2": [
                 "show running-config | section router ospf",
+                "show running-config | section router ospfv3",
                 "show ip ospf interface",
-                "show ip ospf neighbor detail | include state"
+                "show ospfv3 interface",
+                "show ip ospf neighbor detail | include state",
+                "show ospfv3 neighbor detail | include state"
               ],
               "tier3": [
                 "debug ip ospf hello",
+                "debug ospfv3 hello",
                 "show logging | include %OSPF"
               ],
               "arch": [
                 "show running-config | section router ospf | match area",
-                "show running-config | section router ospf | match neighbor"
+                "show running-config | section router ospfv3 | match area"
               ]
             },
             "mikrotik": {
               "tier1": [
                 "/routing ospf neighbor print detail",
+                "/routing ospf v3 neighbor print detail",
                 "/routing ospf interface print detail"
               ],
               "tier2": [
                 "/routing ospf instance print",
                 "/routing ospf interface print detail",
-                "/routing ospf neighbor print detail"
+                "/routing ospf neighbor print detail",
+                "/routing ospf v3 interface print"
               ],
               "tier3": [
                 "/tool sniffer quick interface=<if> filter-protocol=ospf"
@@ -6615,12 +6643,15 @@ const NET_TSHOOT_DATA = {
             "fortinet": {
               "tier1": [
                 "get router info ospf neighbor detail",
-                "diagnose ip router ospf list"
+                "diagnose ip router ospf list",
+                "get router info6 ospf neighbor detail",
+                "get router info6 ospf interface"
               ],
               "tier2": [
                 "show router ospf",
                 "get router info ospf interface",
-                "get router info ospf neighbor detail"
+                "get router info ospf neighbor detail",
+                "show router ospf6"
               ],
               "tier3": [
                 "diagnose sniffer packet any 'proto 89' 4 0 a",
@@ -6694,13 +6725,14 @@ const NET_TSHOOT_DATA = {
         "ospf_auth": {
           "title": "2.A Autenticación, MTU, Timers y Hello/Dead",
           "tier": 2,
-          "body": "**Dónde:** Configuración de autenticación, MTU, Hello/Dead timers, y network type en interfaces OSPF.\n\n**Cómo:** Vecinos caídos con mensajes de auth error. Vecinos no se descubren. MTU mismatch detectado en logs.\n\n**Cuándo:** Tras aplicar nuevas claves de autenticación, cambiar timers, o migrar de una interface a otra.\n\n**Por qué:** OSPF requiere exactamente los mismos parámetros en ambos extremos: auth type, key, Hello/Dead, MTU, area, stub flag, y network type.\n\n**Para qué:** Verificar que todos los parámetros de interfaz sean simétricos para permitir la formación de adjacencies.",
+          "body": "**Dónde:** Configuración de autenticación, MTU, Hello/Dead timers, y network type en interfaces OSPF.\n\n**Cómo:** Vecinos caídos con mensajes de auth error. Vecinos no se descubren. MTU mismatch detectado en logs.\n\n**Cuándo:** Tras aplicar nuevas claves de autenticación, cambiar timers, o migrar de una interface a otra.\n\n**Por qué:** OSPF requiere exactamente los mismos parámetros en ambos extremos: auth type, key, Hello/Dead, MTU, area, stub flag, y network type.\n\n**Para qué:** Verificar que todos los parámetros de interfaz sean simétricos para permitir la formación de adjacencies.\n\n**Autenticación en OSPFv3 (IPv6):** OSPFv3 no posee mecanismos nativos de autenticación. Depende directamente de IPsec SA (Security Associations) y cabeceras AH/ESP configuradas bajo la interfaz.",
           "commands": {
             "juniper": {
               "tier1": [
                 "show ospf interface extensive | match mtu",
                 "show configuration protocols ospf | display set | match authentication",
-                "show ospf interface extensive | match auth"
+                "show ospf interface extensive | match auth",
+                "show security ipsec security-associations"
               ],
               "tier2": [
                 "show ospf interface extensive | match hello",
@@ -6719,7 +6751,8 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show ospf interface | include MTU",
                 "show running-config router ospf | match authentication",
-                "show ospf interface | include Auth"
+                "show ospf interface | include Auth",
+                "show crypto ipsec sa"
               ],
               "tier2": [
                 "show ospf interface | include Hello",
@@ -6738,7 +6771,8 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show ip ospf interface | include MTU",
                 "show running-config | section router ospf | match authentication",
-                "show ip ospf interface | include Auth"
+                "show ip ospf interface | include Auth",
+                "show crypto ipsec sa"
               ],
               "tier2": [
                 "show ip ospf interface | include Hello",
@@ -6848,7 +6882,8 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show ospf database",
                 "show route protocol ospf",
-                "show ospf route"
+                "show ospf route",
+                "show ospf3 database"
               ],
               "tier2": [
                 "show ospf database extensive | match Type",
@@ -6869,7 +6904,8 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show ospf database",
                 "show route ospf",
-                "show ospf border-routers"
+                "show ospf border-routers",
+                "show ospfv3 database"
               ],
               "tier2": [
                 "show ospf database detail",
@@ -6888,7 +6924,8 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip ospf database",
-                "show ip route ospf"
+                "show ip route ospf",
+                "show ospfv3 database"
               ],
               "tier2": [
                 "show ip ospf database detail",
@@ -6927,7 +6964,8 @@ const NET_TSHOOT_DATA = {
             "fortinet": {
               "tier1": [
                 "get router info ospf database",
-                "get router info routing-table all"
+                "get router info routing-table all",
+                "get router info6 ospf database"
               ],
               "tier2": [
                 "get router info ospf database detail",
@@ -7774,7 +7812,8 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show isis adjacency detail",
-                "show isis interface detail"
+                "show isis interface detail",
+                "show route table inet6.0 protocol isis"
               ],
               "tier2": [
                 "show configuration protocols isis | display set | match authentication",
@@ -7793,7 +7832,8 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show isis neighbors detail",
-                "show isis interface"
+                "show isis interface",
+                "show ipv6 route isis"
               ],
               "tier2": [
                 "show running-config router isis | match authentication",
@@ -7813,7 +7853,8 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show isis neighbors detail",
-                "show isis interface"
+                "show isis interface",
+                "show ipv6 route isis"
               ],
               "tier2": [
                 "show running-config | section router isis | match authentication",
@@ -7930,13 +7971,14 @@ const NET_TSHOOT_DATA = {
         "isis_database": {
           "title": "3. LSP Database y RIB",
           "tier": 2,
-          "body": "**Dónde:** LSP database (IS-IS Link State PDUs) y RIB.\n\n**Cómo:** LSPs faltantes. Rutas IS-IS no en RIB. CSNP/PSNP exchange incompleto.\n\n**Cuándo:** Tras particionamiento de red, o cuando un router no refresca sus LSPs.\n\n**Por qué:** Cada router genera un LSP. Si falta uno, la topología está incompleta. Max-age sin refresh causa purge.\n\n**Para qué:** Asegurar que todos los LSPs estén presentes y que las rutas IS-IS se instalen correctamente.",
+          "body": "**Dónde:** LSP database (IS-IS Link State PDUs) y RIB.\n\n**Cómo:** LSPs faltantes. Rutas IS-IS no en RIB. CSNP/PSNP exchange incompleto.\n\n**Cuándo:** Tras particionamiento de red, o cuando un router no refresca sus LSPs.\n\n**Por qué:** Cada router genera un LSP. Si falta uno, la topología está incompleta. Max-age sin refresh causa purge.\n\n**Para qué:** Asegurar que todos los LSPs estén presentes y que las rutas IS-IS se instalen correctamente.\n\n**Multi-Topology (MT) en IS-IS IPv6:** Asegúrese de que la base de datos de LSPs contenga el TLV 236 (IPv6 Reachability) y el TLV 229 (MT-IS-IS). Sin la configuración de Multi-Topology, IS-IS asume una topología única y el enrutamiento IPv6 fallará si no hay simetría exacta con IPv4.",
           "commands": {
             "juniper": {
               "tier1": [
                 "show isis database",
                 "show isis route",
-                "show route protocol isis"
+                "show route protocol isis",
+                "show isis database extensive | match \"IPv6\""
               ],
               "tier2": [
                 "show isis database detail",
@@ -7955,7 +7997,8 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show isis database",
-                "show isis routes"
+                "show isis routes",
+                "show isis database detail | include IPv6"
               ],
               "tier2": [
                 "show isis database detail",
@@ -7975,7 +8018,8 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show isis database",
-                "show isis routes"
+                "show isis routes",
+                "show isis database detail | include IPv6"
               ],
               "tier2": [
                 "show isis database detail",
@@ -8265,12 +8309,14 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show bgp summary",
-                "show bgp neighbor"
+                "show bgp neighbor",
+                "show bgp neighbor | match \"Address families\""
               ],
               "tier2": [
                 "show bgp neighbor <peer> | match state",
                 "show route protocol bgp",
-                "show bgp group summary"
+                "show bgp group summary",
+                "show route table inet6.0 protocol bgp"
               ],
               "tier3": [
                 "show bgp neighbor <peer> | match prefix",
@@ -8285,12 +8331,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show bgp all summary",
-                "show bgp neighbors"
+                "show bgp neighbors",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show bgp neighbors <peer> | include state",
                 "show route bgp",
-                "show bgp all neighbors"
+                "show bgp all neighbors",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "show bgp neighbors <peer> | include prefix",
@@ -8305,12 +8353,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip bgp all summary",
-                "show ip bgp neighbors"
+                "show ip bgp neighbors",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show ip bgp neighbors <peer> | include BGP state",
                 "show ip route bgp",
-                "show ip bgp all neighbors"
+                "show ip bgp all neighbors",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "show ip bgp neighbors <peer> | include prefix",
@@ -8346,7 +8396,8 @@ const NET_TSHOOT_DATA = {
                 "get router info bgp summary",
                 "get router info bgp neighbors",
                 "show router bgp",
-                "diagnose ip router route list bgp"
+                "diagnose ip router route list bgp",
+                "get router info6 bgp summary"
               ],
               "tier2": [
                 "get router info bgp neighbors <peer>",
@@ -8446,11 +8497,13 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show bgp neighbor <peer>",
                 "show configuration protocols bgp | display set",
-                "show route <peer-ip>"
+                "show route <peer-ip>",
+                "show bgp neighbor | match \"Address families\""
               ],
               "tier2": [
                 "show bgp neighbor <peer> | match state",
-                "show route <peer-ip>"
+                "show route <peer-ip>",
+                "show route table inet6.0 protocol bgp"
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
@@ -8463,11 +8516,13 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show bgp neighbors <peer>",
-                "show running-config router bgp"
+                "show running-config router bgp",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show ip route <peer-ip>",
-                "show bgp neighbors <peer> | include state"
+                "show bgp neighbors <peer> | include state",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug bgp updates",
@@ -8480,11 +8535,13 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip bgp neighbors <peer>",
-                "show running-config | section router bgp"
+                "show running-config | section router bgp",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show ip route <peer-ip>",
-                "show ip bgp neighbors <peer> | include BGP state"
+                "show ip bgp neighbors <peer> | include BGP state",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug ip bgp updates",
@@ -8516,7 +8573,8 @@ const NET_TSHOOT_DATA = {
                 "get router info bgp neighbors <peer>",
                 "get router info bgp summary",
                 "diagnose ip router route lookup <peer-ip>",
-                "diagnose sniffer packet any 'port 179' 4 0 a"
+                "diagnose sniffer packet any 'port 179' 4 0 a",
+                "get router info6 bgp summary"
               ],
               "tier2": [
                 "diagnose ip route list",
@@ -8605,12 +8663,14 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show route receive-protocol bgp <peer>",
                 "show route advertising-protocol bgp <peer>",
-                "show policy <export-policy>"
+                "show policy <export-policy>",
+                "show bgp neighbor | match \"Address families\""
               ],
               "tier2": [
                 "show bgp neighbor <peer> | match prefix",
                 "show route receive-protocol bgp <peer>",
-                "show route advertising-protocol bgp <peer>"
+                "show route advertising-protocol bgp <peer>",
+                "show route table inet6.0 protocol bgp"
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
@@ -8625,12 +8685,14 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show bgp neighbors <peer> routes",
                 "show bgp neighbors <peer> advertised-routes",
-                "show policy-map <name>"
+                "show policy-map <name>",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show bgp neighbors <peer> | include prefix",
                 "show bgp neighbors <peer> routes",
-                "show bgp neighbors <peer> advertised-routes"
+                "show bgp neighbors <peer> advertised-routes",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug bgp updates",
@@ -8644,12 +8706,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip bgp neighbors <peer> routes",
-                "show ip bgp neighbors <peer> advertised-routes"
+                "show ip bgp neighbors <peer> advertised-routes",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show ip bgp neighbors <peer> | include prefix",
                 "show ip bgp neighbors <peer> routes",
-                "show ip bgp neighbors <peer> advertised-routes"
+                "show ip bgp neighbors <peer> advertised-routes",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug ip bgp updates",
@@ -8682,7 +8746,8 @@ const NET_TSHOOT_DATA = {
                 "get router info bgp neighbors <peer> routes",
                 "get router info bgp neighbors <peer> advertised-routes",
                 "diagnose ip router route list bgp",
-                "show router bgp"
+                "show router bgp",
+                "get router info6 bgp summary"
               ],
               "tier2": [
                 "show router route-map",
@@ -8773,13 +8838,15 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show route <prefix> extensive",
-                "show bgp <prefix> detail"
+                "show bgp <prefix> detail",
+                "show bgp neighbor | match \"Address families\""
               ],
               "tier2": [
                 "show route <prefix> | match localpref",
                 "show route <prefix> | match as-path",
                 "show route <prefix> extensive | match localpref",
-                "show route <prefix> extensive | match as-path"
+                "show route <prefix> extensive | match as-path",
+                "show route table inet6.0 protocol bgp"
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
@@ -8792,11 +8859,13 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show bgp <prefix>",
-                "show bgp <prefix> bestpath"
+                "show bgp <prefix> bestpath",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show bgp <prefix> | include localpref",
-                "show bgp <prefix> | include as-path"
+                "show bgp <prefix> | include as-path",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug bgp updates",
@@ -8809,11 +8878,13 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip bgp <prefix>",
-                "show ip bgp <prefix> bestpath"
+                "show ip bgp <prefix> bestpath",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show ip bgp <prefix> | include localpref",
-                "show ip bgp <prefix> | include as-path"
+                "show ip bgp <prefix> | include as-path",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug ip bgp updates",
@@ -8842,7 +8913,8 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "get router info bgp network <prefix>",
                 "get router info routing-table bgp",
-                "diagnose ip router route lookup <prefix>"
+                "diagnose ip router route lookup <prefix>",
+                "get router info6 bgp summary"
               ],
               "tier2": [
                 "show router route-map",
@@ -8928,12 +9000,14 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show bgp <prefix> detail | match originator",
-                "show route advertising-protocol bgp <rr-peer>"
+                "show route advertising-protocol bgp <rr-peer>",
+                "show bgp neighbor | match \"Address families\""
               ],
               "tier2": [
                 "show bgp <prefix> | match cluster",
                 "show bgp <prefix> detail | match cluster",
-                "show bgp <prefix> detail | match originator"
+                "show bgp <prefix> detail | match originator",
+                "show route table inet6.0 protocol bgp"
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
@@ -8946,12 +9020,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show bgp <prefix>",
-                "show bgp neighbors <rr> advertised-routes"
+                "show bgp neighbors <rr> advertised-routes",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show bgp <prefix> | match cluster",
                 "show bgp <prefix> | include cluster",
-                "show bgp <prefix> | include originator"
+                "show bgp <prefix> | include originator",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug bgp updates",
@@ -8964,12 +9040,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip bgp <prefix>",
-                "show ip bgp neighbors <rr> advertised-routes"
+                "show ip bgp neighbors <rr> advertised-routes",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show ip bgp <prefix> | match cluster",
                 "show ip bgp <prefix> | include cluster",
-                "show ip bgp <prefix> | include originator"
+                "show ip bgp <prefix> | include originator",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug ip bgp updates",
@@ -8998,7 +9076,8 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "get router info bgp network <prefix>",
                 "get router info bgp summary",
-                "diagnose ip router route list bgp"
+                "diagnose ip router route list bgp",
+                "get router info6 bgp summary"
               ],
               "tier2": [
                 "show router route-map",
@@ -9080,14 +9159,16 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show policy <name>",
-                "show route community-name <comm>"
+                "show route community-name <comm>",
+                "show bgp neighbor | match \"Address families\""
               ],
               "tier2": [
                 "show route <prefix> | match community",
                 "show route <prefix> | match as-path",
                 "show route <prefix> | match localpref",
                 "show policy <name>",
-                "show route community-name <comm>"
+                "show route community-name <comm>",
+                "show route table inet6.0 protocol bgp"
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
@@ -9102,12 +9183,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show running-config route-policy",
-                "show running-config prefix-set"
+                "show running-config prefix-set",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show route <prefix> | include community",
                 "show route <prefix> | include as-path",
-                "show route <prefix> | include localpref"
+                "show route <prefix> | include localpref",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug bgp updates",
@@ -9121,12 +9204,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show route-map",
-                "show ip community-list"
+                "show ip community-list",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show ip bgp <prefix> | include community",
                 "show ip bgp <prefix> | include as-path",
-                "show ip bgp <prefix> | include localpref"
+                "show ip bgp <prefix> | include localpref",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug ip bgp updates",
@@ -9160,7 +9245,8 @@ const NET_TSHOOT_DATA = {
                 "show router aspath-list",
                 "show router community-list",
                 "show router bgp",
-                "get router info bgp summary"
+                "get router info bgp summary",
+                "get router info6 bgp summary"
               ],
               "tier2": [
                 "get router info bgp neighbors <peer> routes",
@@ -11027,7 +11113,10 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show pim join extensive",
                 "show pim neighbor",
-                "show igmp interface"
+                "show igmp interface",
+                "show mld interface",
+                "show mld groups",
+                "show pim6 neighbors"
               ],
               "tier2": [
                 "show pim route",
@@ -11048,7 +11137,10 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show pim neighbor",
                 "show pim topology",
-                "show igmp interface"
+                "show igmp interface",
+                "show mld interface",
+                "show mld groups",
+                "show pim ipv6 neighbor"
               ],
               "tier2": [
                 "show pim route",
@@ -11069,7 +11161,10 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show ip pim neighbor",
                 "show ip pim interface",
-                "show ip igmp interface"
+                "show ip igmp interface",
+                "show ipv6 mld interface",
+                "show ipv6 mld groups",
+                "show ipv6 pim neighbor"
               ],
               "tier2": [
                 "show ip mroute",
@@ -11222,7 +11317,10 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show igmp groups",
-                "show igmp interface"
+                "show igmp interface",
+                "show mld interface",
+                "show mld groups",
+                "show pim6 neighbors"
               ],
               "tier2": [
                 "show igmp groups detail",
@@ -11242,7 +11340,10 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show igmp groups",
-                "show igmp interface"
+                "show igmp interface",
+                "show mld interface",
+                "show mld groups",
+                "show pim ipv6 neighbor"
               ],
               "tier2": [
                 "show igmp groups detail",
@@ -11262,7 +11363,10 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip igmp groups",
-                "show ip igmp interface"
+                "show ip igmp interface",
+                "show ipv6 mld interface",
+                "show ipv6 mld groups",
+                "show ipv6 pim neighbor"
               ],
               "tier2": [
                 "show ip igmp groups detail",
@@ -11404,7 +11508,10 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show pim neighbor",
                 "show pim join extensive",
-                "show pim route"
+                "show pim route",
+                "show mld interface",
+                "show mld groups",
+                "show pim6 neighbors"
               ],
               "tier2": [
                 "show pim rps",
@@ -11424,7 +11531,10 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show pim neighbor",
                 "show pim topology",
-                "show pim route"
+                "show pim route",
+                "show mld interface",
+                "show mld groups",
+                "show pim ipv6 neighbor"
               ],
               "tier2": [
                 "show pim rp mapping",
@@ -11444,7 +11554,10 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "show ip pim neighbor",
                 "show ip mroute",
-                "show ip pim rp mapping"
+                "show ip pim rp mapping",
+                "show ipv6 mld interface",
+                "show ipv6 mld groups",
+                "show ipv6 pim neighbor"
               ],
               "tier2": [
                 "show ip pim rp mapping",
@@ -11583,7 +11696,10 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show pim rps",
-                "show pim join extensive"
+                "show pim join extensive",
+                "show mld interface",
+                "show mld groups",
+                "show pim6 neighbors"
               ],
               "tier2": [
                 "show pim rp mapping",
@@ -11601,7 +11717,10 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show pim rp mapping",
-                "show pim bsr candidate-rp"
+                "show pim bsr candidate-rp",
+                "show mld interface",
+                "show mld groups",
+                "show pim ipv6 neighbor"
               ],
               "tier2": [
                 "show pim rp mapping detail",
@@ -11620,7 +11739,10 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip pim rp mapping",
-                "show ip pim bsr router"
+                "show ip pim bsr router",
+                "show ipv6 mld interface",
+                "show ipv6 mld groups",
+                "show ipv6 pim neighbor"
               ],
               "tier2": [
                 "show ip pim rp mapping detail",
@@ -11755,7 +11877,10 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show msdp peer",
-                "show msdp sa-cache"
+                "show msdp sa-cache",
+                "show mld interface",
+                "show mld groups",
+                "show pim6 neighbors"
               ],
               "tier2": [
                 "show msdp peer detail",
@@ -11775,7 +11900,10 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show msdp peer",
-                "show msdp sa-cache"
+                "show msdp sa-cache",
+                "show mld interface",
+                "show mld groups",
+                "show pim ipv6 neighbor"
               ],
               "tier2": [
                 "show msdp peer detail",
@@ -11795,7 +11923,10 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip msdp peer",
-                "show ip msdp sa-cache"
+                "show ip msdp sa-cache",
+                "show ipv6 mld interface",
+                "show ipv6 mld groups",
+                "show ipv6 pim neighbor"
               ],
               "tier2": [
                 "show ip msdp peer detail",
@@ -11931,7 +12062,10 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show pim route",
-                "show multicast route"
+                "show multicast route",
+                "show mld interface",
+                "show mld groups",
+                "show pim6 neighbors"
               ],
               "tier2": [
                 "show multicast route detail",
@@ -11951,7 +12085,10 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show pim route",
-                "show mrib route"
+                "show mrib route",
+                "show mld interface",
+                "show mld groups",
+                "show pim ipv6 neighbor"
               ],
               "tier2": [
                 "show mrib route detail",
@@ -11971,7 +12108,10 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip mroute",
-                "show ip mroute count"
+                "show ip mroute count",
+                "show ipv6 mld interface",
+                "show ipv6 mld groups",
+                "show ipv6 pim neighbor"
               ],
               "tier2": [
                 "show ip mroute detail",
@@ -12121,12 +12261,14 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show bgp summary",
-                "show bgp neighbor <peer>"
+                "show bgp neighbor <peer>",
+                "show bgp neighbor | match \"Address families\""
               ],
               "tier2": [
                 "show bgp neighbor <peer> | match Capabilities",
                 "show bgp neighbor <peer>",
-                "show bgp summary"
+                "show bgp summary",
+                "show route table inet6.0 protocol bgp"
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
@@ -12139,12 +12281,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show bgp all summary",
-                "show bgp neighbors <peer>"
+                "show bgp neighbors <peer>",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show bgp neighbors <peer> | include Capabilities",
                 "show bgp all summary",
-                "show bgp neighbors <peer>"
+                "show bgp neighbors <peer>",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug bgp updates",
@@ -12157,12 +12301,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip bgp all summary",
-                "show ip bgp neighbors <peer>"
+                "show ip bgp neighbors <peer>",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show ip bgp neighbors <peer> | include Capabilities",
                 "show ip bgp all summary",
-                "show ip bgp neighbors <peer>"
+                "show ip bgp neighbors <peer>",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug ip bgp updates",
@@ -12189,7 +12335,8 @@ const NET_TSHOOT_DATA = {
             },
             "fortinet": {
               "tier1": [
-                "get router info bgp summary"
+                "get router info bgp summary",
+                "get router info6 bgp summary"
               ],
               "tier2": [
                 "get router info bgp neighbors <peer>",
@@ -12275,12 +12422,14 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show bgp neighbor <peer> | match 'Capabilities'",
-                "show configuration protocols bgp group <group>"
+                "show configuration protocols bgp group <group>",
+                "show bgp neighbor | match \"Address families\""
               ],
               "tier2": [
                 "show bgp neighbor <peer> | match AFI",
                 "show bgp neighbor <peer>",
-                "show bgp summary"
+                "show bgp summary",
+                "show route table inet6.0 protocol bgp"
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
@@ -12293,12 +12442,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show bgp neighbors <peer> | include AF",
-                "show running-config router bgp"
+                "show running-config router bgp",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show bgp neighbors <peer> | include SAFI",
                 "show bgp all summary",
-                "show bgp neighbors <peer>"
+                "show bgp neighbors <peer>",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug bgp updates",
@@ -12311,12 +12462,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip bgp neighbors <peer> | include address-family",
-                "show running-config | section router bgp"
+                "show running-config | section router bgp",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show ip bgp neighbors <peer> | include SAFI",
                 "show ip bgp all summary",
-                "show ip bgp neighbors <peer>"
+                "show ip bgp neighbors <peer>",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug ip bgp updates",
@@ -12343,7 +12496,8 @@ const NET_TSHOOT_DATA = {
             },
             "fortinet": {
               "tier1": [
-                "get router info bgp neighbors <peer>"
+                "get router info bgp neighbors <peer>",
+                "get router info6 bgp summary"
               ],
               "tier2": [
                 "get router info bgp neighbors <peer> | grep AFI",
@@ -12380,12 +12534,14 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show route protocol bgp table inet.3",
-                "show route receive-protocol bgp <peer> table inet.3"
+                "show route receive-protocol bgp <peer> table inet.3",
+                "show bgp neighbor | match \"Address families\""
               ],
               "tier2": [
                 "show route table inet.3 | match label",
                 "show bgp neighbor <peer>",
-                "show bgp summary"
+                "show bgp summary",
+                "show route table inet6.0 protocol bgp"
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
@@ -12399,12 +12555,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show bgp ipv4 labeled-unicast",
-                "show bgp ipv4 labeled-unicast summary"
+                "show bgp ipv4 labeled-unicast summary",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show bgp ipv4 labeled-unicast | include label",
                 "show bgp all summary",
-                "show bgp neighbors <peer>"
+                "show bgp neighbors <peer>",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug bgp labeled-unicast updates",
@@ -12419,12 +12577,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show bgp ipv4 labeled-unicast",
-                "show mpls forwarding-table"
+                "show mpls forwarding-table",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show bgp ipv4 labeled-unicast | include label",
                 "show ip bgp all summary",
-                "show ip bgp neighbors <peer>"
+                "show ip bgp neighbors <peer>",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug bgp labeled-unicast updates",
@@ -12453,7 +12613,8 @@ const NET_TSHOOT_DATA = {
             },
             "fortinet": {
               "tier1": [
-                "get router info bgp network"
+                "get router info bgp network",
+                "get router info6 bgp summary"
               ],
               "tier2": [
                 "get router info bgp network | grep label",
@@ -12494,12 +12655,14 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show route table bgp.l3vpn.0",
-                "show route table bgp.l3vpn-inet6.0"
+                "show route table bgp.l3vpn-inet6.0",
+                "show bgp neighbor | match \"Address families\""
               ],
               "tier2": [
                 "show route table bgp.l3vpn.0 | match RD",
                 "show bgp neighbor <peer>",
-                "show bgp summary"
+                "show bgp summary",
+                "show route table inet6.0 protocol bgp"
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
@@ -12513,12 +12676,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show bgp vpnv4 unicast",
-                "show bgp vpnv6 unicast"
+                "show bgp vpnv6 unicast",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show bgp vpnv4 unicast | include RD",
                 "show bgp all summary",
-                "show bgp neighbors <peer>"
+                "show bgp neighbors <peer>",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug bgp vpnv4 updates",
@@ -12533,12 +12698,14 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip bgp vpnv4 all",
-                "show ip bgp vpnv6 all"
+                "show ip bgp vpnv6 all",
+                "show bgp ipv6 unicast summary"
               ],
               "tier2": [
                 "show ip bgp vpnv4 all | include RD",
                 "show ip bgp all summary",
-                "show ip bgp neighbors <peer>"
+                "show ip bgp neighbors <peer>",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug ip bgp vpnv4 updates",
@@ -12567,7 +12734,8 @@ const NET_TSHOOT_DATA = {
             },
             "fortinet": {
               "tier1": [
-                "get router info bgp network"
+                "get router info bgp network",
+                "get router info6 bgp summary"
               ],
               "tier2": [
                 "get router info bgp network | grep RD",
@@ -12608,12 +12776,14 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show bgp neighbor <peer> | match IPv6",
-                "show route protocol bgp table inet6.0"
+                "show route protocol bgp table inet6.0",
+                "show bgp neighbor | match \"Address families\""
               ],
               "tier2": [
                 "show route table inet6.0 | match next-hop",
                 "show bgp neighbor <peer>",
-                "show bgp summary"
+                "show bgp summary",
+                "show route table inet6.0 protocol bgp"
               ],
               "tier3": [
                 "monitor traffic interface <if> matching \"bgp\" | no-more",
@@ -12632,7 +12802,8 @@ const NET_TSHOOT_DATA = {
               "tier2": [
                 "show bgp ipv6 unicast | include next-hop",
                 "show bgp all summary",
-                "show bgp neighbors <peer>"
+                "show bgp neighbors <peer>",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug bgp ipv6 updates",
@@ -12652,7 +12823,8 @@ const NET_TSHOOT_DATA = {
               "tier2": [
                 "show bgp ipv6 unicast | include next-hop",
                 "show ip bgp all summary",
-                "show ip bgp neighbors <peer>"
+                "show ip bgp neighbors <peer>",
+                "show ipv6 route bgp"
               ],
               "tier3": [
                 "debug bgp ipv6 updates",
@@ -12681,7 +12853,8 @@ const NET_TSHOOT_DATA = {
             },
             "fortinet": {
               "tier1": [
-                "get router info bgp ipv6"
+                "get router info bgp ipv6",
+                "get router info6 bgp summary"
               ],
               "tier2": [
                 "get router info bgp ipv6 | grep next-hop",
@@ -15503,7 +15676,8 @@ const NET_TSHOOT_DATA = {
             "juniper": {
               "tier1": [
                 "show route protocol static",
-                "show route <peer>"
+                "show route <peer>",
+                "show route table inet6.0 protocol static"
               ],
               "tier2": [
                 "show route <peer> detail"
@@ -15518,7 +15692,8 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxe": {
               "tier1": [
                 "show ip route static",
-                "show ip route <peer>"
+                "show ip route <peer>",
+                "show ipv6 route static"
               ],
               "tier2": [
                 "show ip route <peer> longer-prefixes"
@@ -15533,7 +15708,8 @@ const NET_TSHOOT_DATA = {
             "cisco_iosxr": {
               "tier1": [
                 "show route static",
-                "show route ipv4 unicast <peer>"
+                "show route ipv4 unicast <peer>",
+                "show ipv6 route static"
               ],
               "tier2": [
                 "show route ipv4 unicast <peer> detail"
@@ -15563,7 +15739,8 @@ const NET_TSHOOT_DATA = {
             "fortinet": {
               "tier1": [
                 "get router info routing-table static",
-                "get router info routing-table details <peer>"
+                "get router info routing-table details <peer>",
+                "get router info6 routing-table | grep static"
               ],
               "tier2": [
                 "get router info routing-table database | grep <peer>"
@@ -15681,6 +15858,9 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "show route resolved-path"
+              ],
+              "tier1": [
+                "show route table inet6.0 protocol static"
               ]
             },
             "cisco_iosxe": {
@@ -15689,6 +15869,9 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "show ip route <peer> longer-prefixes"
+              ],
+              "tier1": [
+                "show ipv6 route static"
               ]
             },
             "cisco_iosxr": {
@@ -15697,6 +15880,9 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "show route resolution"
+              ],
+              "tier1": [
+                "show ipv6 route static"
               ]
             },
             "mikrotik": {
@@ -15713,6 +15899,9 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "get router info routing-table database | grep <peer>"
+              ],
+              "tier1": [
+                "get router info6 routing-table | grep static"
               ]
             },
             "zone": {
@@ -15759,6 +15948,9 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "show configuration routing-options static"
+              ],
+              "tier1": [
+                "show route table inet6.0 protocol static"
               ]
             },
             "cisco_iosxe": {
@@ -15767,6 +15959,9 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "show track"
+              ],
+              "tier1": [
+                "show ipv6 route static"
               ]
             },
             "cisco_iosxr": {
@@ -15775,6 +15970,9 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "show track"
+              ],
+              "tier1": [
+                "show ipv6 route static"
               ]
             },
             "mikrotik": {
@@ -15791,6 +15989,9 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "get system link-monitor status"
+              ],
+              "tier1": [
+                "get router info6 routing-table | grep static"
               ]
             },
             "zone": {
@@ -15837,6 +16038,9 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show route forwarding-table destination <peer>"
+              ],
+              "tier1": [
+                "show route table inet6.0 protocol static"
               ]
             },
             "cisco_iosxe": {
@@ -15845,6 +16049,9 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show ip cef <peer>"
+              ],
+              "tier1": [
+                "show ipv6 route static"
               ]
             },
             "cisco_iosxr": {
@@ -15853,6 +16060,9 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show cef ipv4 unicast <peer>"
+              ],
+              "tier1": [
+                "show ipv6 route static"
               ]
             },
             "mikrotik": {
@@ -15869,6 +16079,9 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "diagnose ip rtcache list | grep <peer>"
+              ],
+              "tier1": [
+                "get router info6 routing-table | grep static"
               ]
             },
             "zone": {
@@ -15922,13 +16135,14 @@ const NET_TSHOOT_DATA = {
         "static_config_start": {
           "title": "1. Configuración de Ruta Estática Estándar",
           "tier": 1,
-          "body": "**Objetivo:** Configurar una ruta estática simple que apunte a un siguiente salto o interfaz física directamente conectada.\n\n**Detalles clave:**\n- Definir el prefijo destino y su máscara de subred.\n- Especificar la IP del siguiente salto o la interfaz de salida.",
+          "body": "**Objetivo:** Configurar una ruta estática simple que apunte a un siguiente salto o interfaz física directamente conectada.\n\n**Detalles clave:**\n- Definir el prefijo destino y su máscara de subred.\n- Especificar la IP del siguiente salto o la interfaz de salida.\n\n**Equivalente IPv6:**\n- Juniper: `set routing-options static route 2001:db8:100::/64 next-hop 2001:db8:12::2`\n- Cisco IOS-XE: `ipv6 route 2001:db8:100::/64 2001:db8:12::2`\n- Cisco IOS-XR: `router static address-family ipv6 unicast 2001:db8:100::/64 2001:db8:12::2`\n- MikroTik: `/ipv6 route add dst-address=2001:db8:100::/64 gateway=2001:db8:12::2`\n- Fortinet: `config router static6 \n edit 1 \n set dst 2001:db8:100::/64 \n set gateway 2001:db8:12::2 \n next \n end`\n- Linux: `ip -6 route add 2001:db8:100::/64 via 2001:db8:12::2 dev eth0`",
           "commands": {
             "juniper": {
               "tier1": [
                 "configure",
                 "set routing-options static route 192.168.100.0/24 next-hop 10.10.12.2",
-                "commit"
+                "commit",
+                "set routing-options static route 2001:db8:100::/64 next-hop 2001:db8:12::2"
               ],
               "tier2": [
                 "show configuration routing-options static"
@@ -15939,7 +16153,8 @@ const NET_TSHOOT_DATA = {
                 "configure terminal",
                 "ip route 192.168.100.0 255.255.255.0 10.10.12.2",
                 "end",
-                "write memory"
+                "write memory",
+                "ipv6 route 2001:db8:100::/64 2001:db8:12::2"
               ],
               "tier2": [
                 "show running-config | include ip route"
@@ -15951,7 +16166,8 @@ const NET_TSHOOT_DATA = {
                 "router static",
                 "address-family ipv4 unicast",
                 "192.168.100.0/24 10.10.12.2",
-                "commit"
+                "commit",
+                "configure terminal \n router static \n address-family ipv6 unicast \n 2001:db8:100::/64 2001:db8:12::2 \n commit"
               ],
               "tier2": [
                 "show running-config router static"
@@ -15959,7 +16175,8 @@ const NET_TSHOOT_DATA = {
             },
             "mikrotik": {
               "tier1": [
-                "/ip route add dst-address=192.168.100.0/24 gateway=10.10.12.2 comment=\"Ruta estatica estándar\""
+                "/ip route add dst-address=192.168.100.0/24 gateway=10.10.12.2 comment=\"Ruta estatica estándar\"",
+                "/ipv6 route add dst-address=2001:db8:100::/64 gateway=2001:db8:12::2"
               ],
               "tier2": [
                 "/ip route print where comment~\"estatica\""
@@ -15973,7 +16190,8 @@ const NET_TSHOOT_DATA = {
                 "    set gateway 10.10.12.2",
                 "    set device \"<interface>\"",
                 "  next",
-                "end"
+                "end",
+                "config router static6 \n edit 1 \n set dst 2001:db8:100::/64 \n set gateway 2001:db8:12::2 \n next \n end"
               ],
               "tier2": [
                 "show router static"
@@ -15993,7 +16211,8 @@ const NET_TSHOOT_DATA = {
             "linux": {
               "tier1": [
                 "ip route add 192.168.100.0/24 via 10.10.12.2 dev eth0",
-                "ip route show"
+                "ip route show",
+                "ip -6 route add 2001:db8:100::/64 via 2001:db8:12::2 dev eth0"
               ],
               "tier2": [
                 "ip route show | grep 192.168.100",
@@ -28282,7 +28501,9 @@ const NET_TSHOOT_DATA = {
         "fortinet",
         "adtran",
         "ta5k",
-        "zone"
+        "zone",
+        "zte",
+        "huawei"
       ]
     },
     "ipv6_config": {
@@ -28909,7 +29130,8 @@ const NET_TSHOOT_DATA = {
                 "ipv6 address 2001:db8:1:1::1/64",
                 "interface loopback 0",
                 "ipv6 address 2001:db8:1:1::1/128",
-                "write"
+                "write",
+                "configure terminal \n interface gigabit-ethernet 1/1 \n ipv6 dhcp client pd GPON-PD \n interface gigabit-ethernet 1/2 \n ipv6 address GPON-PD ::1/64 \n end"
               ],
               "tier2": [
                 "show ipv6 interface gigabit-ethernet 1/1/1",
@@ -29046,7 +29268,8 @@ const NET_TSHOOT_DATA = {
                 "ipv6 address 2001:db8:1:1::1/64",
                 "interface lo0",
                 "ipv6 address 2001:db8:1:1::1/128",
-                "commit"
+                "commit",
+                "configure terminal \n interface gigabit-ethernet 1/1 \n ipv6 dhcp client pd GPON-PD \n end"
               ],
               "tier2": [
                 "show ipv6 interface ge1/1/1",
@@ -29082,6 +29305,16 @@ const NET_TSHOOT_DATA = {
                 "display ipv6 interface GigabitEthernet1/0/1 verbose",
                 "display logbuffer | include IPV6",
                 "debug ipv6 nd"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "system-view \n ipv6 route-static ::/0 2001:db8::1 \n quit \n save"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "configure terminal \n ipv6 route ::/0 2001:db8::1 \n end"
               ]
             }
           },
@@ -29133,7 +29366,7 @@ const NET_TSHOOT_DATA = {
           "methodology_en": "Bottom-Up Approach (Physical link -> Link-local reachability -> Global Unicast)"
         },
         "ipv6_config_tunnels": {
-          "body": "**6to4:** prefix 2002::/16 derivado de IPv4.\n**GRE:** encapsula IPv6 en GRE sobre IPv4.",
+          "body": "**6to4:** prefix 2002::/16 derivado de IPv4.\n**GRE:** encapsula IPv6 en GRE sobre IPv4.\n\n**Seguridad IPv6 Avanzada (RA Guard e Inspection):**\n- Evite ataques de Man-in-the-Middle y autoconfiguración no autorizada mitigando Router Advertisements falsos.\n- **Cisco IOS-XE RA Guard:**\n  `ipv6 nd raguard policy RAGUARD-POLICY` \n  `interface GigabitEthernet0/1 \n   ipv6 nd raguard attach-policy RAGUARD-POLICY` \n- **Juniper RA Guard:**\n  `set switch-options secure-access-port interface ge-0/0/1.0 ipv6-ra-guard`",
           "choices": [
             {
               "label": "Finalizar",
@@ -29179,7 +29412,8 @@ const NET_TSHOOT_DATA = {
                 "tunnel destination 192.168.1.2",
                 "tunnel mode gre ipv6",
                 "end",
-                "write memory"
+                "write memory",
+                "configure terminal \n ipv6 nd raguard policy RAGUARD \n interface GigabitEthernet0/1 \n ipv6 nd raguard attach-policy RAGUARD \n end"
               ],
               "tier2": [
                 "show interfaces Tunnel0",
@@ -29204,7 +29438,8 @@ const NET_TSHOOT_DATA = {
                 "tunnel source GigabitEthernet0/0/0/0",
                 "tunnel destination 192.168.1.2",
                 "ipv6 address 2001:db8:1:1::1/64",
-                "commit"
+                "commit",
+                "configure \n interface GigabitEthernet0/0/0/0 \n ipv6 nd raguard \n commit"
               ],
               "tier2": [
                 "show interfaces tunnel-ip0",
@@ -29253,7 +29488,8 @@ const NET_TSHOOT_DATA = {
                 "set interfaces tunnel-0 tunnel-destination 192.168.1.2",
                 "set interfaces tunnel-0 tunnel-mode gre",
                 "set interfaces tunnel-0 unit 0 family inet6 address 2001:db8:1:1::1/64",
-                "commit"
+                "commit",
+                "configure \n set switch-options secure-access-port interface ge-0/0/1.0 ipv6-ra-guard \n commit"
               ],
               "tier2": [
                 "show interfaces tunnel-0",
@@ -29356,7 +29592,9 @@ const NET_TSHOOT_DATA = {
         "fortinet",
         "adtran",
         "ta5k",
-        "zone"
+        "zone",
+        "zte",
+        "huawei"
       ]
     },
     "isis_config": {
@@ -58138,29 +58376,35 @@ const NET_TSHOOT_DATA = {
           "show ospf neighbor detail": "Neighbor ID     Pri   State      Dead Time   Address         Interface10.0.0.2        1     FULL/DR    00:00:35    10.10.12.2      Gi0/0/0/010.0.0.3        1     FULL/BDR   00:00:33    10.10.13.3      Gi0/0/0/1",
           "show ospf interface": "Gi0/0/0/0 is up, line protocol is up  Internet Address 10.10.12.1/30, Area 0  Process ID 1, Router ID 10.0.0.1, Network Type BROADCAST, Cost: 1  Transmit Delay is 1 sec, State DR, Priority 1  Designated Router (ID) 10.0.0.1, Interface address 10.10.12.1",
           "show running-config router ospf": "-- Salida simulada para cisco_iosxr:show running-config router ospfEstado: OK / sin anomalías detectadas",
-          "show ospf neighbor detail | include state": "Neighbor ID     Pri   State      Dead Time   Address         Interface10.0.0.2        1     FULL/DR    00:00:35    10.10.12.2      Gi0/0/0/010.0.0.3        1     FULL/BDR   00:00:33    10.10.13.3      Gi0/0/0/1"
+          "show ospf neighbor detail | include state": "Neighbor ID     Pri   State      Dead Time   Address         Interface10.0.0.2        1     FULL/DR    00:00:35    10.10.12.2      Gi0/0/0/010.0.0.3        1     FULL/BDR   00:00:33    10.10.13.3      Gi0/0/0/1",
+          "show ospfv3 neighbor detail": "Neighbor 2.2.2.2, interface GigabitEthernet0/0/0/0\n  Area 0, source address fe80::200:ff:fe00:2\n  Neighbor state is FULL, detail state is flag 0\n  DR is 2.2.2.2, BDR is 1.1.1.1\n  Dead timer due in 00:00:37\n"
         },
         "cisco_iosxe": {
           "show ip ospf neighbor detail": "Neighbor ID     Pri   State      Dead Time   Address         Interface10.0.0.2          1   FULL/DR    00:00:35    10.10.12.2      GigabitEthernet110.0.0.3          1   FULL/BDR   00:00:33    10.10.13.3      GigabitEthernet2",
           "show ip ospf interface": "GigabitEthernet1 is up, line protocol is up  Internet Address 10.10.12.1/30, Area 0  Process ID 1, Router ID 10.0.0.1, Network Type BROADCAST, Cost: 1  Transmit Delay is 1 sec, State DR, Priority 1",
           "show running-config | section router ospf": "-- Salida simulada para cisco_iosxe:show running-config | section router ospfEstado: OK / sin anomalías detectadas",
-          "show ip ospf neighbor detail | include state": "Neighbor ID     Pri   State      Dead Time   Address         Interface10.0.0.2          1   FULL/DR    00:00:35    10.10.12.2      GigabitEthernet110.0.0.3          1   FULL/BDR   00:00:33    10.10.13.3      GigabitEthernet2"
+          "show ip ospf neighbor detail | include state": "Neighbor ID     Pri   State      Dead Time   Address         Interface10.0.0.2          1   FULL/DR    00:00:35    10.10.12.2      GigabitEthernet110.0.0.3          1   FULL/BDR   00:00:33    10.10.13.3      GigabitEthernet2",
+          "show ospfv3 neighbor detail": "Neighbor 2.2.2.2, interface GigabitEthernet0/1\n  Area 0, source address fe80::200:ff:fe00:2\n  Neighbor state is FULL, detail state is flag 0\n  DR is 2.2.2.2, BDR is 1.1.1.1\n  Dead timer due in 00:00:36\n"
         },
         "fortinet": {
           "get router info ospf neighbor detail": "OSPF process 0, VRF 0:NeighborsID              Pri   State     Dead Time Address        Interface10.0.0.2        128   Full/DR   00:00:35  10.10.12.2     port110.0.0.3        128   Full/BDR  00:00:33  10.10.13.3     port2",
           "show router ospf": "-- Salida simulada para fortinet:show router ospfEstado: OK / sin anomalías detectadas",
-          "get router info ospf interface": "port1 (10.10.12.1/255.255.255.252)  Type: Broadcast  State: DR  Cost: 1  Priority: 128"
+          "get router info ospf interface": "port1 (10.10.12.1/255.255.255.252)  Type: Broadcast  State: DR  Cost: 1  Priority: 128",
+          "get router info6 ospf neighbor detail": "Neighbor 2.2.2.2, interface port1\n  Area: 0.0.0.0, Address: fe80::200:ff:fe00:2\n  State: Full, Priority: 1\n  DR: 2.2.2.2, BDR: 1.1.1.1\n  Up: 04:32:10, Dead: 36\n"
         },
         "mikrotik": {
           "/routing ospf neighbor print detail": " #   INSTANCE  ROUTER-ID   ADDRESS       STATE     PRIORITY 0   default   10.0.0.2    10.10.12.2    Full      128 1   default   10.0.0.3    10.10.13.3    Full      128",
           "/routing ospf interface print detail": " #   INTERFACE   STATE     NETWORK-TYPE  COST  PRIORITY 0   ether1      running   broadcast     10    128 1   ether2      running   broadcast     10    128",
-          "/routing ospf instance print": "-- Salida simulada para mikrotik:/routing ospf instance printEstado: OK / sin anomalías detectadas"
+          "/routing ospf instance print": "-- Salida simulada para mikrotik:/routing ospf instance printEstado: OK / sin anomalías detectadas",
+          "/routing ospf v3 neighbor print detail": "instance=default-v3 area=backbone interface=ether1 router-id=2.2.2.2 state=Full address=fe80::200:ff:fe00:2 priority=1 dr=2.2.2.2 bdr=1.1.1.1 adjacency=04:32:10\n"
         },
         "juniper": {
           "show ospf neighbor extensive": "Address          Interface              State     ID               Pri  Dead10.10.12.2       ge-0/0/0.0             Full      10.0.0.2         128    3510.10.13.3       ge-0/0/1.0             Full      10.0.0.3         128    35",
           "show ospf interface detail": "Interface     State   Area            DR ID          BDR ID         Nbrsge-0/0/0.0    DR      0.0.0.0         10.0.0.1       10.0.0.2       1ge-0/0/1.0    BDR     0.0.0.0         10.0.0.3       10.0.0.1       1",
           "show configuration protocols ospf | display set": "-- Salida simulada para juniper:show configuration protocols ospf | display setEstado: OK / sin anomalías detectadas",
-          "show ospf neighbor extensive | match state": "Address          Interface              State     ID               Pri  Dead10.10.12.2       ge-0/0/0.0             Full      10.0.0.2         128    3510.10.13.3       ge-0/0/1.0             Full      10.0.0.3         128    35"
+          "show ospf neighbor extensive | match state": "Address          Interface              State     ID               Pri  Dead10.10.12.2       ge-0/0/0.0             Full      10.0.0.2         128    3510.10.13.3       ge-0/0/1.0             Full      10.0.0.3         128    35",
+          "show ospf3 neighbor extensive": "Neighbor 2.2.2.2, Interface ge-0/0/1.0\n  Area 0.0.0.0, Lnk-Lcl Addr fe80::200:ff:fe00:2\n  State Full, Prior 128, Val 4\n  DR 2.2.2.2, BDR 1.1.1.1\n  Up 04:32:10, Dead 35\n",
+          "show ospf3 interface detail": "Interface ge-0/0/1.0 (fe80::100:ff:fe00:1)\n  Area 0.0.0.0, Status DR, Prior 128\n  Type P2P, State Up\n"
         }
       }
     },
@@ -60732,7 +60976,8 @@ const NET_TSHOOT_DATA = {
           "show ip bgp all summary": "-- Salida simulada para cisco_iosxe:show ip bgp all summaryEstado: OK / sin anomalías detectadas",
           "show vrf detail": "-- Salida simulada para cisco_iosxe:show vrf detailEstado: OK / sin anomalías detectadas",
           "show ip cef summary": "10.0.0.2/32  nexthop 10.10.12.2 GigabitEthernet1 label 1710.0.0.3/32  nexthop 10.10.12.2 GigabitEthernet1 label 18",
-          "show ip route summary": "Routing entry for 10.0.0.2/32  Known via \"ospf 1\", distance 110, metric 2  Tag 0, type intra area    10.10.12.2, via GigabitEthernet1"
+          "show ip route summary": "Routing entry for 10.0.0.2/32  Known via \"ospf 1\", distance 110, metric 2  Tag 0, type intra area    10.10.12.2, via GigabitEthernet1",
+          "show ipv6 route vrf <vrf-name>": "Routing Table: VRF-A\nIPv6 Routing Table - 1 entries\nB    2001:db8:100::/64 [200/0]\n     via 2001:db8:1::2 (next-hop in vrf default)\n"
         },
         "fortinet": {
           "get router info bgp summary": "BGP router identifier 10.0.0.1, local AS number 65001Neighbor        V         AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd10.0.0.4        4      65001    1240    1241       12    0    0 02:14:55        4",
@@ -60750,7 +60995,8 @@ const NET_TSHOOT_DATA = {
           "show route summary": "-- Salida simulada para juniper:show route summaryEstado: OK / sin anomalías detectadas",
           "show bgp summary": "Groups: 1 Peers: 2 Down peers: 0Peer                     AS      InPkt     OutPkt    OutQ   Flaps Last Up/Dwn State|#Active/Received/Accepted/Damped10.0.0.4              65001     1240      1241       0       0    02:14:55 Establ10.0.0.5              65001     1238      1239       0       0    02:14:50 Establ",
           "show route instance summary": "VRF-CUST-A instance:  Router ID: 192.168.1.1  Type: vrf  Interfaces: ge-0/0/2.100  Route-distinguisher: 65001:100  Vrf-import: [ CUST-A-IMPORT ]  Vrf-export: [ CUST-A-EXPORT ]",
-          "show bgp neighbor": "Peer: 10.0.0.4 AS 65001 Local: 10.0.0.1 AS 65001  Type: Internal    State: Established    Flags: <>  Last State: OpenConfirm   Last Event: RecvKeepAlive  Options: <Multihop Preference LocalAddress AddressFamily Rib-group Refresh>  Address families configured: inet-vpn-unicast"
+          "show bgp neighbor": "Peer: 10.0.0.4 AS 65001 Local: 10.0.0.1 AS 65001  Type: Internal    State: Established    Flags: <>  Last State: OpenConfirm   Last Event: RecvKeepAlive  Options: <Multihop Preference LocalAddress AddressFamily Rib-group Refresh>  Address families configured: inet-vpn-unicast",
+          "show route table <vrf-name>.inet6.0": "VRF-A.inet6.0: 1 destinations, 1 routes (1 active)\n2001:db8:100::/64  *[BGP/170] 04:32:10, localpref 100\n                    > to fe80::200:ff:fe00:2 via ge-0/0/1.0, Push 16002\n"
         }
       }
     },
@@ -61479,11 +61725,13 @@ const NET_TSHOOT_DATA = {
       "bgp_start": {
         "cisco_iosxr": {
           "show bgp summary": "BGP router identifier 10.0.0.1, local AS number 65001BGP table version is 1, main routing table version 1Neighbor        Spk    AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd<peer>            0 65002       0       0        0    0    0 00:15:30 Active",
-          "show bgp neighbors": "BGP neighbor is <peer>, remote AS 65002, external link  BGP version 4, remote router ID 0.0.0.0  BGP state = Active (Transitioning)  Last read 00:00:00, last write 00:00:00  Hold time is 180, keepalive interval is 60 seconds  No active TCP connection"
+          "show bgp neighbors": "BGP neighbor is <peer>, remote AS 65002, external link  BGP version 4, remote router ID 0.0.0.0  BGP state = Active (Transitioning)  Last read 00:00:00, last write 00:00:00  Hold time is 180, keepalive interval is 60 seconds  No active TCP connection",
+          "show bgp ipv6 unicast summary": "BGP router identifier 1.1.1.1, local AS number 65000\nBGP table version is 12\nNeighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd\n2001:db8:1::2   4        65000     250     251       12    0    0 04:32:10        4\n"
         },
         "cisco_iosxe": {
           "show ip bgp summary": "BGP router identifier 10.0.0.1, local AS number 65001BGP table version is 1, main routing table version 1Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd<peer>          4        65002       0       0        0    0    0 00:10:45 Active",
-          "show ip bgp neighbors": "BGP neighbor is <peer>, remote AS 65002, external link  BGP version 4, remote router ID 0.0.0.0  BGP state = Active  Last read never, last write never  Hold time is 180, keepalive interval is 60 seconds  No active TCP connection"
+          "show ip bgp neighbors": "BGP neighbor is <peer>, remote AS 65002, external link  BGP version 4, remote router ID 0.0.0.0  BGP state = Active  Last read never, last write never  Hold time is 180, keepalive interval is 60 seconds  No active TCP connection",
+          "show bgp ipv6 unicast summary": "BGP router identifier 1.1.1.1, local AS number 65000\nBGP table version is 12\nNeighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd\n2001:db8:1::2   4        65000     250     251       12    0    0 04:32:10        4\n"
         },
         "fortinet": {
           "get router info bgp summary": "BGP adverting/routing table version is 1Local AS is 65001, Local Router ID is 10.0.0.1Neighbor        V         AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd<peer>          4      65002       0       0        0    0    0 00:08:23 Active",
@@ -63845,6 +64093,16 @@ const NET_TSHOOT_DATA = {
           "/tool sniffer packet print detail": "# 0  time=16:42:05.102 interface=ether1 protocol=arp src-mac=00:50:56:aa:bb:cc dst-mac=00:50:56:cc:dd:ee src-address=10.10.12.1 dst-address=10.10.12.2\n# 1  time=16:42:05.102 interface=ether1 protocol=arp src-mac=00:50:56:cc:dd:ee dst-mac=00:50:56:aa:bb:cc src-address=10.10.12.2 dst-address=10.10.12.1\n# 2  time=16:42:05.103 interface=ether1 protocol=icmp src-mac=00:50:56:aa:bb:cc dst-mac=00:50:56:cc:dd:ee src-address=10.10.12.1 dst-address=10.10.12.2 bytes=98\n# 3  time=16:42:05.103 interface=ether1 protocol=icmp src-mac=00:50:56:cc:dd:ee dst-mac=00:50:56:aa:bb:cc src-address=10.10.12.2 dst-address=10.10.12.1 bytes=98\n",
           "/tool sniffer packet print where protocol=tcp": "# 0  time=16:42:05.102 interface=ether1 protocol=tcp src-mac=00:50:56:aa:bb:cc dst-mac=00:50:56:cc:dd:ee src-address=10.10.50.1:45230 dst-address=10.10.50.2:80 bytes=64 flags=syn\n# 1  time=16:42:05.102 interface=ether1 protocol=tcp src-mac=00:50:56:cc:dd:ee dst-mac=00:50:56:aa:bb:cc src-address=10.10.50.2:80 dst-address=10.10.50.1:45230 bytes=64 flags=syn-ack\n",
           "/log print where topics~\"sniffer\"": "16:42:05 sniffer,info tool sniffer started\n16:42:17 sniffer,info tool sniffer stopped, 13 packets\n"
+        }
+      }
+    },
+    "mpbgp": {
+      "mpbgp_start": {
+        "cisco_iosxe": {
+          "show bgp ipv6 unicast summary": "BGP router identifier 1.1.1.1, local AS number 65000\nBGP table version is 12\nNeighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd\n2001:db8:1::2   4        65000     250     251       12    0    0 04:32:10        4\n"
+        },
+        "cisco_iosxr": {
+          "show bgp ipv6 unicast summary": "BGP router identifier 1.1.1.1, local AS number 65000\nBGP table version is 12\nNeighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd\n2001:db8:1::2   4        65000     250     251       12    0    0 04:32:10        4\n"
         }
       }
     }
