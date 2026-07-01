@@ -34,7 +34,77 @@ def enrich_with_ipv6(base: Dict[str, Any]):
                     base[tech_key]['vendors'].append(v)
 
     # ==========================================================================
-    # 1. OSPFv3 ENRICHMENT (Nivel CCIE/JNCIE)
+    # A. TROUBLESHOOTING IPv6 (NIVEL CCIE/JNCIE Y MODELOS OSI / TCP-IP)
+    # ==========================================================================
+    if 'ipv6' in base:
+        tech = base['ipv6']
+        steps = tech.get('steps', {})
+
+        # Paso 1: Conectividad y Mapeo OSI/TCP-IP de ICMPv6
+        if 'ipv6_ts_start' in steps:
+            steps['ipv6_ts_start']['title'] = "1. Conectividad IPv6, NDP e ICMPv6 en el Modelo OSI/TCP-IP"
+            steps['ipv6_ts_start']['body'] = (
+                "**Objetivo:** Verificar la conectividad local y la resolución de direcciones de Capa 2/3 (NDP) mediante mensajes ICMPv6.\n\n"
+                "### Mapeo de ICMPv6 en el Modelo OSI y TCP/IP\n"
+                "ICMPv6 (IPv6 Protocolo 58) opera en la **Capa 3 (Red) del modelo OSI** y en la **Capa de Internet del modelo TCP/IP**.\n"
+                "Para que IPv6 sea funcional, un firewall o ACL **NO debe bloquear todos los mensajes ICMPv6**. Los siguientes mensajes son vitales y deben permitirse:\n\n"
+                "| Mensaje ICMPv6 | Tipo | Capa OSI | Capa TCP/IP | Función Crítica / Impacto si se bloquea |\n"
+                "| :--- | :---: | :---: | :---: | :--- |\n"
+                "| **Router Solicitation (RS)** | 133 | 3 | Internet | Enviado por hosts para solicitar anuncios RA. Rompe SLAAC rápido. |\n"
+                "| **Router Advertisement (RA)** | 134 | 3 | Internet | Enviado por routers para anunciar prefijos y flags (M/O/A). Rompe direccionamiento. |\n"
+                "| **Neighbor Solicitation (NS)** | 135 | 3 | Internet | Equivalente a ARP Request (Capa 3). Rompe resolución de MAC (NDP) y DAD. |\n"
+                "| **Neighbor Advertisement (NA)** | 136 | 3 | Internet | Equivalente a ARP Reply. Rompe resolución de MAC (NDP) y DAD. |\n"
+                "| **Packet Too Big (PTB)** | 2 | 3 | Internet | **Crítico para Path MTU Discovery (PMTUD).** Si se filtra, conexiones TCP grandes (ej. HTTP/data) se congelan. |\n"
+                "| **Destination Unreachable** | 1 | 3 | Internet | Informa errores de ruta. |\n"
+                "| **Time Exceeded** | 3 | 3 | Internet | Hop limit = 0. Rompe Traceroute. |\n"
+                "| **Echo Request/Reply** | 128/129 | 3 | Internet | Herramienta Ping de diagnóstico. |\n\n"
+                "### Neighbor Discovery Protocol (NDP - RFC 4861)\n"
+                "Reemplaza a ARP. Los estados del NDP Cache son:\n"
+                "- **INCOMPLETE:** Solicitation (NS) enviada, esperando respuesta (NA).\n"
+                "- **REACHABLE:** Dirección MAC resuelta y confirmada de forma bidireccional.\n"
+                "- **STALE:** Tiempo de alcanzabilidad expirado. Se puede enviar tráfico pero se debe re-confirmar.\n"
+                "- **DELAY / PROBE:** Confirmando alcanzabilidad activa enviando NS unicast de forma periódica."
+            )
+
+        # Paso 2: Diferencias de IPv6 en Protocolos de Enrutamiento (RIPng, EIGRPv6, OSPFv3, ISIS MT, MP-BGP)
+        if 'ipv6_ts_routing' in steps:
+            steps['ipv6_ts_routing']['title'] = "2. Diferencias en Protocolos de Enrutamiento IPv6 (Routing)"
+            steps['ipv6_ts_routing']['body'] = (
+                "**Objetivo:** Validar el intercambio de rutas dinámicas IPv6 en escenarios multi-vendor.\n\n"
+                "### Comparativa de Protocolos: IPv4 vs. IPv6 (Diferencias Clave)\n\n"
+                "| Protocolo | Versión IPv4 | Versión IPv6 (RFC) | Dirección Multicast | Diferencias Clave de Enrutamiento |\n"
+                "| :--- | :--- | :--- | :---: | :--- |\n"
+                "| **RIP** | RIPv2 | **RIPng (RFC 2080)** | `FF02::9` | Opera sobre puerto UDP 521 (vs 520). El Next-Hop se anuncia como la dirección link-local (`fe80::`). |\n"
+                "| **EIGRP** | EIGRP v4 | **EIGRPv6** | `FF02::A` | Se ejecuta directo sobre protocolo 88. Habilitado en la interfaz. **Requiere configurar Router ID manual de 32-bits** si no hay IPv4 activo en el equipo. |\n"
+                "| **OSPF** | OSPFv2 | **OSPFv3 (RFC 5340)** | `FF02::5` / `FF02::6` | Habilitado por interfaz (no `network`). Sesión sobre link-local. Prefijos retirados de LSA Tipo 1/2 y migrados a **LSA Tipo 8 (Link)** y **Tipo 9 (Intra-Area)**. Soporta Multi-Instance. |\n"
+                "| **IS-IS** | IS-IS | **IS-IS IPv6 (RFC 5120)** | L2 Multicast (Macs) | Requiere activar **Multi-Topology (MT)** para evitar asimetrías de enlaces IPv4/IPv6. Intercambia prefijos en **TLV 236** (IPv6) y **TLV 229** (MT). |\n"
+                "| **BGP** | BGP-4 | **MP-BGP (RFC 4760)** | Peer Unicast | Soporta múltiples familias de direcciones (**AFI 2 = IPv6**, **SAFI 1 = Unicast**, **SAFI 128 = VPNv6**). Cuidado con Next-Hop mapeados a IPv4 (RFC 2545). |\n"
+                "| **MPLS** | LDP/RSVP | **6PE / 6VPE (RFC 4798/4659)** | Core IPv4 | **6PE:** Transporta IPv6 sobre Core MPLS IPv4 usando BGP Label (SAFI 4). **6VPE:** VPNs IPv6 multi-VRF sobre MPLS IPv4 (AFI 2, SAFI 128). |\n\n"
+                "### Troubleshooting de Next-Hop en MP-BGP (RFC 2545)\n"
+                "Si el peer BGP se establece sobre IPv4, BGP intentará enviar un Next-Hop IPv4 mapeado a IPv6 (ej: `::ffff:10.1.1.1`). La tabla de enrutamiento IPv6 no lo resolverá, dejando las rutas como **Hidden** o **Invalid**.\n"
+                "**Solución:** Aplicar una política para reescribir el Next-Hop usando la dirección link-local del router remoto o habilitar Extended Next-Hop Encoding (RFC 8950)."
+            )
+
+        # Paso 3: DHCPv6 (Con/Sin Estado), SLAAC, RDNSS y Diseño de Intranets ULA
+        if 'ipv6_ts_auto' in steps:
+            steps['ipv6_ts_auto']['title'] = "3. Configuración de Intranets, SLAAC, DHCPv6 (Con/Sin Estado) y DNS"
+            steps['ipv6_ts_auto']['body'] = (
+                "**Objetivo:** Diagnosticar la autoconfiguración de direcciones, asignación de DNS y direccionamiento privado en Intranets.\n\n"
+                "### DHCPv6 Stateful vs. Stateless y Autoconfiguración\n"
+                "Los hosts obtienen direccionamiento IP y DNS basado en las banderas (flags) del Router Advertisement (RA) enviado por el gateway:\n\n"
+                "- **SLAAC Puro (M=0, O=0):** El host autoconfigura su IPv6 usando el prefijo RA (A-Flag=1) vía EUI-64 o privacidad (RFC 4941). **No hay asignación de DNS** a menos que se configure **RFC 8106 (RDNSS/DNSSL)** en el router para anunciar los DNS directamente en el RA.\n"
+                "- **DHCPv6 Stateless / Sin Estado (M=0, O=1):** El host configura su IP por SLAAC (A-flag=1), pero realiza una solicitud a la IP multicast `ff02::1:2` para pedir los servidores DNS y dominio de búsqueda al servidor DHCPv6 (Option 23 - DNS, Option 24 - Domain List).\n"
+                "- **DHCPv6 Stateful / Con Estado (M=1, O=1):** El host desactiva la autoconfiguración local. Envía un mensaje `Solicit` a `ff02::1:2` para pedir una dirección IPv6 (Option 3 - IA_NA) y DNS del servidor DHCPv6, el cual lleva un registro de estado (lease) en su base de datos.\n\n"
+                "### Configuración de Direccionamiento IPv6 en Intranets (ULA - RFC 4193)\n"
+                "Para intranets aisladas o privadas, no se debe usar direccionamiento IPv4 privado traducido. Se debe utilizar **Unique Local Addresses (ULA - RFC 4193)**:\n\n"
+                "- **Bloque ULA:** `fc00::/7` (en la práctica se usa `fd00::/8` para asignaciones locales).\n"
+                "- **Global ID (40 bits aleatorios):** Se debe generar un prefijo aleatorio para evitar colisiones en futuras fusiones (ej: `fd4a:5e6c:8b2a::/48`).\n"
+                "- **Subnetting LAN (/64):** El prefijo `/48` permite $65,536$ subnets `/64` locales.\n"
+                "- **Configuración DNS local:** Los servidores DNS locales deben configurarse con registros **AAAA** para resolución de nombres interna, y anunciarse a las LANs usando RDNSS (en el router) o DHCPv6 Stateless."
+            )
+
+    # ==========================================================================
+    # B. OSPF / OSPFv3 ENRICHMENT (Nivel CCIE/JNCIE)
     # ==========================================================================
     if 'ospf' in base:
         tech = base['ospf']
@@ -53,7 +123,7 @@ def enrich_with_ipv6(base: Dict[str, Any]):
                 'y sus prefijos asociados) e **Intra-Area-Prefix LSA (Type 9)** (lleva las subredes asociadas a los routers o redes del área).'
             )
             
-        # Paso 2: OSPF Neighbors
+        # Paso 2: OSPF Neighbors (Adyacencias)
         if 'ospf_neighbor' in steps:
             cmds = steps['ospf_neighbor'].get('commands', {})
             # Juniper OSPFv3
@@ -119,7 +189,7 @@ def enrich_with_ipv6(base: Dict[str, Any]):
             add_cmd(cmds, 'fortinet', 'tier1', 'get router info6 ospf database')
 
     # ==========================================================================
-    # 2. IS-IS MULTI-TOPOLOGY IPv6 ENRICHMENT
+    # C. IS-IS MULTI-TOPOLOGY IPv6 ENRICHMENT
     # ==========================================================================
     if 'isis' in base:
         tech = base['isis']
@@ -130,7 +200,7 @@ def enrich_with_ipv6(base: Dict[str, Any]):
             steps['isis_database']['body'] += (
                 '\n\n**Single-Topology vs. Multi-Topology en IS-IS:**\n'
                 '- **Single-Topology (Default):** Asume que IPv4 e IPv6 comparten exactamente los mismos enlaces, interfaces y métricas. '
-                'Si un enlace no tiene configurado IPv6, pero sí IPv4, la SPF de IPv6 fallará de todas formas, enviando tráfico por agujeros negros.\n'
+                'Si un enlace no tiene configurado IPv6, pero sí IPv4, la SPF de IPv6 fallará de todas forman, enviando tráfico por agujeros negros.\n'
                 '- **Multi-Topology (MT) (RFC 5120):** Permite ejecutar árboles SPF completamente separados para IPv4 e IPv6. '
                 'Es la práctica estándar en redes de producción para evitar caídas de tráfico. Verifique la activación de la capability '
                 'Multi-Topology y compruebe los LSPs buscando el **TLV 229 (MT-IS-IS)** y el **TLV 236 (IPv6 Reachability)**.'
@@ -156,7 +226,7 @@ def enrich_with_ipv6(base: Dict[str, Any]):
             add_cmd(cmds, 'cisco_iosxr', 'tier1', 'show ipv6 route isis')
 
     # ==========================================================================
-    # 3. BGP / MP-BGP IPv6 & NEXT-HOP RESOLUTION (RFC 2545 / RFC 8950)
+    # D. BGP / MP-BGP IPv6 & NEXT-HOP RESOLUTION
     # ==========================================================================
     for bgp_key in ('bgp', 'mpbgp'):
         if bgp_key in base:
@@ -189,7 +259,7 @@ def enrich_with_ipv6(base: Dict[str, Any]):
                 add_cmd(cmds, 'fortinet', 'tier1', 'get router info6 bgp summary')
 
     # ==========================================================================
-    # 4. L3VPN (6VPE) ENRICHMENT (Nivel Service Provider)
+    # E. L3VPN (6VPE) ENRICHMENT
     # ==========================================================================
     if 'l3vpn' in base:
         tech = base['l3vpn']
@@ -217,7 +287,7 @@ def enrich_with_ipv6(base: Dict[str, Any]):
                 add_cmd(cmds, 'fortinet', 'tier1', 'get router info6 routing-table vrf <vrf-name>')
 
     # ==========================================================================
-    # 5. STATIC ROUTING IPv6 ENRICHMENT
+    # F. STATIC ROUTING IPv6 ENRICHMENT
     # ==========================================================================
     if 'static' in base:
         tech = base['static']
@@ -257,7 +327,7 @@ def enrich_with_ipv6(base: Dict[str, Any]):
             add_cmd(cmds, 'linux', 'tier1', 'ip -6 route add 2001:db8:100::/64 via 2001:db8:12::2 dev eth0')
 
     # ==========================================================================
-    # 6. MULTICAST IPv6 (MLD / PIMv6)
+    # G. MULTICAST IPv6 (MLD / PIMv6)
     # ==========================================================================
     if 'multicast' in base:
         tech = base['multicast']
@@ -285,38 +355,8 @@ def enrich_with_ipv6(base: Dict[str, Any]):
             add_cmd(cmds, 'cisco_iosxr', 'tier1', 'show pim ipv6 neighbor')
 
     # ==========================================================================
-    # 7. NATIVE IPv6, SLAAC, DHCPv6 & SECURITY (RA Guard, ND Snooping)
+    # H. NATIVE IPv6 CONFIGURATION & SECURITY (RA Guard, ND Snooping)
     # ==========================================================================
-    if 'ipv6' in base:
-        tech = base['ipv6']
-        steps = tech.get('steps', {})
-        
-        # Paso 1: Conectividad y NDP
-        if 'ipv6_ts_start' in steps:
-            steps['ipv6_ts_start']['body'] += (
-                '\n\n**Neighbor Discovery Protocol (NDP) (RFC 4861):**\n'
-                '- NDP reemplaza a ARP en IPv6. Utiliza mensajes ICMPv6: **Neighbor Solicitation (NS - Tipo 135)** '
-                'y **Neighbor Advertisement (NA - Tipo 136)** para resolución de direcciones MAC.\n'
-                '- **Dirección Multicast de Nodo Solicitado (Solicited-Node Multicast):** Para evitar broadcast, '
-                'los mensajes NS se envían a una dirección de nodo solicitado formada por el prefijo `ff02::1:ff00:0/104` '
-                'unido a los últimos 24 bits de la dirección IPv6 del host destino. Si un switch bloquea multicast local, '
-                'la resolución de direcciones NDP fallará y no habrá conectividad.'
-            )
-            
-        # Paso 2: DHCPv6 y SLAAC (M & O Flags)
-        # Vamos a buscar si existe un paso de NDP/SLAAC y añadir explicaciones de flags de Router Advertisement (RA)
-        for skey, step in steps.items():
-            if 'ndp' in skey or 'routing' in skey:
-                step['body'] += (
-                    '\n\n**Banderas (Flags) en Router Advertisements (RA):**\n'
-                    'Los routers controlan cómo los hosts obtienen direccionamiento IPv6 mediante RAs:\n'
-                    '- **M-Flag (Managed Address Configuration - bit 1):** Si M=1, los hosts deben obtener su IP mediante un servidor DHCPv6 Stateful.\n'
-                    '- **O-Flag (Other Configuration - bit 2):** Si O=1, los hosts pueden configurar su IP por SLAAC (M=0) pero obtienen DNS y dominio '
-                    'desde un servidor DHCPv6 Stateless.\n'
-                    '- **A-Flag (Autonomous Address Autoconfiguration):** Configurado bajo el TLV de prefijo de RA. Si A=1 (por defecto), '
-                    'el host usará SLAAC para auto-configurar su IP con ese prefijo.'
-                )
-
     if 'ipv6_config' in base:
         tech = base['ipv6_config']
         steps = tech.get('steps', {})
@@ -354,7 +394,7 @@ def enrich_with_ipv6(base: Dict[str, Any]):
                 add_cmd(cmds, 'zte', 'tier1', 'configure terminal \n ipv6 route ::/0 2001:db8::1 \n end')
 
     # ==========================================================================
-    # 8. SIMULATED OUTPUTS ENRICHMENT
+    # I. SIMULATED OUTPUTS ENRICHMENT
     # ==========================================================================
     try:
         from data.simulated_outputs import SIMULATED_OUTPUTS
