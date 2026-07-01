@@ -27,6 +27,62 @@ def add_output(sim_dict: Dict[str, Any], tech: str, step: str, vendor: str, cmd:
     sim_dict[tech][step][vendor][cmd] = output
 
 def enrich_with_ipv6(base: Dict[str, Any]):
+    # Enriquecer conceptos globales de IPv6 con documentación oficial de Junos OS
+    try:
+        from data.knowledge_base import TECH_CONCEPTS
+        if 'ipv6' in TECH_CONCEPTS:
+            TECH_CONCEPTS['ipv6']['definition'] = (
+                "IPv6 (Internet Protocol Version 6) es el sucesor de IPv4 diseñado por el IETF para resolver "
+                "el agotamiento de direcciones. Introduce un espacio de direccionamiento de 128 bits (aproximadamente "
+                "3.4x10^38 direcciones), una cabecera fija simplificada de 40 bytes dividida en 8 campos principales "
+                "para acelerar la conmutación por hardware, y delega funciones auxiliares a extensiones de cabecera (Extension Headers)."
+            )
+            TECH_CONCEPTS['ipv6']['key_concepts'] = (
+                "• **Link-Local Address (fe80::/10):** Direcciones de enlace local autogeneradas obligatorias para comunicación interna y señalización de protocolos de enrutamiento (ej. OSPFv3).\n"
+                "• **Junos Routing Tables:** En Junos OS, las tablas de enrutamiento IPv6 son `inet6.0` (Unicast IPv6 global) e `instance-name.inet6.0` (para tablas de routing VRF o Virtual Router).\n"
+                "• **Junos Route Preferences (AD):** Preferencia por defecto de Junos para la selección de mejores rutas en `inet6.0`:\n"
+                "  - Direct: 0\n"
+                "  - Static: 5\n"
+                "  - OSPFv3 Internal: 10\n"
+                "  - IS-IS Level 1 Internal: 15\n"
+                "  - IS-IS Level 2 Internal: 18\n"
+                "  - RIPng: 100\n"
+                "  - OSPFv3 External: 150\n"
+                "  - BGP: 170\n"
+                "• **NDP (Neighbor Discovery Protocol):** Sustituto de ARP en IPv4, basado en mensajes ICMPv6 de multidifusión de nodo solicitado (Solicited-Node Multicast) para mapear IPs a direcciones MAC físicas.\n"
+                "• **SLAAC (Stateless Address Autoconfiguration):** Mecanismo de autoconfiguración sin estado basado en anuncios de Router Advertisements (RA)."
+            )
+            TECH_CONCEPTS['ipv6']['architecture'] = (
+                "La arquitectura IPv6 estandariza la cabecera del paquete a 40 bytes fijos que incluyen: "
+                "Version (4 bits), Traffic Class (8 bits, DiffServ/CoS), Flow Label (20 bits para etiquetar flujos), "
+                "Payload Length (16 bits), Next Header (8 bits, indica la extensión de cabecera o el protocolo de capa superior), "
+                "Hop Limit (8 bits, equivalente a TTL), Source Address (128 bits) y Destination Address (128 bits). "
+                "Se eliminan los campos de checksum L3 (delegados a L4) y de fragmentación de cabecera (los routers no fragmentan "
+                "tráfico en tránsito; el emisor ejecuta Path MTU Discovery)."
+            )
+            TECH_CONCEPTS['ipv6']['control_vs_data'] = (
+                "• **Plano de Control:** Intercambio de mensajes NDP (Neighbor Solicitation [Type 135], Neighbor Advertisement [Type 136], "
+                "Router Solicitation [Type 137], Router Advertisement [Type 138]). Las adyacencias locales transicionan por los estados de neighbor "
+                "cache: Incomplete, Reachable, Stale, Delay y Probe.\n"
+                "• **Plano de Datos:** Reenvío de alta velocidad de paquetes a nivel de hardware ASIC / PFE basándose en lookup más largo (Longest Match Prefix) de la tabla FIB de IPv6 sincronizada por el kernel."
+            )
+            TECH_CONCEPTS['ipv6']['troubleshooting_strategy'] = (
+                "1. **Paso 1 (Ping Link-Local):** Validar accesibilidad básica de enlace físico enviando ping a direcciones `fe80::` "
+                "especificando obligatoriamente la interfaz física de salida (ej: `ping fe80::2%ge-0/0/1.0` en Juniper o `ping fe80::2` indicando "
+                "la interfaz en Cisco).\n"
+                "2. **Paso 2 (Neighbor Cache Verification):** Comprobar resolución MAC/IP en Juniper usando `show ipv6 neighbors` o `show arp` de IPv6.\n"
+                "3. **Paso 3 (Path MTU & PMTUD):** Diagnosticar caídas de adyacencias o problemas de carga de páginas debido a desajustes en el tamaño "
+                "máximo de transmisión, verificando que no se esté bloqueando el mensaje ICMPv6 Packet Too Big (Type 2).\n"
+                "4. **Paso 4 (RA & DHCPv6 Inspection):** Comprobar que RA Guard o ND Inspection no estén filtrando de forma errónea las respuestas del router o servidor DHCPv6 central."
+            )
+            TECH_CONCEPTS['ipv6']['configuration_basics'] = (
+                "• Habilitar reenvío global: `set protocols router-advertisement` o `ipv6 unicast-routing`.\n"
+                "• Configurar IPv6 en interfaz Junos: `set interfaces ge-0/0/1 unit 0 family inet6 address 2001:db8::1/64`.\n"
+                "• Configurar anuncios RA: `set protocols router-advertisement interface ge-0/0/1.0 prefix 2001:db8::/64`."
+            )
+    except Exception:
+        pass
+
     # Asegurar que zte y huawei estén en los vendors de ipv6 e ipv6_config
     for tech_key in ('ipv6', 'ipv6_config'):
         if tech_key in base:
