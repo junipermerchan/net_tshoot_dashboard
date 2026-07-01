@@ -2,6 +2,7 @@
 Módulo de Enriquecimiento de IPv6 Avanzado para Network Tshoot Dashboard.
 Añade programáticamente soporte y guías de nivel Enterprise/Service Provider (CCIE/JNCIE) 
 de IPv6 en todas las tecnologías, vendors y comandos simulados.
+Permite la alternancia de descripciones, títulos y comportamientos esperados en la UI.
 """
 
 from typing import Dict, Any, List
@@ -34,77 +35,7 @@ def enrich_with_ipv6(base: Dict[str, Any]):
                     base[tech_key]['vendors'].append(v)
 
     # ==========================================================================
-    # A. TROUBLESHOOTING IPv6 (NIVEL CCIE/JNCIE Y MODELOS OSI / TCP-IP)
-    # ==========================================================================
-    if 'ipv6' in base:
-        tech = base['ipv6']
-        steps = tech.get('steps', {})
-
-        # Paso 1: Conectividad y Mapeo OSI/TCP-IP de ICMPv6
-        if 'ipv6_ts_start' in steps:
-            steps['ipv6_ts_start']['title'] = "1. Conectividad IPv6, NDP e ICMPv6 en el Modelo OSI/TCP-IP"
-            steps['ipv6_ts_start']['body'] = (
-                "**Objetivo:** Verificar la conectividad local y la resolución de direcciones de Capa 2/3 (NDP) mediante mensajes ICMPv6.\n\n"
-                "### Mapeo de ICMPv6 en el Modelo OSI y TCP/IP\n"
-                "ICMPv6 (IPv6 Protocolo 58) opera en la **Capa 3 (Red) del modelo OSI** y en la **Capa de Internet del modelo TCP/IP**.\n"
-                "Para que IPv6 sea funcional, un firewall o ACL **NO debe bloquear todos los mensajes ICMPv6**. Los siguientes mensajes son vitales y deben permitirse:\n\n"
-                "| Mensaje ICMPv6 | Tipo | Capa OSI | Capa TCP/IP | Función Crítica / Impacto si se bloquea |\n"
-                "| :--- | :---: | :---: | :---: | :--- |\n"
-                "| **Router Solicitation (RS)** | 133 | 3 | Internet | Enviado por hosts para solicitar anuncios RA. Rompe SLAAC rápido. |\n"
-                "| **Router Advertisement (RA)** | 134 | 3 | Internet | Enviado por routers para anunciar prefijos y flags (M/O/A). Rompe direccionamiento. |\n"
-                "| **Neighbor Solicitation (NS)** | 135 | 3 | Internet | Equivalente a ARP Request (Capa 3). Rompe resolución de MAC (NDP) y DAD. |\n"
-                "| **Neighbor Advertisement (NA)** | 136 | 3 | Internet | Equivalente a ARP Reply. Rompe resolución de MAC (NDP) y DAD. |\n"
-                "| **Packet Too Big (PTB)** | 2 | 3 | Internet | **Crítico para Path MTU Discovery (PMTUD).** Si se filtra, conexiones TCP grandes (ej. HTTP/data) se congelan. |\n"
-                "| **Destination Unreachable** | 1 | 3 | Internet | Informa errores de ruta. |\n"
-                "| **Time Exceeded** | 3 | 3 | Internet | Hop limit = 0. Rompe Traceroute. |\n"
-                "| **Echo Request/Reply** | 128/129 | 3 | Internet | Herramienta Ping de diagnóstico. |\n\n"
-                "### Neighbor Discovery Protocol (NDP - RFC 4861)\n"
-                "Reemplaza a ARP. Los estados del NDP Cache son:\n"
-                "- **INCOMPLETE:** Solicitation (NS) enviada, esperando respuesta (NA).\n"
-                "- **REACHABLE:** Dirección MAC resuelta y confirmada de forma bidireccional.\n"
-                "- **STALE:** Tiempo de alcanzabilidad expirado. Se puede enviar tráfico pero se debe re-confirmar.\n"
-                "- **DELAY / PROBE:** Confirmando alcanzabilidad activa enviando NS unicast de forma periódica."
-            )
-
-        # Paso 2: Diferencias de IPv6 en Protocolos de Enrutamiento (RIPng, EIGRPv6, OSPFv3, ISIS MT, MP-BGP)
-        if 'ipv6_ts_routing' in steps:
-            steps['ipv6_ts_routing']['title'] = "2. Diferencias en Protocolos de Enrutamiento IPv6 (Routing)"
-            steps['ipv6_ts_routing']['body'] = (
-                "**Objetivo:** Validar el intercambio de rutas dinámicas IPv6 en escenarios multi-vendor.\n\n"
-                "### Comparativa de Protocolos: IPv4 vs. IPv6 (Diferencias Clave)\n\n"
-                "| Protocolo | Versión IPv4 | Versión IPv6 (RFC) | Dirección Multicast | Diferencias Clave de Enrutamiento |\n"
-                "| :--- | :--- | :--- | :---: | :--- |\n"
-                "| **RIP** | RIPv2 | **RIPng (RFC 2080)** | `FF02::9` | Opera sobre puerto UDP 521 (vs 520). El Next-Hop se anuncia como la dirección link-local (`fe80::`). |\n"
-                "| **EIGRP** | EIGRP v4 | **EIGRPv6** | `FF02::A` | Se ejecuta directo sobre protocolo 88. Habilitado en la interfaz. **Requiere configurar Router ID manual de 32-bits** si no hay IPv4 activo en el equipo. |\n"
-                "| **OSPF** | OSPFv2 | **OSPFv3 (RFC 5340)** | `FF02::5` / `FF02::6` | Habilitado por interfaz (no `network`). Sesión sobre link-local. Prefijos retirados de LSA Tipo 1/2 y migrados a **LSA Tipo 8 (Link)** y **Tipo 9 (Intra-Area)**. Soporta Multi-Instance. |\n"
-                "| **IS-IS** | IS-IS | **IS-IS IPv6 (RFC 5120)** | L2 Multicast (Macs) | Requiere activar **Multi-Topology (MT)** para evitar asimetrías de enlaces IPv4/IPv6. Intercambia prefijos en **TLV 236** (IPv6) y **TLV 229** (MT). |\n"
-                "| **BGP** | BGP-4 | **MP-BGP (RFC 4760)** | Peer Unicast | Soporta múltiples familias de direcciones (**AFI 2 = IPv6**, **SAFI 1 = Unicast**, **SAFI 128 = VPNv6**). Cuidado con Next-Hop mapeados a IPv4 (RFC 2545). |\n"
-                "| **MPLS** | LDP/RSVP | **6PE / 6VPE (RFC 4798/4659)** | Core IPv4 | **6PE:** Transporta IPv6 sobre Core MPLS IPv4 usando BGP Label (SAFI 4). **6VPE:** VPNs IPv6 multi-VRF sobre MPLS IPv4 (AFI 2, SAFI 128). |\n\n"
-                "### Troubleshooting de Next-Hop en MP-BGP (RFC 2545)\n"
-                "Si el peer BGP se establece sobre IPv4, BGP intentará enviar un Next-Hop IPv4 mapeado a IPv6 (ej: `::ffff:10.1.1.1`). La tabla de enrutamiento IPv6 no lo resolverá, dejando las rutas como **Hidden** o **Invalid**.\n"
-                "**Solución:** Aplicar una política para reescribir el Next-Hop usando la dirección link-local del router remoto o habilitar Extended Next-Hop Encoding (RFC 8950)."
-            )
-
-        # Paso 3: DHCPv6 (Con/Sin Estado), SLAAC, RDNSS y Diseño de Intranets ULA
-        if 'ipv6_ts_auto' in steps:
-            steps['ipv6_ts_auto']['title'] = "3. Configuración de Intranets, SLAAC, DHCPv6 (Con/Sin Estado) y DNS"
-            steps['ipv6_ts_auto']['body'] = (
-                "**Objetivo:** Diagnosticar la autoconfiguración de direcciones, asignación de DNS y direccionamiento privado en Intranets.\n\n"
-                "### DHCPv6 Stateful vs. Stateless y Autoconfiguración\n"
-                "Los hosts obtienen direccionamiento IP y DNS basado en las banderas (flags) del Router Advertisement (RA) enviado por el gateway:\n\n"
-                "- **SLAAC Puro (M=0, O=0):** El host autoconfigura su IPv6 usando el prefijo RA (A-Flag=1) vía EUI-64 o privacidad (RFC 4941). **No hay asignación de DNS** a menos que se configure **RFC 8106 (RDNSS/DNSSL)** en el router para anunciar los DNS directamente en el RA.\n"
-                "- **DHCPv6 Stateless / Sin Estado (M=0, O=1):** El host configura su IP por SLAAC (A-flag=1), pero realiza una solicitud a la IP multicast `ff02::1:2` para pedir los servidores DNS y dominio de búsqueda al servidor DHCPv6 (Option 23 - DNS, Option 24 - Domain List).\n"
-                "- **DHCPv6 Stateful / Con Estado (M=1, O=1):** El host desactiva la autoconfiguración local. Envía un mensaje `Solicit` a `ff02::1:2` para pedir una dirección IPv6 (Option 3 - IA_NA) y DNS del servidor DHCPv6, el cual lleva un registro de estado (lease) en su base de datos.\n\n"
-                "### Configuración de Direccionamiento IPv6 en Intranets (ULA - RFC 4193)\n"
-                "Para intranets aisladas o privadas, no se debe usar direccionamiento IPv4 privado traducido. Se debe utilizar **Unique Local Addresses (ULA - RFC 4193)**:\n\n"
-                "- **Bloque ULA:** `fc00::/7` (en la práctica se usa `fd00::/8` para asignaciones locales).\n"
-                "- **Global ID (40 bits aleatorios):** Se debe generar un prefijo aleatorio para evitar colisiones en futuras fusiones (ej: `fd4a:5e6c:8b2a::/48`).\n"
-                "- **Subnetting LAN (/64):** El prefijo `/48` permite $65,536$ subnets `/64` locales.\n"
-                "- **Configuración DNS local:** Los servidores DNS locales deben configurarse con registros **AAAA** para resolución de nombres interna, y anunciarse a las LANs usando RDNSS (en el router) o DHCPv6 Stateless."
-            )
-
-    # ==========================================================================
-    # B. OSPF / OSPFv3 ENRICHMENT (Nivel CCIE/JNCIE)
+    # 1. OSPF / OSPFv3 ENRICHMENT (QUIRÚRGICO)
     # ==========================================================================
     if 'ospf' in base:
         tech = base['ospf']
@@ -112,19 +43,38 @@ def enrich_with_ipv6(base: Dict[str, Any]):
         
         # Paso 1: OSPF Start
         if 'ospf_start' in steps:
-            steps['ospf_start']['body'] += (
-                '\n\n**Soporte Avanzado de OSPFv3 (RFC 5340 & RFC 5838):**\n'
-                '- **Direccionamiento Link-Local:** OSPFv3 forma adyacencias utilizando únicamente direcciones link-local (fe80::/10). '
-                'Si el link-local no está configurado de forma determinista o tiene duplicados, la sesión se quedará en DOWN/INIT.\n'
-                '- **Independencia de Address-Family:** Admite múltiples instancias en el mismo enlace. OSPFv3 permite encapsular '
-                'tanto prefijos IPv4 como IPv6 utilizando campos de Address Family específicos (RFC 5838).\n'
-                '- **LSA Database Split:** OSPFv3 retira la información de prefijos de los LSAs de Router (Type 1) y Network (Type 2). '
-                'Los prefijos se anuncian ahora en nuevos tipos de LSAs: **Link LSA (Type 8)** (informa la dirección link-local del router '
-                'y sus prefijos asociados) e **Intra-Area-Prefix LSA (Type 9)** (lleva las subredes asociadas a los routers o redes del área).'
+            steps['ospf_start']['title_ipv6'] = "1. Ámbito del problema OSPFv3"
+            steps['ospf_start']['body_ipv6'] = (
+                "**Dónde:** Vecindades OSPFv3 (IPv6), base de datos LSAs IPv6, áreas, "
+                "redistribución, autenticación IPsec o rendimiento.\n\n"
+                "**Cómo:** Vecinos caídos, rutas IPv6 ausentes en la RIB, alta CPU por SPF "
+                "recalculaciones, o falla de establecimiento de SAs de IPsec.\n\n"
+                "**Cuándo:** Tras cambios de direccionamiento link-local, aplicación de llaves IPsec "
+                "o redistribución de prefijos IPv6.\n\n"
+                "**Por qué:** Direcciones link-local duplicadas o inactivas, desajuste en MTU (EXSTART), "
+                "timers de Hello/Dead no coincidentes, o llaves de IPsec SPI incorrectas.\n\n"
+                "**Para qué:** Enfocar el troubleshooting de OSPFv3 en adyacencias link-local, "
+                "sincronización de LSAs de tipo 8/9 o políticas de redistribución IPv6."
+            )
+            steps['ospf_start']['expected_ipv6'] = (
+                "Identificación del Router-ID de 32 bits (configurado de forma manual obligatoria en entornos IPv6-only), "
+                "interfaces de área y conectividad link-local."
             )
             
-        # Paso 2: OSPF Neighbors (Adyacencias)
+        # Paso 2: OSPF Neighbors
         if 'ospf_neighbor' in steps:
+            steps['ospf_neighbor']['title_ipv6'] = "2. Vecindades OSPFv3 caídas"
+            steps['ospf_neighbor']['body_ipv6'] = (
+                "**Dónde:** Interfaces habilitadas para OSPFv3 y sesiones de vecindad IPv6.\n\n"
+                "**Cómo:** Vecino stuck en INIT (unidireccional), 2-WAY (normal en segmentos broadcast si no es DR/BDR) o stuck en EXSTART/EXCHANGE.\n\n"
+                "**Por qué:** OSPFv3 forma adyacencias utilizando direcciones link-local (fe80::/10). Si no hay comunicación link-local, "
+                "si el MTU difiere (EXSTART), o si la asociación de seguridad IPsec (IPsec SA) está mal configurada, la sesión fallará.\n\n"
+                "**Seguridad:** El firewall debe permitir tráfico OSPFv3 (protocolo IP 89) solo si proviene de direcciones de origen link-local (fe80::/10)."
+            )
+            steps['ospf_neighbor']['expected_ipv6'] = (
+                "Vecindad OSPFv3 en estado FULL. Timers Hello/Dead y MTU coincidentes. "
+                "Asociación IPsec SPI activa en ambos extremos del enlace."
+            )
             cmds = steps['ospf_neighbor'].get('commands', {})
             # Juniper OSPFv3
             add_cmd(cmds, 'juniper', 'tier1', 'show ospf3 neighbor extensive')
@@ -132,21 +82,18 @@ def enrich_with_ipv6(base: Dict[str, Any]):
             add_cmd(cmds, 'juniper', 'tier2', 'show configuration protocols ospf3 | display set')
             add_cmd(cmds, 'juniper', 'tier2', 'show ospf3 neighbor extensive | match state')
             add_cmd(cmds, 'juniper', 'tier3', 'monitor traffic interface <if> matching "ospf3" | no-more')
-            add_cmd(cmds, 'juniper', 'arch', 'show configuration protocols ospf3 | display set | match area')
             # Cisco IOS-XR OSPFv3
             add_cmd(cmds, 'cisco_iosxr', 'tier1', 'show ospfv3 neighbor detail')
             add_cmd(cmds, 'cisco_iosxr', 'tier1', 'show ospfv3 interface')
             add_cmd(cmds, 'cisco_iosxr', 'tier2', 'show running-config router ospfv3')
             add_cmd(cmds, 'cisco_iosxr', 'tier2', 'show ospfv3 neighbor detail | include state')
             add_cmd(cmds, 'cisco_iosxr', 'tier3', 'debug ospfv3 hello')
-            add_cmd(cmds, 'cisco_iosxr', 'arch', 'show running-config router ospfv3 | match area')
             # Cisco IOS-XE OSPFv3
             add_cmd(cmds, 'cisco_iosxe', 'tier1', 'show ospfv3 neighbor detail')
             add_cmd(cmds, 'cisco_iosxe', 'tier1', 'show ospfv3 interface')
             add_cmd(cmds, 'cisco_iosxe', 'tier2', 'show running-config | section router ospfv3')
             add_cmd(cmds, 'cisco_iosxe', 'tier2', 'show ospfv3 neighbor detail | include state')
             add_cmd(cmds, 'cisco_iosxe', 'tier3', 'debug ospfv3 hello')
-            add_cmd(cmds, 'cisco_iosxe', 'arch', 'show running-config | section router ospfv3 | match area')
             # MikroTik OSPFv3
             add_cmd(cmds, 'mikrotik', 'tier1', '/routing ospf v3 neighbor print detail')
             add_cmd(cmds, 'mikrotik', 'tier2', '/routing ospf v3 interface print')
@@ -155,15 +102,16 @@ def enrich_with_ipv6(base: Dict[str, Any]):
             add_cmd(cmds, 'fortinet', 'tier1', 'get router info6 ospf interface')
             add_cmd(cmds, 'fortinet', 'tier2', 'show router ospf6')
 
-        # Paso 3: OSPF Autenticación (IPsec en OSPFv3)
+        # Paso 3: OSPF Autenticación
         if 'ospf_auth' in steps:
-            steps['ospf_auth']['body'] += (
-                '\n\n**Mecanismo de Autenticación de OSPFv3:**\n'
-                'A diferencia de OSPFv2 (que usa MD5/SHA en la cabecera del protocolo), OSPFv3 delegó la seguridad a la suite de IPsec. '
-                'Para autenticar vecinos OSPFv3, se configuran asociaciones de seguridad (SA) manuales (AH o ESP) directamente en la interfaz '
-                'o en el área (compartidas por SPI). Si hay un desajuste de SPI (Security Parameter Index) o llaves hexadecimales, '
-                'los routers descartarán los paquetes Hello sin generar logs informativos de adyacencia.'
+            steps['ospf_auth']['title_ipv6'] = "2.A Autenticación OSPFv3 por IPsec"
+            steps['ospf_auth']['body_ipv6'] = (
+                "**Objetivo:** Verificar y configurar la seguridad en OSPFv3.\n\n"
+                "OSPFv3 no posee soporte nativo para claves MD5 o texto claro. La autenticación se delega directamente a la suite IPsec (cabecera AH o ESP). "
+                "Se debe definir un SPI (Security Parameter Index) y una clave de autenticación hexadecimal idéntica en ambos extremos de la interfaz. "
+                "Un desajuste de SPI o clave hará que los routers descarten los Hellos de forma silenciosa."
             )
+            steps['ospf_auth']['expected_ipv6'] = "Asociaciones de seguridad IPsec (SAs) establecidas y activas (SPI idénticos en ambos lados)."
             cmds = steps['ospf_auth'].get('commands', {})
             add_cmd(cmds, 'juniper', 'tier1', 'show security ipsec security-associations')
             add_cmd(cmds, 'cisco_iosxe', 'tier1', 'show crypto ipsec sa')
@@ -171,13 +119,14 @@ def enrich_with_ipv6(base: Dict[str, Any]):
 
         # Paso 4: OSPF Database (Base de datos LSA)
         if 'ospf_database' in steps:
-            steps['ospf_database']['body'] += (
-                '\n\n**Análisis de la Base de Datos OSPFv3:**\n'
-                '- **LSA Tipo 8 (Link):** Debe existir un LSA de tipo Link generado por cada interfaz link-local conectada al segmento. '
-                'Este LSA publica la dirección link-local del router vecino y la lista de prefijos IPv6 configurados en esa interfaz.\n'
-                '- **LSA Tipo 9 (Intra-Area-Prefix):** Contiene los prefijos IPv6 de las redes stub o de tránsito conectadas al router. '
-                'Si el vecino está en FULL pero no aprendes rutas, verifica la presencia de LSAs de tipo 9.'
+            steps['ospf_database']['title_ipv6'] = "3. Base de datos LSAs de OSPFv3"
+            steps['ospf_database']['body_ipv6'] = (
+                "**Objetivo:** Diagnosticar la base de datos de LSAs de OSPFv3.\n\n"
+                "OSPFv3 introduce nuevos LSAs para desligar el direccionamiento de la topología:\n"
+                "- **Link LSA (Type 8):** Anuncia la dirección link-local del router y prefijos IPv6 del enlace a todos los vecinos en ese enlace.\n"
+                "- **Intra-Area-Prefix LSA (Type 9):** Anuncia los prefijos IPv6 asociados a un router o una red de tránsito dentro del área sin modificar los LSAs de Router (Type 1) ni Network (Type 2)."
             )
+            steps['ospf_database']['expected_ipv6'] = "LSAs Tipo 8 y Tipo 9 presentes y sincronizados en todos los vecinos del área."
             cmds = steps['ospf_database'].get('commands', {})
             add_cmd(cmds, 'juniper', 'tier1', 'show ospf3 database')
             add_cmd(cmds, 'juniper', 'tier2', 'show ospf3 database link extensive')
@@ -189,22 +138,48 @@ def enrich_with_ipv6(base: Dict[str, Any]):
             add_cmd(cmds, 'fortinet', 'tier1', 'get router info6 ospf database')
 
     # ==========================================================================
-    # C. IS-IS MULTI-TOPOLOGY IPv6 ENRICHMENT
+    # 2. IS-IS MULTI-TOPOLOGY IPv6 ENRICHMENT (QUIRÚRGICO)
     # ==========================================================================
     if 'isis' in base:
         tech = base['isis']
         steps = tech.get('steps', {})
         
-        # Paso 1: IS-IS database
-        if 'isis_database' in steps:
-            steps['isis_database']['body'] += (
-                '\n\n**Single-Topology vs. Multi-Topology en IS-IS:**\n'
-                '- **Single-Topology (Default):** Asume que IPv4 e IPv6 comparten exactamente los mismos enlaces, interfaces y métricas. '
-                'Si un enlace no tiene configurado IPv6, pero sí IPv4, la SPF de IPv6 fallará de todas forman, enviando tráfico por agujeros negros.\n'
-                '- **Multi-Topology (MT) (RFC 5120):** Permite ejecutar árboles SPF completamente separados para IPv4 e IPv6. '
-                'Es la práctica estándar en redes de producción para evitar caídas de tráfico. Verifique la activación de la capability '
-                'Multi-Topology y compruebe los LSPs buscando el **TLV 229 (MT-IS-IS)** y el **TLV 236 (IPv6 Reachability)**.'
+        # Paso 1: IS-IS Start
+        if 'isis_start' in steps:
+            steps['isis_start']['title_ipv6'] = "1. Ámbito del problema IS-IS IPv6"
+            steps['isis_start']['body_ipv6'] = (
+                "**Dónde:** Adyacencias IS-IS L1/L2 y enrutamiento IPv6 dinámico.\n\n"
+                "**Cómo:** Adyacencias caídas o rutas IPv6 ausentes en la tabla de enrutamiento (RIB).\n\n"
+                "**Por qué:** Desajuste en el nivel del router (L1 vs L2), desajuste de MTU (IS-IS requiere tramas de 1492 bytes completas), "
+                "o falta de activación del soporte Multi-Topology (MT) para IPv6."
             )
+            steps['isis_start']['expected_ipv6'] = "Identificación del nivel de routing, MTU e interfaces activas para IPv6."
+
+        # Paso 2: IS-IS adj
+        if 'isis_adj' in steps:
+            steps['isis_adj']['title_ipv6'] = "2. Adyacencias IS-IS sobre IPv6"
+            steps['isis_adj']['body_ipv6'] = (
+                "**Dónde:** Adyacencias de capa 2 formadas por IS-IS.\n\n"
+                "**Cómo:** Vecino en estado UP pero sin aprender rutas IPv6.\n\n"
+                "**Por qué:** IS-IS se ejecuta directamente sobre capa 2. La adyacencia se mantendrá estable incluso si el direccionamiento IPv6 "
+                "local está roto. Debe verificar el direccionamiento IP local y el intercambio de TLVs de IP."
+            )
+            steps['isis_adj']['expected_ipv6'] = "Adyacencia IS-IS en estado UP. IP local IPv6 intercambiada con éxito."
+            cmds = steps['isis_adj'].get('commands', {})
+            add_cmd(cmds, 'juniper', 'tier1', 'show route table inet6.0 protocol isis')
+            add_cmd(cmds, 'cisco_iosxe', 'tier1', 'show ipv6 route isis')
+            add_cmd(cmds, 'cisco_iosxr', 'tier1', 'show ipv6 route isis')
+
+        # Paso 3: IS-IS database
+        if 'isis_database' in steps:
+            steps['isis_database']['title_ipv6'] = "3. LSP Database y Multi-Topology IPv6"
+            steps['isis_database']['body_ipv6'] = (
+                "**Objetivo:** Verificar el soporte de Multi-Topology (MT) en la LSPDB.\n\n"
+                "En redes IPv6, se debe activar la capability **Multi-Topology (MT) (RFC 5120)**. Esto permite calcular árboles SPF separados "
+                "para IPv4 e IPv6. Sin MT, IS-IS asume una topología única y el enrutamiento fallará si un enlace no tiene IPv6 configurado.\n\n"
+                "Verifique la presencia del **TLV 229 (MT-IS-IS)** y el **TLV 236 (IPv6 Reachability)**."
+            )
+            steps['isis_database']['expected_ipv6'] = "Base de datos sincronizada con TLV 229 y TLV 236 presentes."
             cmds = steps['isis_database'].get('commands', {})
             add_cmd(cmds, 'juniper', 'tier1', 'show isis database extensive | match "IPv6"')
             add_cmd(cmds, 'juniper', 'tier2', 'show isis database extensive | match "Multi-topology"')
@@ -212,21 +187,8 @@ def enrich_with_ipv6(base: Dict[str, Any]):
             add_cmd(cmds, 'cisco_iosxe', 'tier2', 'show isis database detail | include Multi-Topology')
             add_cmd(cmds, 'cisco_iosxr', 'tier1', 'show isis database detail | include IPv6')
 
-        # Paso 2: IS-IS interfaces
-        if 'isis_adj' in steps:
-            steps['isis_adj']['body'] += (
-                '\n\n**Adyacencia IS-IS sobre IPv6:**\n'
-                'IS-IS se ejecuta directamente sobre capa 2 utilizando tramas 802.3 link-state. Por ende, la adyacencia IS-IS se mantendrá '
-                'estable incluso si el direccionamiento IPv6 local está roto o desajustado. La única forma de detectar problemas en IPv6 '
-                'es validando la tabla de vecinos IS-IS y confirmando el intercambio de TLVs de direccionamiento IP.'
-            )
-            cmds = steps['isis_adj'].get('commands', {})
-            add_cmd(cmds, 'juniper', 'tier1', 'show route table inet6.0 protocol isis')
-            add_cmd(cmds, 'cisco_iosxe', 'tier1', 'show ipv6 route isis')
-            add_cmd(cmds, 'cisco_iosxr', 'tier1', 'show ipv6 route isis')
-
     # ==========================================================================
-    # D. BGP / MP-BGP IPv6 & NEXT-HOP RESOLUTION
+    # 3. BGP / MP-BGP IPv6 & NEXT-HOP RESOLUTION (QUIRÚRGICO)
     # ==========================================================================
     for bgp_key in ('bgp', 'mpbgp'):
         if bgp_key in base:
@@ -234,14 +196,17 @@ def enrich_with_ipv6(base: Dict[str, Any]):
             steps = tech.get('steps', {})
             for step_key, step in steps.items():
                 if 'start' in step_key or 'neighbor' in step_key:
-                    step['body'] += (
-                        '\n\n**Problemas de Next-Hop en MP-BGP IPv6 (RFC 2545):**\n'
-                        '- Cuando se levanta una sesión BGP utilizando direccionamiento IPv4 pero se anuncia la Address-Family IPv6 (AFI 2, SAFI 1), '
-                        'BGP enviará un Next-Hop con un formato IPv4 mapeado a IPv6 (ej: `::ffff:10.0.0.1`), el cual no se puede resolver en la tabla '
-                        'de enrutamiento local y las rutas quedarán en estado **Hidden** o **Invalid**.\n'
-                        '- **Solución:** Aplicar una política de exportación (`route-map` / `policy-statement`) para forzar un Next-Hop IPv6 válido, '
-                        'o habilitar la negociación de Extended Next-Hop Encoding (RFC 8950) en ambos extremos del peer.'
+                    step['title_ipv6'] = "1. Ámbito del problema MP-BGP IPv6"
+                    step['body_ipv6'] = (
+                        "**Objetivo:** Verificar la conectividad BGP y el soporte de la Address-Family IPv6 (AFI 2, SAFI 1).\n\n"
+                        "**Problemas de Next-Hop en MP-BGP IPv6 (RFC 2545 / RFC 8950):**\n"
+                        "- Cuando se levanta una sesión BGP utilizando direccionamiento IPv4 pero se anuncia la Address-Family IPv6, "
+                        "BGP enviará un Next-Hop con un formato IPv4 mapeado a IPv6 (ej: `::ffff:10.0.0.1`), el cual no se puede resolver en la tabla "
+                        "de enrutamiento local y las rutas quedarán en estado **Hidden** o **Invalid**.\n"
+                        "- **Solución:** Aplicar una política de exportación (`route-map` / `policy-statement`) para forzar un Next-Hop IPv6 válido, "
+                        "o habilitar la negociación de Extended Next-Hop Encoding (RFC 8950) en ambos extremos."
                     )
+                    step['expected_ipv6'] = "Sesión BGP en estado ESTABLISHED con capacidad de address-family IPv6 activa y next-hops resolubles."
                 cmds = step.get('commands', {})
                 # Juniper
                 add_cmd(cmds, 'juniper', 'tier1', 'show bgp neighbor | match "Address families"')
@@ -259,20 +224,23 @@ def enrich_with_ipv6(base: Dict[str, Any]):
                 add_cmd(cmds, 'fortinet', 'tier1', 'get router info6 bgp summary')
 
     # ==========================================================================
-    # E. L3VPN (6VPE) ENRICHMENT
+    # 4. L3VPN (6VPE) ENRICHMENT (QUIRÚRGICO)
     # ==========================================================================
     if 'l3vpn' in base:
         tech = base['l3vpn']
         steps = tech.get('steps', {})
         for step_key, step in steps.items():
             if 'route' in step_key or 'start' in step_key:
-                step['body'] += (
-                    '\n\n**Operación de 6VPE (IPv6 VPN over MPLS):**\n'
-                    '- 6VPE mapea direcciones IPv6 de clientes dentro de VRFs a prefijos VPNv6 (AFI 2, SAFI 128) de 196 bits (RD + IPv6).\n'
-                    '- **Pila de Etiquetas MPLS:** Al enviar un paquete 6VPE, se utilizan dos etiquetas: una etiqueta interna (BGP VPNv6) '
-                    'que identifica el VRF de destino en el PE remoto, y una etiqueta externa (LDP / Segment Routing) que define el camino '
-                    'de tránsito por el core IPv4. Asegúrese de que el router PE local resuelva el Next-Hop IPv4 del PE remoto usando el túnel MPLS.'
+                step['title_ipv6'] = "1. Ámbito del problema L3VPN (6VPE)"
+                step['body_ipv6'] = (
+                    "**Objetivo:** Diagnosticar la operatividad de VPNs IPv6 (6VPE).\n\n"
+                    "**Operación de 6VPE (IPv6 VPN over MPLS):**\n"
+                    "- 6VPE mapea direcciones IPv6 de clientes dentro de VRFs a prefijos VPNv6 (AFI 2, SAFI 128) de 196 bits (RD + IPv6).\n"
+                    "- **Pila de Etiquetas MPLS:** Al enviar un paquete 6VPE, se utilizan dos etiquetas: una etiqueta interna (BGP VPNv6) "
+                    "que identifica el VRF de destino en el PE remoto, y una etiqueta externa (LDP / Segment Routing) que define el camino "
+                    "de tránsito por el core IPv4. Asegúrese de que el router PE local resuelva el Next-Hop IPv4 del PE remoto usando el túnel MPLS."
                 )
+                step['expected_ipv6'] = "Next-hop PE remoto resoluble mediante túnel MPLS. Rutas VPNv6 activas en BGP."
                 cmds = step.get('commands', {})
                 # Juniper
                 add_cmd(cmds, 'juniper', 'tier1', 'show route table <vrf-name>.inet6.0')
@@ -287,12 +255,20 @@ def enrich_with_ipv6(base: Dict[str, Any]):
                 add_cmd(cmds, 'fortinet', 'tier1', 'get router info6 routing-table vrf <vrf-name>')
 
     # ==========================================================================
-    # F. STATIC ROUTING IPv6 ENRICHMENT
+    # 5. STATIC ROUTING IPv6 ENRICHMENT & CONFIGURATION (QUIRÚRGICO)
     # ==========================================================================
     if 'static' in base:
         tech = base['static']
         steps = tech.get('steps', {})
         for step_key, step in steps.items():
+            step['title_ipv6'] = "1. Ámbito del Enrutamiento Estático IPv6"
+            step['body_ipv6'] = (
+                "**Objetivo:** Diagnosticar rutas estáticas IPv6 ausentes o inactivas en la tabla de enrutamiento.\n\n"
+                "**Problemas comunes:**\n"
+                "- Interfaz de salida caída o dirección link-local del siguiente salto no especificada junto con la interfaz.\n"
+                "- Filtros de NDP que impiden resolver la dirección MAC del siguiente salto."
+            )
+            step['expected_ipv6'] = "Ruta estática IPv6 instalada de forma activa en la tabla de enrutamiento (RIB)."
             cmds = step.get('commands', {})
             # Juniper
             add_cmd(cmds, 'juniper', 'tier1', 'show route table inet6.0 protocol static')
@@ -309,15 +285,20 @@ def enrich_with_ipv6(base: Dict[str, Any]):
         
         # Paso 1: Ruta estática estándar IPv6
         if 'static_config_start' in steps:
-            steps['static_config_start']['body'] += (
-                '\n\n**Equivalente IPv6:**\n'
-                '- Juniper: `set routing-options static route 2001:db8:100::/64 next-hop 2001:db8:12::2`\n'
-                '- Cisco IOS-XE: `ipv6 route 2001:db8:100::/64 2001:db8:12::2`\n'
-                '- Cisco IOS-XR: `router static address-family ipv6 unicast 2001:db8:100::/64 2001:db8:12::2`\n'
-                '- MikroTik: `/ipv6 route add dst-address=2001:db8:100::/64 gateway=2001:db8:12::2`\n'
-                '- Fortinet: `config router static6 \n edit 1 \n set dst 2001:db8:100::/64 \n set gateway 2001:db8:12::2 \n next \n end`\n'
-                '- Linux: `ip -6 route add 2001:db8:100::/64 via 2001:db8:12::2 dev eth0`'
+            steps['static_config_start']['body_ipv6'] = (
+                "**Objetivo:** Configurar una ruta estática simple IPv6 que apunte a un siguiente salto o interfaz física directamente conectada.\n\n"
+                "**Detalles clave:**\n"
+                "- Definir el prefijo destino IPv6 (ej: `2001:db8:100::/64`).\n"
+                "- Especificar la IP de siguiente salto global o link-local (ej: `2001:db8:12::2` o `fe80::2`). Si se usa una IP link-local, es obligatorio indicar la interfaz de salida (ej: `GigabitEthernet0/1` o `ge-0/0/1.0`).\n\n"
+                "**Configuración por Fabricante:**\n"
+                "- **Juniper:** `set routing-options static route 2001:db8:100::/64 next-hop 2001:db8:12::2`\n"
+                "- **Cisco IOS-XE:** `ipv6 route 2001:db8:100::/64 2001:db8:12::2`\n"
+                "- **Cisco IOS-XR:** `router static address-family ipv6 unicast 2001:db8:100::/64 2001:db8:12::2`\n"
+                "- **MikroTik:** `/ipv6 route add dst-address=2001:db8:100::/64 gateway=2001:db8:12::2`\n"
+                "- **Fortinet:** `config router static6 \n edit 1 \n set dst 2001:db8:100::/64 \n set gateway 2001:db8:12::2 \n next \n end`\n"
+                "- **Linux:** `ip -6 route add 2001:db8:100::/64 via 2001:db8:12::2 dev eth0`"
             )
+            steps['static_config_start']['expected_ipv6'] = "La ruta IPv6 se añade correctamente a la configuración y se instala de forma activa en la tabla de enrutamiento."
             cmds = steps['static_config_start'].get('commands', {})
             add_cmd(cmds, 'juniper', 'tier1', 'set routing-options static route 2001:db8:100::/64 next-hop 2001:db8:12::2')
             add_cmd(cmds, 'cisco_iosxe', 'tier1', 'ipv6 route 2001:db8:100::/64 2001:db8:12::2')
@@ -327,19 +308,22 @@ def enrich_with_ipv6(base: Dict[str, Any]):
             add_cmd(cmds, 'linux', 'tier1', 'ip -6 route add 2001:db8:100::/64 via 2001:db8:12::2 dev eth0')
 
     # ==========================================================================
-    # G. MULTICAST IPv6 (MLD / PIMv6)
+    # 6. MULTICAST IPv6 (MLD / PIMv6) (QUIRÚRGICO)
     # ==========================================================================
     if 'multicast' in base:
         tech = base['multicast']
         steps = tech.get('steps', {})
         for step_key, step in steps.items():
-            step['body'] += (
-                '\n\n**Multicast en IPv6 (MLD vs IGMP):**\n'
-                'IPv6 no soporta broadcast; depende puramente de multicast. En IPv6, el protocolo **MLD (Multicast Listener Discovery)** '
-                '(RFC 3810) reemplaza a IGMP. MLDv1 equivale a IGMPv2, y MLDv2 equivale a IGMPv3. MLD se encapsula directamente '
-                'sobre paquetes ICMPv6 (tipos 130, 131 y 132 para v1, y 143 para v2). Si bloqueas ICMPv6 por seguridad de forma descuidada, '
-                'romperás por completo el tráfico Multicast IPv6 y los protocolos de descubrimiento.'
+            step['title_ipv6'] = "1. Multicast en IPv6 (MLD y PIMv6)"
+            step['body_ipv6'] = (
+                "**Objetivo:** Diagnosticar la distribución de tráfico multicast sobre IPv6.\n\n"
+                "**Multicast en IPv6 (MLD vs IGMP):**\n"
+                "IPv6 no soporta broadcast; depende puramente de multicast. En IPv6, el protocolo **MLD (Multicast Listener Discovery)** "
+                "(RFC 3810) reemplaza a IGMP. MLDv1 equivale a IGMPv2, y MLDv2 equivale a IGMPv3. MLD se encapsula directamente "
+                "sobre paquetes ICMPv6 (tipos 130, 131 y 132 para v1, y 143 para v2). Si bloqueas ICMPv6 por seguridad de forma descuidada, "
+                "romperás por completo el tráfico Multicast IPv6 y los vecinos de PIMv6."
             )
+            step['expected_ipv6'] = "Interfaces con MLD activo, grupos multicast IPv6 registrados en la tabla y vecinos PIMv6 en FULL."
             cmds = step.get('commands', {})
             # Juniper MLD / PIM6
             add_cmd(cmds, 'juniper', 'tier1', 'show mld interface')
@@ -355,7 +339,7 @@ def enrich_with_ipv6(base: Dict[str, Any]):
             add_cmd(cmds, 'cisco_iosxr', 'tier1', 'show pim ipv6 neighbor')
 
     # ==========================================================================
-    # H. NATIVE IPv6 CONFIGURATION & SECURITY (RA Guard, ND Snooping)
+    # 7. NATIVE IPv6 CONFIGURATION, SUBNETTING & SECURITY (RA Guard, ND Snooping)
     # ==========================================================================
     if 'ipv6_config' in base:
         tech = base['ipv6_config']
@@ -364,14 +348,16 @@ def enrich_with_ipv6(base: Dict[str, Any]):
         # Paso: ipv6_config_tunnels
         # Agregar sección de seguridad de red IPv6 (RA Guard y ND Inspection)
         if 'ipv6_config_tunnels' in steps:
-            steps['ipv6_config_tunnels']['body'] += (
-                '\n\n**Seguridad IPv6 Avanzada (RA Guard e Inspection) (RFC 6105):**\n'
-                '- **IPv6 RA Guard:** Bloquea de forma inteligente los paquetes Router Advertisement (RA) falsos o no autorizados '
-                'enviados por usuarios maliciosos que intentan actuar como gateway de la red (ataques Man-in-the-Middle). Se debe aplicar '
-                'en todos los puertos de acceso que no vayan conectados a routers autorizados.\n'
-                '- **IPv6 Neighbor Discovery Inspection (ND Inspection):** Mantiene una tabla de bindings IPv6-MAC validada a través de '
-                'DHCPv6 Snooping. Bloquea mensajes Neighbor Advertisement (NA) falsos que busquen envenenar la tabla de vecinos (NDP Cache Poisoning).'
+            steps['ipv6_config_tunnels']['title_ipv6'] = "4. Seguridad IPv6 (RA Guard e Inspection)"
+            steps['ipv6_config_tunnels']['body_ipv6'] = (
+                "**Seguridad IPv6 Avanzada (RA Guard e Inspection) (RFC 6105):**\n"
+                "- **IPv6 RA Guard:** Bloquea de forma inteligente los paquetes Router Advertisement (RA) falsos o no autorizados "
+                "enviados por usuarios maliciosos que intentan actuar como gateway de la red (ataques Man-in-the-Middle). Se debe aplicar "
+                "en todos los puertos de acceso que no vayan conectados a routers autorizados.\n"
+                "- **IPv6 Neighbor Discovery Inspection (ND Inspection):** Mantiene una tabla de bindings IPv6-MAC validada a través de "
+                "DHCPv6 Snooping. Bloquea mensajes Neighbor Advertisement (NA) falsos que busquen envenenar la tabla de vecinos (NDP Cache Poisoning)."
             )
+            steps['ipv6_config_tunnels']['expected_ipv6'] = "Políticas de RA Guard asociadas a puertos y ND Inspection activo en el switch de acceso."
             cmds = steps['ipv6_config_tunnels'].get('commands', {})
             add_cmd(cmds, 'cisco_iosxe', 'tier1', 'configure terminal \n ipv6 nd raguard policy RAGUARD \n interface GigabitEthernet0/1 \n ipv6 nd raguard attach-policy RAGUARD \n end')
             add_cmd(cmds, 'juniper', 'tier1', 'configure \n set switch-options secure-access-port interface ge-0/0/1.0 ipv6-ra-guard \n commit')
@@ -380,11 +366,11 @@ def enrich_with_ipv6(base: Dict[str, Any]):
         # Para proveedores de acceso (GPON/OLT)
         for gpon_key in ('zte', 'huawei', 'zhone', 'adtran', 'ta5k', 'zone'):
             if 'ipv6_config_start' in steps:
-                steps['ipv6_config_start']['body'] += (
-                    '\n\n**Asignación de WAN IPv6 en Redes de Acceso GPON:**\n'
-                    '- Los clientes residenciales (ONTs) típicamente adquieren su direccionamiento IPv6 a través de **DHCPv6 Prefix Delegation (DHCPv6-PD)**. '
-                    'El OLT delega un prefijo corto (ej: un `/56` o `/60`) a la ONT. El Router del cliente auto-subdivide ese prefijo '
-                    'en subredes `/64` para sus interfaces LAN internas, y activa SLAAC para los dispositivos locales.'
+                steps['ipv6_config_start']['body_ipv6'] = (
+                    "**Asignación de WAN IPv6 en Redes de Acceso GPON:**\n"
+                    "- Los clientes residenciales (ONTs) típicamente adquieren su direccionamiento IPv6 a través de **DHCPv6 Prefix Delegation (DHCPv6-PD)**. "
+                    "El OLT delega un prefijo corto (ej: un `/56` o `/60`) a la ONT. El Router del cliente auto-subdivide ese prefijo "
+                    "en subredes `/64` para sus interfaces LAN internas, y activa SLAAC para los dispositivos locales."
                 )
                 cmds = steps['ipv6_config_start'].get('commands', {})
                 # Agregar configuraciones de IPv6 WAN y DHCPv6 Prefix Delegation para clientes FTTH
@@ -394,7 +380,7 @@ def enrich_with_ipv6(base: Dict[str, Any]):
                 add_cmd(cmds, 'zte', 'tier1', 'configure terminal \n ipv6 route ::/0 2001:db8::1 \n end')
 
     # ==========================================================================
-    # I. SIMULATED OUTPUTS ENRICHMENT
+    # 8. SIMULATED OUTPUTS ENRICHMENT
     # ==========================================================================
     try:
         from data.simulated_outputs import SIMULATED_OUTPUTS

@@ -677,11 +677,22 @@ class WebApp {
             }
         }
         
+        // Versioned Step Content (IPv4 vs IPv6)
+        let stepTitle = step.title;
+        let stepBody = step.body;
+        let stepExpected = step.expected;
+        
+        if (this.activeIpVersion === 'ipv6') {
+            if (step.title_ipv6) stepTitle = step.title_ipv6;
+            if (step.body_ipv6) stepBody = step.body_ipv6;
+            if (step.expected_ipv6) stepExpected = step.expected_ipv6;
+        }
+
         // Breadcrumbs
         this.renderBreadcrumbs();
 
         // Title & Tier
-        document.getElementById('step-title').innerText = this.getLocalizedText(step, 'title');
+        document.getElementById('step-title').innerText = this.getLocalizedText({title: stepTitle}, 'title');
         document.getElementById('step-tier-badge').innerText = `Tier ${step.tier || 1}`;
         
         // Render step hierarchies
@@ -701,7 +712,7 @@ class WebApp {
         document.getElementById('step-number-badge').innerText = this.currentLang === 'es' ? `Paso ${idx}` : `Step ${idx}`;
         
         // Description Body (simple Markdown replacement)
-        let bodyHtml = this.replaceMarkdown(this.getLocalizedText(step, 'body') || '');
+        let bodyHtml = this.replaceMarkdown(this.getLocalizedText({body: stepBody}, 'body') || '');
         bodyHtml = this.applyVariablesToText(bodyHtml);
         document.getElementById('step-body-content').innerHTML = bodyHtml;
 
@@ -741,7 +752,7 @@ class WebApp {
         }
         
         // Expected outcome
-        const appliedExpected = this.applyVariablesToText(this.getLocalizedText(step, 'expected') || 'N/A');
+        const appliedExpected = this.applyVariablesToText(this.getLocalizedText({expected: stepExpected}, 'expected') || 'N/A');
         document.getElementById('expected-text').innerHTML = this.replaceMarkdown(appliedExpected);
         
         // Load note text from logs
@@ -754,7 +765,8 @@ class WebApp {
         choicesContainer.innerHTML = '';
         
         // Filter choices by tier compatibility
-        const visibleChoices = (step.choices || []).filter(ch => {
+        const stepChoices = (this.activeIpVersion === 'ipv6' && step.choices_ipv6) ? step.choices_ipv6 : step.choices;
+        const visibleChoices = (stepChoices || []).filter(ch => {
             const nxt = ch.next;
             if (!nxt || nxt === 'back_menu') return true;
             
