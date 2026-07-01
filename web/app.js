@@ -3382,37 +3382,48 @@ Active Alarms   : none detected
             const isIpv6Cmd = clean.includes('ipv6') || 
                                clean.includes('ospf3') || 
                                clean.includes('ospfv3') || 
+                               clean.includes('ospf v3') || 
+                               clean.includes('ospf6') || 
                                clean.includes('mld') || 
                                clean.includes('static6') || 
                                clean.includes('inet6') || 
                                clean.includes('raguard') || 
                                clean.includes('/ipv6') ||
                                clean.includes('ndp') ||
-                               (clean.includes(' nd ') || clean.startsWith('nd ')) ||
+                               clean.includes(' nd ') || clean.startsWith('nd ') ||
                                clean.includes('dhcp6') ||
                                clean.includes('dhcpv6') ||
                                clean.includes('vpnv6') ||
                                clean.includes('2001:db8') ||
-                               clean.includes('fe80::');
+                               clean.includes('fe80::') ||
+                               clean.includes('address-family') ||
+                               clean.includes('address family') ||
+                               clean.includes('address families');
+                               
+            // Determine if it is specifically an IPv4 command
+            const isIpv4Cmd = clean.includes('ip route') || 
+                               clean.includes('ip ospf') || 
+                               clean.includes('show ip bgp') || 
+                               clean.includes('show ip interface') || 
+                               clean.includes('show ip neighbor') || 
+                               clean.includes('arp ') || clean.includes(' arp ') ||
+                               clean.includes('igmp') ||
+                               clean.includes('/ip route') ||
+                               clean.includes('192.168.') ||
+                               clean.includes('10.10.') ||
+                               // For Juniper and Fortinet OSPF: "show ospf neighbor" is IPv4 because the IPv6 version has ospf3
+                               (clean.includes('ospf') && !clean.includes('ospf3') && !clean.includes('ospfv3') && !clean.includes('ospf v3') && !clean.includes('ospf6')) ||
+                               // For BGP: "show bgp neighbor" or "show bgp summary" is IPv4 if the IPv6 version has bgp ipv6
+                               (clean.includes('bgp') && !clean.includes('ipv6') && !clean.includes('vpnv6') && !clean.includes('address-family') && !clean.includes('address family') && !clean.includes('address families'));
                                
             if (version === 'ipv6') {
-                // For IPv6, filter out explicit IPv4 commands. Keep generic or IPv6-specific commands.
-                const isIpv4Cmd = clean.includes('ip route') || 
-                                   clean.includes('ip ospf') || 
-                                   clean.includes('show ip bgp') || 
-                                   clean.includes('show ip interface') || 
-                                   clean.includes('show ip neighbor') || 
-                                   clean.includes(' arp ') || clean.startsWith('arp ') ||
-                                   clean.includes('igmp') ||
-                                   clean.includes('/ip route') ||
-                                   clean.includes('192.168.') ||
-                                   clean.includes('10.10.');
-                                   
-                if (isIpv4Cmd) return false;
+                // In IPv6 mode: filter out explicit IPv4 commands. Keep generic or IPv6-specific commands.
+                if (isIpv4Cmd && !isIpv6Cmd) return false;
                 return true;
             } else {
-                // For IPv4, filter out IPv6 commands
-                return !isIpv6Cmd;
+                // In IPv4 mode: filter out explicit IPv6 commands. Keep generic or IPv4-specific commands.
+                if (isIpv6Cmd && !isIpv4Cmd) return false;
+                return true;
             }
         });
     }
