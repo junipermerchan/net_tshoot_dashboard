@@ -28,11 +28,12 @@ VendorMap = {
     "juniper": "Juniper JunOS",
     "cisco_iosxr": "Cisco IOS-XR",
     "cisco_iosxe": "Cisco IOS-XE / NX-OS",
+    "arista": "Arista EOS",
+    "huawei": "Huawei VRP / GPON OLT",
     "mikrotik": "MikroTik RouterOS v7",
     "fortinet": "Fortinet FortiOS",
     "zone": "Vendor Genérico (ZTE/Huawei)",
     "zte": "ZTE GPON OLT (C300/C600/XGS-PON)",
-    "huawei": "Huawei GPON OLT (MA5600/MA5800)",
     "zhone": "Zhone / DASAN GPON OLT (MXK/MXK-F)",
     "adtran": "ADTRAN Total Access 5000 (AOS)",
     "ta5k": "TA5000 / ADTRAN AOS (FTTH)",
@@ -8927,6 +8928,182 @@ def _kb() -> Dict[str, Any]:
         }
     }
 
+    base['ripv2'] = {
+        'name': 'RIPv2 Troubleshooting',
+        'description': 'Diagnóstico profundo de Routing Information Protocol (RIPv2). Timers, base de datos de rutas, métrica 16, split horizon, y autenticación MD5.',
+        'vendors': ['juniper', 'cisco_iosxr', 'cisco_iosxe', 'mikrotik', 'fortinet'],
+        'steps': {
+            'rip_start': {
+                'title': '1. Definir ámbito del problema RIP',
+                'tier': 1,
+                'body': '**Dónde:** Plano de control (procesamiento de actualizaciones UDP 520, timers) y plano de datos (envío de actualizaciones multicast).\n\n**Cómo:** Vecinos que no intercambian rutas, métricas incorrectas (hop count excedido), o caída de adyacencias tras cambios de red.\n\n**Cuándo:** Tras cambios de direccionamiento, filtros de ACL, habilitación de autenticación, o cambio de routers de tránsito.\n\n**Por qué:** Mismatch de autenticación, timers desincronizados, hop count mayor a 15 (métrica 16 inalcanzable), o split horizon ocultando rutas.\n\n**Para qué:** Clasificar la falla para saber si se deben revisar adyacencias físicas, configuraciones de timers, o métricas de prefijo.',
+                'expected': 'Servicio RIP activo, interfaces en Up/Up y procesando paquetes en puerto UDP 520.',
+                'choices': [
+                    {'label': 'Verificar intercambio de vecinos y updates', 'next': 'rip_neighbor'},
+                    {'label': 'Revisar tabla de rutas y métrica 16', 'next': 'rip_routes'},
+                    {'label': 'Ajustar timers y parámetros globales', 'next': 'rip_timers'}
+                ],
+                'commands': {
+                    'juniper': {
+                        'tier1': ['show rip neighbor', 'show rip statistics'],
+                        'tier2': ['show route protocol rip'],
+                        'tier3': ['show log messages | match rip'],
+                        'arch': ['show configuration protocols rip']
+                    },
+                    'cisco_iosxe': {
+                        'tier1': ['show ip protocols', 'show ip rip database'],
+                        'tier2': ['show ip route rip'],
+                        'tier3': ['debug ip rip'],
+                        'arch': ['show running-config | section rip']
+                    },
+                    'cisco_iosxr': {
+                        'tier1': ['show rip interface', 'show rip statistics'],
+                        'tier2': ['show route rip'],
+                        'tier3': ['debug rip'],
+                        'arch': ['show running-config router rip']
+                    },
+                    'fortinet': {
+                        'tier1': ['get router info rip database', 'get router info rip interface'],
+                        'tier2': ['get router info routing-table rip'],
+                        'tier3': ['diagnose ip router rip all'],
+                        'arch': ['show router rip']
+                    },
+                    'mikrotik': {
+                        'tier1': ['/routing rip neighbor print', '/routing rip instance print'],
+                        'tier2': ['/ip route print where rip=yes'],
+                        'tier3': ['/log print where topics~"rip"'],
+                        'arch': ['/routing rip export']
+                    }
+                }
+            },
+            'rip_neighbor': {
+                'title': '2. Diagnóstico de Vecinos y Autenticación RIP',
+                'tier': 1,
+                'body': '**Objetivo:** Resolver problemas de autenticación o bloqueo de actualizaciones RIP entre vecinos.\n\nRIPv2 no forma adyacencias de estado formal (como OSPF o BGP), sino que depende del intercambio periódico de mensajes Request/Response por el puerto UDP 520. Un desajuste de autenticación MD5 o el uso de interfaces pasivas evitará que las rutas se instalen.',
+                'expected': 'Actualizaciones recibidas exitosamente desde el vecino y autenticadas correctamente.',
+                'choices': [
+                    {'label': 'Revisar tabla de rutas', 'next': 'rip_routes'},
+                    {'label': 'Volver al inicio', 'next': 'rip_start'}
+                ],
+                'commands': {
+                    'juniper': {
+                        'tier1': ['show rip neighbor detail'],
+                        'tier2': ['show rip statistics'],
+                        'tier3': ['monitor traffic interface <if> matching "udp port 520"'],
+                        'arch': ['show configuration protocols rip']
+                    },
+                    'cisco_iosxe': {
+                        'tier1': ['show ip rip database'],
+                        'tier2': ['debug ip rip'],
+                        'tier3': ['show ip protocols'],
+                        'arch': ['show running-config | section interface']
+                    },
+                    'cisco_iosxr': {
+                        'tier1': ['show rip neighbor detail'],
+                        'tier2': ['debug rip'],
+                        'tier3': ['show rip statistics'],
+                        'arch': ['show running-config router rip']
+                    },
+                    'fortinet': {
+                        'tier1': ['get router info rip neighbor'],
+                        'tier2': ['diagnose ip router rip all'],
+                        'tier3': ['get router info rip database'],
+                        'arch': ['show router rip']
+                    },
+                    'mikrotik': {
+                        'tier1': ['/routing rip neighbor print detail'],
+                        'tier2': ['/log print where topics~"rip"'],
+                        'tier3': ['/routing rip database print'],
+                        'arch': ['/routing rip export']
+                    }
+                }
+            },
+            'rip_routes': {
+                'title': '3. Diagnóstico de Prefijos y Métrica 16 (Poisoned)',
+                'tier': 2,
+                'body': '**Objetivo:** Identificar la causa de rutas faltantes o rutas en estado inaccesible (hop count = 16).\n\nEn RIP, cualquier prefijo con métrica 16 es considerado inaccesible (infinito). El split horizon evita bucles de enrutamiento pero puede ocultar rutas legítimas en redes no-completamente conexas (hub-and-spoke).',
+                'expected': 'Rutas RIP instaladas activamente en la tabla de enrutamiento con métrica <= 15.',
+                'choices': [
+                    {'label': 'Revisar timers de red', 'next': 'rip_timers'},
+                    {'label': 'Volver al inicio', 'next': 'rip_start'}
+                ],
+                'commands': {
+                    'juniper': {
+                        'tier1': ['show route protocol rip'],
+                        'tier2': ['show route protocol rip detail'],
+                        'tier3': ['show rip database'],
+                        'arch': ['show configuration protocols rip']
+                    },
+                    'cisco_iosxe': {
+                        'tier1': ['show ip route rip', 'show ip rip database'],
+                        'tier2': ['show ip route rip detail'],
+                        'tier3': ['debug ip rip events'],
+                        'arch': ['show running-config | section router rip']
+                    },
+                    'cisco_iosxr': {
+                        'tier1': ['show route rip', 'show rip database'],
+                        'tier2': ['show route rip detail'],
+                        'tier3': ['debug rip database'],
+                        'arch': ['show running-config router rip']
+                    },
+                    'fortinet': {
+                        'tier1': ['get router info routing-table rip', 'get router info rip database'],
+                        'tier2': ['get router info routing-table rip detail'],
+                        'tier3': ['diagnose ip router rip all'],
+                        'arch': ['show router rip']
+                    },
+                    'mikrotik': {
+                        'tier1': ['/ip route print where rip=yes', '/routing rip database print'],
+                        'tier2': ['/ip route print detail where rip=yes'],
+                        'tier3': ['/log print where topics~"rip"'],
+                        'arch': ['/routing rip export']
+                    }
+                }
+            },
+            'rip_timers': {
+                'title': '4. Sincronización y Ajuste de Timers',
+                'tier': 2,
+                'body': '**Objetivo:** Diagnosticar la inestabilidad de rutas debido a desajustes en los timers de RIP.\n\nRIPv2 utiliza cuatro timers principales: Update (30s), Invalid (180s), Holddown (180s) y Flush (240s). Si los timers no coinciden en todos los routers de la red, se producirá un borrado intermitente de rutas (route flapping).',
+                'expected': 'Timers de RIP alineados y estables, evitando borrado temporal de rutas.',
+                'choices': [
+                    {'label': 'Volver al inicio', 'next': 'rip_start'}
+                ],
+                'commands': {
+                    'juniper': {
+                        'tier1': ['show rip overview'],
+                        'tier2': ['show rip statistics'],
+                        'tier3': ['show log messages | match rip'],
+                        'arch': ['show configuration protocols rip']
+                    },
+                    'cisco_iosxe': {
+                        'tier1': ['show ip protocols'],
+                        'tier2': ['show ip rip database'],
+                        'tier3': ['debug ip rip database'],
+                        'arch': ['show running-config | section router rip']
+                    },
+                    'cisco_iosxr': {
+                        'tier1': ['show rip interface'],
+                        'tier2': ['show rip statistics'],
+                        'tier3': ['debug rip interface'],
+                        'arch': ['show running-config router rip']
+                    },
+                    'fortinet': {
+                        'tier1': ['get router info rip status'],
+                        'tier2': ['get router info rip database'],
+                        'tier3': ['diagnose ip router rip all'],
+                        'arch': ['show router rip']
+                    },
+                    'mikrotik': {
+                        'tier1': ['/routing rip instance print detail'],
+                        'tier2': ['/routing rip database print'],
+                        'tier3': ['/log print where topics~"rip"'],
+                        'arch': ['/routing rip export']
+                    }
+                }
+            }
+        }
+    }
+
     from . import config_guides
     base.update(config_guides.CONFIG_GUIDES)
     
@@ -8936,7 +9113,7 @@ def _kb() -> Dict[str, Any]:
     
     # Enrich wireshark_tcpdump with missing vendors
     if 'wireshark_tcpdump' in base:
-        base['wireshark_tcpdump']['vendors'] = ['juniper', 'cisco_iosxr', 'cisco_iosxe', 'mikrotik', 'fortinet', 'linux']
+        base['wireshark_tcpdump']['vendors'] = ['juniper', 'cisco_iosxr', 'cisco_iosxe', 'mikrotik', 'fortinet', 'linux', 'arista', 'huawei']
 
     # Aplicar mejoras científicas granulares (hipótesis, evidencia, sesgos, referencias)
     from data.scientific_steps import SCIENTIFIC_OVERRIDES

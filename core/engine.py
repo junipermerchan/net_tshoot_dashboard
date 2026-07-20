@@ -44,6 +44,9 @@ class Engine:
             elif choice == "sci_mode":
                 self._configure_scientific_mode()
                 continue
+            elif choice == "diagnostico_magico":
+                self._run_magic_diagnostic()
+                continue
             self.tech = choice
             concepts_result = self._concepts_menu()
             if concepts_result == "back":
@@ -96,6 +99,7 @@ class Engine:
             mode_label = f"Modo Científico ({self.scientific_mode})"
             options.append({"key": "sci_mode", "label": f"⚙️ Configurar {mode_label}"})
             options.append({"key": "search", "label": "Búsqueda Global (Comandos y Conceptos)"})
+            options.append({"key": "diagnostico_magico", "label": "🤖 Diagnóstico Mágico de Configuración y Logs (Analizador)"})
 
             if filtered_ts:
                 options.append({"category": True, "label": "━━ Troubleshooting ━━"})
@@ -1722,7 +1726,192 @@ class Engine:
 
                 filepath.write_text("\n".join(md_content), encoding="utf-8")
                 display.print_alert(f"Reporte exportado con éxito a: {filepath}")
+
+                # Generar adicionalmente el Runbook de Remediación consolidado
+                fix_lines = []
+                for n in self.notes_log:
+                    note = n.get('note', '')
+                    if 'Comandos de reparación sugeridos:' in note or '$ ' in note:
+                        fix_lines.append(f"# === {n['title']} ===")
+                        for line in note.split('\n'):
+                            if line.strip().startswith('$ '):
+                                fix_lines.append(line.strip().replace('$ ', ''))
+                            elif line.strip().startswith('- ') or line.strip().startswith('* '):
+                                fix_lines.append(f"\n# {line.strip()}")
+
+                if fix_lines:
+                    runbook_path = filepath.parent / f"{filepath.stem}_runbook.txt"
+                    runbook_path.write_text("# RUNBOOK DE REMEDIACIÓN Y COMANDOS FIX\n# Generado por Net Troubleshoot Dashboard\n\n" + "\n".join(fix_lines), encoding="utf-8")
+                    display.print_alert(f"Runbook de solución generado en: {runbook_path}")
+
                 display.pause()
             except Exception as e:
                 display.print_alert(f"Error al escribir el archivo: {e}")
                 display.pause()
+
+    def _run_magic_diagnostic(self):
+        """Módulo interactivo de Diagnóstico Mágico e Interpretación de Errores."""
+        from core.diagnostic_engine import diagnose_config_or_log, VENDORS
+        
+        display.clear()
+        display.print_banner(confidence=self.session_confidence)
+        
+        if display.RICH_AVAILABLE:
+            from rich.panel import Panel
+            from rich.table import Table
+            from rich.text import Text
+            
+            display._console.print(Panel(
+                "[bold pink1]🤖 ANALIZADOR DE DIAGNÓSTICO MÁGICO[/bold pink1]\n\n"
+                "Pegue la salida de un comando de consola, logs del sistema (Syslog) o fragmentos "
+                "de configuración de cualquier vendor. El motor identificará la anomalía, el RFC "
+                "asociado y generará los comandos de reparación específicos.",
+                border_style="pink1"
+            ))
+        else:
+            print("=============================================================")
+            print("🤖 ANALIZADOR DE DIAGNÓSTICO MÁGICO")
+            print("=============================================================")
+            print("Pegue comandos, logs o configuración. Se detectará el error automáticamente.")
+            
+        print("\nSeleccione el vendor de origen (o presione ENTER para auto-detectar):")
+        vendor_keys = list(VENDORS.keys())
+        for idx, vk in enumerate(vendor_keys, 1):
+            print(f"  [{idx}] {VENDORS[vk]}")
+        print("  [0] Auto-detectar (Recomendado)")
+        
+        selected_vk = None
+        v_choice = display.prompt_choice("\nSeleccione opción [0]: ").strip()
+        if v_choice and v_choice != "0":
+            try:
+                v_idx = int(v_choice) - 1
+                if 0 <= v_idx < len(vendor_keys):
+                    selected_vk = vendor_keys[v_idx]
+            except ValueError:
+                pass
+                
+        print("\n--- Pegue el contenido a analizar ---")
+        print("(Pegue el texto y escriba 'EOF' en una línea nueva o deje una línea en blanco y presione ENTER para finalizar):")
+        
+        lines = []
+        while True:
+            try:
+                line = input()
+                if line.strip() == "EOF" or (not line.strip() and lines):
+                    break
+                lines.append(line)
+            except (KeyboardInterrupt, EOFError):
+                break
+                
+        input_text = "\n".join(lines)
+        if not input_text.strip():
+            display.print_alert("No se ingresó ningún texto para analizar.")
+            display.pause()
+            return
+            
+        print("\n  [Analizando datos del plano de control y datos...]")
+        import time
+        time.sleep(0.5)
+        
+        report = diagnose_config_or_log(input_text, selected_vk)
+        
+        display.clear()
+        display.print_banner(confidence=self.session_confidence)
+        
+        if display.RICH_AVAILABLE:
+            severity_color = "red" if report["severity"] == "Crítica" else "yellow" if report["severity"] == "Alta" else "cyan"
+            
+            # Encabezado del reporte
+            header_text = Text()
+            header_text.append("PROBLEMA: ", style="bold")
+            header_text.append(report["problem_title"] + "\n", style="bold red" if report["severity"] in ("Alta", "Crítica") else "bold yellow")
+            header_text.append(f"Tecnología: {report['technology']} | Severidad: {report['severity']} | RFC: {report['rfc_reference']}", style="dim")
+            
+            display._console.print(Panel(header_text, title="Diagnóstico Inteligente", border_style="red"))
+            
+            # Causa raíz
+            display._console.print(Panel(
+                f"[bold cyan]Explicación Arquitectónica (Causa Raíz):[/bold cyan]\n{report['architectural_cause']}\n\n"
+                f"[bold green]Criterio de Aceptación Sano:[/bold green]\n{report['acceptance_criteria']}",
+                title="Análisis Científico",
+                border_style="cyan"
+            ))
+            
+            # Líneas del error
+            if report.get("anomalous_lines"):
+                anom_text = "\n".join([f"-> {l}" for l in report["anomalous_lines"]])
+                display._console.print(Panel(
+                    anom_text,
+                    title="Líneas Anómalas Detectadas",
+                    border_style="yellow",
+                    style="bold red"
+                ))
+                
+            # Soluciones
+            if report.get("solutions"):
+                table = Table(title="Plan de Acción y Comandos de Solución (Fix)", border_style="green", show_lines=True)
+                table.add_column("Vendor / Plataforma", style="bold yellow", width=25)
+                table.add_column("Comandos sugeridos de reparación", style="green")
+                
+                for v_key, cmds_list in report["solutions"].items():
+                    vendor_name = VENDORS.get(v_key, v_key.upper())
+                    cmds_text = "\n".join([f"$ {c}" for c in cmds_list])
+                    table.add_row(vendor_name, cmds_text)
+                    
+                display._console.print(table)
+        else:
+            print("=============================================================")
+            print(f"DIAGNÓSTICO: {report['problem_title']}")
+            print(f"Tecnología: {report['technology']} | Severidad: {report['severity']}")
+            print(f"RFC Referencia: {report['rfc_reference']}")
+            print("=============================================================")
+            print(f"\n[Causa Raíz]:\n{report['architectural_cause']}")
+            print(f"\n[Criterio Sano]:\n{report['acceptance_criteria']}")
+            
+            if report.get("anomalous_lines"):
+                print("\n[Líneas Anómalas]:")
+                for l in report["anomalous_lines"]:
+                    print(f"  ! {l}")
+                    
+            if report.get("solutions"):
+                print("\n[Plan de Acción y Comandos de Solución]:")
+                for v_key, cmds_list in report["solutions"].items():
+                    print(f"\n  * {VENDORS.get(v_key, v_key.upper())}:")
+                    for c in cmds_list:
+                        print(f"    $ {c}")
+                        
+        print("\nOpciones de Registro:")
+        print("  [1] Guardar reporte de diagnóstico en la bitácora activa")
+        print("  [2] Descartar y volver")
+        
+        save_choice = display.prompt_choice("\nSeleccione opción [1]: ").strip()
+        if not save_choice or save_choice == "1":
+            import datetime
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            # Construir reporte
+            note_lines = [
+                f"PROBLEMA DETECTADO: {report['problem_title']}",
+                f"Tecnología: {report['technology']} | Severidad: {report['severity']}",
+                f"RFC: {report['rfc_reference']}",
+                f"Causa Raíz: {report['architectural_cause']}",
+                f"Criterio de Aceptación: {report['acceptance_criteria']}"
+            ]
+            if report.get("solutions"):
+                note_lines.append("Comandos de reparación sugeridos:")
+                for vk, clst in report["solutions"].items():
+                    note_lines.append(f"  - {VENDORS.get(vk, vk.upper())}:")
+                    for c in clst:
+                        note_lines.append(f"    $ {c}")
+                        
+            self.notes_log.append({
+                "tech": "diagnostico_magico",
+                "tech_name": "Analizador Inteligente",
+                "step": "diagnostico_magico",
+                "title": f"Diagnóstico: {report['problem_title']}",
+                "note": "\n".join(note_lines),
+                "timestamp": timestamp
+            })
+            display.print_alert("Reporte de diagnóstico registrado en la bitácora de sesión.")
+            
+        display.pause()
