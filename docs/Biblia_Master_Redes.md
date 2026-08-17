@@ -3973,3 +3973,108 @@ Total de pasos diagnósticos: **5**
 
 🔬 **Hipótesis Científica**: Las tramas de tamaño normal fallan al cruzar el enlace debido a un MTU de transporte demasiado bajo que causa el descarte silencioso de tramas QinQ de 1522 bytes.
 🛠️ **Solución Rápida (Quick Fix)**: Incrementar el MTU de la interfaz física a 1508 o preferiblemente a 9000 (Jumbo MTU) en todos los switches y routers en el trayecto para alojar el overhead de las etiquetas.
+
+### Tecnología: EVPN / VXLAN: Diagnóstico de Plano de Control (BGP EVPN) y Plano de Datos (VTEP)
+Total de pasos diagnósticos: **3**
+
+#### Paso `evpn_vxlan_step1`: Validación de Underlay IP y Conectividad NVE / VTEP (Tier 3)
+**Descripción**: Confirmar que la dirección Loopback del VTEP remoto es alcanzable mediante el IGP (OSPF/IS-IS) sin fragmentación MTU.
+
+**Resultado Esperado**: Loopback alcanzable con MTU jumbo (>= 1600 bytes para overhead VXLAN).
+
+
+#### Paso `evpn_vxlan_step2`: Inspección de BGP EVPN NLRI (Rutas Tipo 2 y Tipo 3) (Tier 3)
+**Descripción**: Verificar la recepción y anuncio de rutas EVPN Type-2 (MAC/IP Advertisement) y Type-3 (Inclusive Multicast Ethernet Tag Route).
+
+**Resultado Esperado**: Ruta Type-3 presente para establecer el túnel VTEP y Type-2 asociada al VNI con Next-Hop válido.
+
+
+#### Paso `evpn_vxlan_step3`: Verificación de Tablas de Forwarding L2/L3 y Estado VNI (Tier 3)
+**Descripción**: Asegurar que la MAC remota se instala en la tabla de puente local (FDB / MAC-VRF) apuntando hacia el túnel VXLAN.
+
+**Resultado Esperado**: MAC aprendida con salida hacia la interfaz del túnel VXLAN/VTEP remoto.
+
+
+### Tecnología: CGNAT: Diagnóstico de Agotamiento de Puertos (Port Exhaustion) y Asignación de Bloques (BPA)
+Total de pasos diagnósticos: **3**
+
+#### Paso `cgnat_tshoot_step1`: Monitoreo de Utilización del Pool Público y Detección de Drops (Tier 3)
+**Descripción**: Identificar saturación del pool público y cuantificar los paquetes descartados por falta de puertos libres.
+
+**Resultado Esperado**: Consumo de puertos < 85% y contadores de Port Allocation Failures en cero.
+
+
+#### Paso `cgnat_tshoot_step2`: Inspección de Bloques Asignados al Suscriptor (BPA / Port-Block Allocation) (Tier 3)
+**Descripción**: Verificar si la IP privada del cliente (RFC 6598 - 100.64.0.0/10) alcanzó la cuota máxima de bloques/puertos por usuario.
+
+**Resultado Esperado**: Rango de puertos TCP/UDP asignados visibles sin estado de bloqueo o error de excedente de límite.
+
+
+#### Paso `cgnat_tshoot_step3`: Validación de Sesiones Activas y Depuración en Tiempo Real (Tier 3)
+**Descripción**: Detectar si aplicaciones específicas (e.g., P2P, torrents o malware) están abriendo ráfagas de conexiones concurrentes.
+
+**Resultado Esperado**: Distribución homogénea de sesiones sin concentración anómala en un solo puerto o destino.
+
+
+### Tecnología: Inter-AS Option B: Diagnóstico de Plano de Control VPNv4 y Swap de Etiquetas en ASBR
+Total de pasos diagnósticos: **3**
+
+#### Paso `interas_opt_b_step1`: Validación de Sesión MP-eBGP VPNv4 y Retención de Rutas (No RT Filtering) (Tier 3)
+**Descripción**: Confirmar que la sesión eBGP entre ASBRs tiene activa la AFI/SAFI VPNv4 y que el ASBR no descarta rutas por falta de VRF local (desactivación de RT filtering / retain all).
+
+**Resultado Esperado**: Sesión VPNv4 en estado Established con prefijos recibidos e instalados en la tabla global VPNv4.
+
+
+#### Paso `interas_opt_b_step2`: Inspección de Asignación y Swap de Etiquetas MPLS en el ASBR (Tier 3)
+**Descripción**: Verificar que el ASBR local reescribe el Next-Hop (next-hop-self) y asigna una nueva etiqueta VPN saliente hacia el ASBR remoto.
+
+**Resultado Esperado**: Etiqueta VPN entrante asignada localmente y mapeada a la etiqueta saliente anunciada por el peer ASBR.
+
+
+#### Paso `interas_opt_b_step3`: Comprobación de Encapsulación y Conectividad en el Enlace Inter-AS (Tier 3)
+**Descripción**: Descartar problemas de subcapa física/enlace en la interfaz que une ambos ASBRs y confirmar que MPLS está habilitado sin LDP sobre el enlace inter-AS.
+
+**Resultado Esperado**: Interfaz con MPLS habilitado, MTU jumbo configurada y paquetes etiquetados cruzando sin drops.
+
+
+### Tecnología: Inter-AS Option C: Diagnóstico de BGP Labeled Unicast (BGP-LU) y Túnel LSP Extremo a Extremo
+Total de pasos diagnósticos: **3**
+
+#### Paso `interas_opt_c_step1`: Validación de BGP-LU (AFI/SAFI 1/4 - Labeled Unicast) en ASBRs y PEs (Tier 4)
+**Descripción**: Comprobar que la Loopback del PE remoto está presente en la tabla inet.3 / LFIB con una etiqueta BGP asignada para el LSP inter-dominio.
+
+**Resultado Esperado**: Loopback remota instalada en la RIB MPLS/inet.3 con etiqueta BGP-LU asignada y Next-Hop resoluble.
+
+
+#### Paso `interas_opt_c_step2`: Inspección de Sesión Multi-hop MP-eBGP VPNv4 (PE a PE o RR a RR) (Tier 4)
+**Descripción**: Confirmar que la sesión directa o indirecta eBGP VPNv4 multihop se encuentra en estado Established usando las Loopbacks como Source/Destination.
+
+**Resultado Esperado**: Sesión VPNv4 activa, prefijos cliente recibidos con Next-Hop apuntando a la Loopback del PE remoto (sin cambio a next-hop-self).
+
+
+#### Paso `interas_opt_c_step3`: Trazabilidad de la Pila de Etiquetas (3-Label Stack Traceroute) (Tier 4)
+**Descripción**: Verificar que el plano de datos transporta la triple etiqueta: Etiqueta VPN (L3VPN interior), Etiqueta BGP-LU (Inter-AS) y Etiqueta IGP/LDP (Transporte local AS).
+
+**Resultado Esperado**: LSP Ping/Traceroute exitoso resolviendo la pila de etiquetas a través del core y la frontera ASBR.
+
+
+### Tecnología: SR-MPLS & TI-LFA: Diagnóstico de SIDs, SRGB y Protección de Enlace/Nodo (<50ms)
+Total de pasos diagnósticos: **3**
+
+#### Paso `sr_tilfa_tshoot_step1`: Validación de SRGB y Anuncio de Prefix-SIDs en el IGP (Tier 3)
+**Descripción**: Comprobar que el rango SRGB está activo de forma homogénea y que el Prefix-SID del nodo remoto se recibe correctamente en el TLV del IGP.
+
+**Resultado Esperado**: SRGB configurado (ej. 16000-23999), Prefix-SID instalado en la base de datos del IGP sin conflictos de etiquetado.
+
+
+#### Paso `sr_tilfa_tshoot_step2`: Inspección de Adjacency-SIDs (Adj-SIDs) Dinámicos y Protección (Tier 3)
+**Descripción**: Verificar la asignación de Adj-SIDs locales en los enlaces punto a punto y la bandera de elegibilidad para protección de backup.
+
+**Resultado Esperado**: Adj-SIDs dinámicos presentes con flag de protección habilitado (B-Flag / Backup active).
+
+
+#### Paso `sr_tilfa_tshoot_step3`: Verificación de la Ruta de Backup TI-LFA y Pila de Etiquetas (PQ Node) (Tier 3)
+**Descripción**: Confirmar que el cálculo SPF de TI-LFA generó un camino de respaldo libre de bucles con su respectivo stack de etiquetas (P-Space / Q-Space repair list).
+
+**Resultado Esperado**: Entrada de forwarding con salto Repair preprogramado en hardware (FIB) apuntando al P-Node/Q-Node.
+

@@ -12839,3 +12839,522 @@ VENDOR_CONCEPTS_MATRIX = {
         'key_commands': '• `ip addr show` | `ip route show` | `vtysh -c "show ip bgp summary"` | `tcpdump -nn -i eth0`'
     }
 }
+
+
+
+# Advanced Datacenter Overlay & CGNAT Modules
+ADVANCED_SP_DC_MODULES = {
+    'evpn_vxlan_tshoot': {
+        'name': 'EVPN / VXLAN: Diagnóstico de Plano de Control (BGP EVPN) y Plano de Datos (VTEP)',
+        'description': 'Resolución de problemas de aprendizaje de MAC/IP (EVPN Type-2), descubrimiento de VTEPs (Type-3 IMET) y encapsulación VXLAN en el Data Plane.',
+        'vendors': ['juniper', 'cisco_iosxr', 'cisco_iosxe', 'fortinet', 'arista', 'huawei'],
+        'steps': {
+            'evpn_vxlan_step1': {
+                'title': 'Validación de Underlay IP y Conectividad NVE / VTEP',
+                'tier': 3,
+                'osi_layer': 'L2 Overlay / L3 Underlay (BGP EVPN Type-2/Type-3)',
+                'network_domain': 'Datacenter & Overlay Technologies',
+                'methodology': 'Prueba de Conectividad e Inspección MTU Jumbo (Overhead VXLAN 50-54 bytes)',
+                'body': 'Confirmar que la dirección Loopback del VTEP remoto es alcanzable mediante el IGP (OSPF/IS-IS) sin fragmentación MTU.',
+                'expected': 'Loopback alcanzable con MTU jumbo (>= 1600 bytes para overhead VXLAN).',
+                'commands': {
+                    'juniper': ['ping <vtep_remote_ip> size 1550 do-not-fragment', 'show route <vtep_remote_ip> active-path', 'show interfaces vpx0'],
+                    'cisco_iosxr': ['ping <vtep_remote_ip> size 1550 df-bit', 'show ip route <vtep_remote_ip>', 'show nve peers'],
+                    'cisco_iosxe': ['show nve vni <vni>', 'show ip route <vtep_remote_ip>'],
+                    'fortinet': ['diagnose sys vxlan vni list', 'execute ping-options df-bit yes', 'execute ping-options data-size 1550', 'execute ping <vtep_remote_ip>'],
+                    'arista': ['ping <vtep_remote_ip> size 1550 df-bit', 'show vxlan vtep'],
+                    'huawei': ['ping -s 1550 -f <vtep_remote_ip>', 'display vxlan vni']
+                },
+                'choices': [{'label': 'Siguiente: Inspección BGP EVPN NLRI', 'next': 'evpn_vxlan_step2'}]
+            },
+            'evpn_vxlan_step2': {
+                'title': 'Inspección de BGP EVPN NLRI (Rutas Tipo 2 y Tipo 3)',
+                'tier': 3,
+                'osi_layer': 'L2 Overlay / L3 Underlay',
+                'network_domain': 'Datacenter & Overlay Technologies',
+                'methodology': 'Auditoría de Rutas MAC/IP y Anuncio Multicast Inclusivo (IMET)',
+                'body': 'Verificar la recepción y anuncio de rutas EVPN Type-2 (MAC/IP Advertisement) y Type-3 (Inclusive Multicast Ethernet Tag Route).',
+                'expected': 'Ruta Type-3 presente para establecer el túnel VTEP y Type-2 asociada al VNI con Next-Hop válido.',
+                'commands': {
+                    'juniper': ['show route table __evpn__.evpn.0 match-prefix <mac_address>', 'show route table __evpn__.evpn.0 extensive | match <vtep_remote_ip>', 'show evpn instance extensive'],
+                    'cisco_iosxr': ['show bgp l2vpn evpn route-type 2 <mac_address>', 'show bgp l2vpn evpn route-type 3', 'show bgp l2vpn evpn vni <vni>'],
+                    'cisco_iosxe': ['show bgp l2vpn evpn mac <mac_address>', 'show bgp l2vpn evpn auto-discovery'],
+                    'fortinet': ['get router info bgp l2vpn evpn', 'get router info bgp l2vpn evpn route-type 2', 'get router info bgp l2vpn evpn route-type 3'],
+                    'arista': ['show bgp evpn route-type mac-ip', 'show bgp evpn route-type imet'],
+                    'huawei': ['display bgp evpn all route-type mac-ip', 'display bgp evpn all route-type inclusive-multicast']
+                },
+                'choices': [{'label': 'Siguiente: Tablas Forwarding L2/L3', 'next': 'evpn_vxlan_step3'}]
+            },
+            'evpn_vxlan_step3': {
+                'title': 'Verificación de Tablas de Forwarding L2/L3 y Estado VNI',
+                'tier': 3,
+                'osi_layer': 'L2 Overlay / L3 Underlay',
+                'network_domain': 'Datacenter & Overlay Technologies',
+                'methodology': 'Confirmación de Aprendizaje FDB en Puente Local y Salida Túnel',
+                'body': 'Asegurar que la MAC remota se instala en la tabla de puente local (FDB / MAC-VRF) apuntando hacia el túnel VXLAN.',
+                'expected': 'MAC aprendida con salida hacia la interfaz del túnel VXLAN/VTEP remoto.',
+                'commands': {
+                    'juniper': ['show ethernet-switching table vlan-name VLAN-<vlan_id>', 'show evpn database', 'show interfaces vxlan'],
+                    'cisco_iosxr': ['show mac address-table vni <vni>', 'show nve vni <vni> detail', 'show ip arp vrf <vrf>'],
+                    'cisco_iosxe': ['show mac address-table vlan <vlan_id>', 'show nve interface nve1 detail'],
+                    'fortinet': ['diagnose sys vxlan fdb list', 'get system interface | grep vxlan'],
+                    'arista': ['show mac address-table vlan <vlan_id>', 'show vxlan address-table'],
+                    'huawei': ['display mac-address vlan <vlan_id>', 'display vxlan tunnel']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'cgnat_exhaustion_tshoot': {
+        'name': 'CGNAT: Diagnóstico de Agotamiento de Puertos (Port Exhaustion) y Asignación de Bloques (BPA)',
+        'description': 'Procedimiento para identificar pérdida de tráfico por agotamiento de puertos TCP/UDP en el pool público, límites de BPA por suscriptor y drops en el motor de traducción.',
+        'vendors': ['juniper', 'cisco_iosxr', 'cisco_iosxe', 'fortinet', 'huawei'],
+        'steps': {
+            'cgnat_tshoot_step1': {
+                'title': 'Monitoreo de Utilización del Pool Público y Detección de Drops',
+                'tier': 3,
+                'osi_layer': 'L3 / L4 (CGNAT NAT444 / Deterministic / BPA)',
+                'network_domain': 'Service Provider Core & CGNAT',
+                'methodology': 'Medición de Capacidad del Pool Público y Conteo de Descartes',
+                'body': 'Identificar saturación del pool público y cuantificar los paquetes descartados por falta de puertos libres.',
+                'expected': 'Consumo de puertos < 85% y contadores de Port Allocation Failures en cero.',
+                'commands': {
+                    'juniper': ['show services nat pool <nat_instance>', 'show services nat statistics', 'show services nat interface usage'],
+                    'cisco_iosxr': ['show nat cgn inside interface', 'show nat cgn pool <nat_instance> statistics', 'show nat cgn drops'],
+                    'cisco_iosxe': ['show ip nat statistics', 'show ip nat pool name <nat_instance>'],
+                    'fortinet': ['diagnose firewall ippool-all list | grep -A 10 <nat_instance>', 'get system performance status'],
+                    'huawei': ['display nat statistics', 'display nat pool <nat_instance>']
+                },
+                'choices': [{'label': 'Siguiente: Inspección Bloques BPA Suscriptor', 'next': 'cgnat_tshoot_step2'}]
+            },
+            'cgnat_tshoot_step2': {
+                'title': 'Inspección de Bloques Asignados al Suscriptor (BPA / Port-Block Allocation)',
+                'tier': 3,
+                'osi_layer': 'L3 / L4 (CGNAT NAT444)',
+                'network_domain': 'Service Provider Core & CGNAT',
+                'methodology': 'Auditoría de Bloques de Puertos por IP Privada (RFC 6598 - 100.64.0.0/10)',
+                'body': 'Verificar si la IP privada del cliente (RFC 6598 - 100.64.0.0/10) alcanzó la cuota máxima de bloques/puertos por usuario.',
+                'expected': 'Rango de puertos TCP/UDP asignados visibles sin estado de bloqueo o error de excedente de límite.',
+                'commands': {
+                    'juniper': ['show services nat mappings inside prefix <subscriber_ip>', 'show services sessions source-prefix <subscriber_ip>'],
+                    'cisco_iosxr': ['show nat cgn inside address <subscriber_ip>', 'show nat cgn mappings inside-address <subscriber_ip>'],
+                    'cisco_iosxe': ['show ip nat translations verbose | include <subscriber_ip>'],
+                    'fortinet': ['diagnose firewall session filter src <subscriber_ip>', 'diagnose firewall session list', 'diagnose firewall ippool-all stats'],
+                    'huawei': ['display nat session subscriber <subscriber_ip>']
+                },
+                'choices': [{'label': 'Siguiente: Validación Sesiones Activas', 'next': 'cgnat_tshoot_step3'}]
+            },
+            'cgnat_tshoot_step3': {
+                'title': 'Validación de Sesiones Activas y Depuración en Tiempo Real',
+                'tier': 3,
+                'osi_layer': 'L3 / L4 (CGNAT NAT444)',
+                'network_domain': 'Service Provider Core & CGNAT',
+                'methodology': 'Análisis de Conexiones Concurrentes por Aplicación y Usuario',
+                'body': 'Detectar si aplicaciones específicas (e.g., P2P, torrents o malware) están abriendo ráfagas de conexiones concurrentes.',
+                'expected': 'Distribución homogénea de sesiones sin concentración anómala en un solo puerto o destino.',
+                'commands': {
+                    'juniper': ['show services sessions count', 'show services sessions order by bytes | match <subscriber_ip>'],
+                    'cisco_iosxr': ['show nat cgn sessions inside-address <subscriber_ip> detail'],
+                    'cisco_iosxe': ['show ip nat translations | count <subscriber_ip>'],
+                    'fortinet': ['diagnose sys session filter src <subscriber_ip>', 'diagnose sys session list', 'diagnose firewall pba-filter src <subscriber_ip>', 'diagnose firewall pba list'],
+                    'huawei': ['display nat session verbose source <subscriber_ip>']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'cgnat_bpa_config': {
+        'name': 'CGNAT: Despliegue de Pool Dinámico con Asignación de Bloque de Puertos (BPA)',
+        'description': 'Configuración de CGNAT NAT444 escalable utilizando Bulk Port Allocation (BPA) de 512/1024 puertos por bloque para reducir la generación de logs de syslog de traducción.',
+        'vendors': ['juniper', 'cisco_iosxr', 'cisco_iosxe', 'fortinet', 'huawei'],
+        'steps': {
+            'cgnat_config_step1': {
+                'title': 'Definición del Pool de Direcciones Públicas y Parámetros BPA',
+                'tier': 4,
+                'osi_layer': 'L3 / L4 CGNAT Provisioning',
+                'network_domain': 'Service Provider Core & CGNAT',
+                'methodology': 'Reserva de Rango Público y Cuota Máxima de Bloques por Suscriptor',
+                'body': 'Crear el pool público con rangos de puertos y tamaño de bloques fijos.',
+                'expected': 'Pool de traducción aprovisionado con cuota por usuario.',
+                'commands': {
+                    'juniper': ['set services nat pool CGNAT_POOL_BPA address-range low <pool_start_ip> high <pool_end_ip>', 'set services nat pool CGNAT_POOL_BPA port port-shared-block-size <block_size>', 'set services nat pool CGNAT_POOL_BPA port max-blocks-per-user <max_blocks>'],
+                    'cisco_iosxr': ['cgn nat pool CGNAT_POOL_BPA', ' address-range <pool_start_ip> <pool_end_ip>', ' port-block-allocation block-size <block_size> max-blocks-per-user <max_blocks>', ' commit'],
+                    'cisco_iosxe': ['ip nat pool CGNAT_POOL_BPA <pool_start_ip> <pool_end_ip> prefix-length 24'],
+                    'fortinet': ['config firewall ippool', '  edit "CGNAT_BPA_POOL"', '    set type port-block-allocation', '    set startip <pool_start_ip>', '    set endip <pool_end_ip>', '    set block-size <block_size>', '    set num-blocks-per-user <max_blocks>', '  next', 'end'],
+                    'huawei': ['nat pool CGNAT_POOL_BPA 1 <pool_start_ip> <pool_end_ip> user-group 1']
+                },
+                'choices': [{'label': 'Siguiente: Reglas de Traducción y Logging RFC 6888', 'next': 'cgnat_config_step2'}]
+            },
+            'cgnat_config_step2': {
+                'title': 'Asociación de Reglas de Traducción y Logging de Auditoría (RFC 6888)',
+                'tier': 4,
+                'osi_layer': 'L3 / L4 CGNAT Provisioning',
+                'network_domain': 'Service Provider Core & CGNAT',
+                'methodology': 'Mapeo de Rango Privado RFC 6598 y Envío de Syslog Compacto',
+                'body': 'Vincular el prefijo CGNAT privado (100.64.0.0/10) al pool BPA y habilitar el log de creación/destrucción de bloques.',
+                'expected': 'Tráfico de clientes traducido correctamente y generación de logs compactos por bloque asignado.',
+                'commands': {
+                    'juniper': ['set services nat rule-set CGNAT_RULES from source-address <inside_prefix>', 'set services nat rule-set CGNAT_RULES rule RULE_BPA then translated source-pool CGNAT_POOL_BPA', 'set services nat rule-set CGNAT_RULES rule RULE_BPA then translation-type source', 'set system syslog host 10.0.0.50 services any info'],
+                    'cisco_iosxr': ['cgn nat inside source rule-set CGNAT_POLICY', ' rule 1', '  match source-address <inside_prefix>', '  action translate source-pool CGNAT_POOL_BPA', '  syslog enable', ' commit'],
+                    'cisco_iosxe': ['access-list 100 permit ip <inside_prefix> any', 'ip nat inside source list 100 pool CGNAT_POOL_BPA overload'],
+                    'fortinet': ['config firewall policy', '  edit 10', '    set name "CGNAT_OUTBOUND"', '    set srcintf "port-inside"', '    set dstintf "port-outside"', '    set srcaddr "<inside_prefix>"', '    set dstaddr "all"', '    set action accept', '    set nat enable', '    set ippool enable', '    set poolname "CGNAT_BPA_POOL"', '    set logtraffic all', '  next', 'end'],
+                    'huawei': ['nat-policy', ' rule name CGNAT_OUTBOUND', '  source-zone trust', '  destination-zone untrust', '  source-address <inside_prefix>', '  action source-nat pool CGNAT_POOL_BPA']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    }
+}
+
+# Add concepts for EVPN VXLAN and CGNAT
+TECH_CONCEPTS['evpn_vxlan_tshoot'] = {
+    'concept': 'EVPN / VXLAN Control & Data Plane',
+    'summary': 'Diagnóstico de aprendizaje de direcciones MAC (Type-2) y túneles VTEP (Type-3 IMET) sobre VXLAN.',
+    'details': 'Valida la conectividad underlay IP, MTU Jumbo (>= 1550 bytes) y la instalación de entradas FDB en el puente local.'
+}
+
+TECH_CONCEPTS['cgnat_exhaustion_tshoot'] = {
+    'concept': 'Carrier-Grade NAT (CGNAT NAT444) Troubleshooting',
+    'summary': 'Resolución de problemas de agotamiento de puertos públicos y límites BPA por suscriptor.',
+    'details': 'Identifica saturación en pools públicos, monitorea asignaciones Bulk Port Allocation y rastrea ráfagas de conexiones concurrentes.'
+}
+
+TECH_CONCEPTS['cgnat_bpa_config'] = {
+    'concept': 'Carrier-Grade NAT (CGNAT BPA) Configuration',
+    'summary': 'Despliegue de traducción masiva NAT444 con asignación estática/dinámica de bloques de puertos.',
+    'details': 'Configura pools de direcciones públicas con bloques de 512/1024 puertos por usuario y auditoría compacta RFC 6888.'
+}
+
+KB.update(ADVANCED_SP_DC_MODULES)
+
+
+
+# Service Provider MPLS Inter-AS Option B & Option C Modules
+INTER_AS_MODULES = {
+    'mpls_interas_opt_b_tshoot': {
+        'name': 'Inter-AS Option B: Diagnóstico de Plano de Control VPNv4 y Swap de Etiquetas en ASBR',
+        'description': 'Resolución de fallas en el intercambio de etiquetas VPNv4 entre ASBRs vecinos, inspección de tablas bgp.l3vpn / vpnv4 unicast, y verificación del comportamiento next-hop-self y label swap.',
+        'vendors': ['juniper', 'cisco_iosxr', 'cisco_iosxe'],
+        'steps': {
+            'interas_opt_b_step1': {
+                'title': 'Validación de Sesión MP-eBGP VPNv4 y Retención de Rutas (No RT Filtering)',
+                'tier': 3,
+                'osi_layer': 'L2.5 (MPLS Label Swapping) / L3 (MP-eBGP VPNv4)',
+                'network_domain': 'Service Provider Core & Inter-AS',
+                'methodology': 'Auditoría de Sesión eBGP VPNv4 y Retención de Rutas sin VRF Local',
+                'body': 'Confirmar que la sesión eBGP entre ASBRs tiene activa la AFI/SAFI VPNv4 y que el ASBR no descarta rutas por falta de VRF local (desactivación de RT filtering / retain all).',
+                'expected': 'Sesión VPNv4 en estado Established con prefijos recibidos e instalados en la tabla global VPNv4.',
+                'commands': {
+                    'juniper': ['show bgp neighbor <asbr_remote_ip>', 'show route table bgp.l3vpn.0', 'show route table bgp.l3vpn.0 match-prefix <target_prefix> extensive'],
+                    'cisco_iosxr': ['show bgp vpnv4 unicast neighbors <asbr_remote_ip>', 'show bgp vpnv4 unicast rd <rd> <target_prefix>', 'show bgp vpnv4 unicast summary'],
+                    'cisco_iosxe': ['show ip bgp vpnv4 all neighbors <asbr_remote_ip>', 'show ip bgp vpnv4 all rd <rd> <target_prefix>', 'show ip bgp vpnv4 all summary']
+                },
+                'choices': [{'label': 'Siguiente: Inspección Swap de Etiquetas MPLS', 'next': 'interas_opt_b_step2'}]
+            },
+            'interas_opt_b_step2': {
+                'title': 'Inspección de Asignación y Swap de Etiquetas MPLS en el ASBR',
+                'tier': 3,
+                'osi_layer': 'L2.5 / L3',
+                'network_domain': 'Service Provider Core & Inter-AS',
+                'methodology': 'Verificación de Label Swap en LFIB del ASBR Inter-AS',
+                'body': 'Verificar que el ASBR local reescribe el Next-Hop (next-hop-self) y asigna una nueva etiqueta VPN saliente hacia el ASBR remoto.',
+                'expected': 'Etiqueta VPN entrante asignada localmente y mapeada a la etiqueta saliente anunciada por el peer ASBR.',
+                'commands': {
+                    'juniper': ['show route table mpls.0 | match <asbr_remote_ip>', 'show route table bgp.l3vpn.0 exact <rd>:<target_prefix> detail | match "Label|Next hop"'],
+                    'cisco_iosxr': ['show mpls forwarding-table', 'show bgp vpnv4 unicast rd <rd> <target_prefix> detail | include (Label|Nexthop)'],
+                    'cisco_iosxe': ['show mpls forwarding-table', 'show ip bgp vpnv4 all rd <rd> <target_prefix> | include (label|next hop)']
+                },
+                'choices': [{'label': 'Siguiente: Encapsulación Enlace Inter-AS', 'next': 'interas_opt_b_step3'}]
+            },
+            'interas_opt_b_step3': {
+                'title': 'Comprobación de Encapsulación y Conectividad en el Enlace Inter-AS',
+                'tier': 3,
+                'osi_layer': 'L2.5 / L3',
+                'network_domain': 'Service Provider Core & Inter-AS',
+                'methodology': 'Verificación de Interfaz Inter-AS y MPLS sin LDP',
+                'body': 'Descartar problemas de subcapa física/enlace en la interfaz que une ambos ASBRs y confirmar que MPLS está habilitado sin LDP sobre el enlace inter-AS.',
+                'expected': 'Interfaz con MPLS habilitado, MTU jumbo configurada y paquetes etiquetados cruzando sin drops.',
+                'commands': {
+                    'juniper': ['show interfaces extensive | match "mpls|drops"', 'show route forwarding-table destination <asbr_remote_ip>'],
+                    'cisco_iosxr': ['show mpls interfaces', 'show cef vrf all <target_prefix> detail'],
+                    'cisco_iosxe': ['show mpls interfaces', 'show ip cef <target_prefix> detail']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'mpls_interas_opt_b_config': {
+        'name': 'Inter-AS Option B: Aprovisionamiento de ASBR (MP-eBGP VPNv4 & Label Retain)',
+        'description': 'Configuración de ASBR para Inter-AS Option B: establecimiento de peering MP-eBGP VPNv4 directo, deshabilitación del filtrado automático de Route-Target en ASBR y forzado de next-hop-self.',
+        'vendors': ['juniper', 'cisco_iosxr', 'cisco_iosxe'],
+        'steps': {
+            'interas_opt_b_cfg_step1': {
+                'title': 'Habilitación de MPLS en la Interfaz Inter-AS',
+                'tier': 4,
+                'osi_layer': 'L3 / L2.5 Control & Data Plane Provisioning',
+                'network_domain': 'Service Provider Core & Inter-AS',
+                'methodology': 'Aprovisionamiento de MPLS en Interfaz Frontera',
+                'body': 'Permitir que la interfaz conectada al ASBR remoto acepte y procese paquetes con cabeceras MPLS sin requerir LDP.',
+                'expected': 'Interfaz en estado UP con procesamiento MPLS habilitado.',
+                'commands': {
+                    'juniper': ['set interfaces <interas_interface> unit 0 family inet address <asbr_local_ip>/30', 'set interfaces <interas_interface> unit 0 family mpls'],
+                    'cisco_iosxr': ['interface <interas_interface>', ' ipv4 address <asbr_local_ip> 255.255.255.252', ' mpls enable', ' no shutdown', ' commit'],
+                    'cisco_iosxe': ['interface <interas_interface>', ' ip address <asbr_local_ip> 255.255.255.252', ' mpls ip', ' no shutdown']
+                },
+                'choices': [{'label': 'Siguiente: MP-eBGP VPNv4 y Retención de Rutas', 'next': 'interas_opt_b_cfg_step2'}]
+            },
+            'interas_opt_b_cfg_step2': {
+                'title': 'Configuración de MP-eBGP VPNv4 y Desactivación de Route-Target Filtering',
+                'tier': 4,
+                'osi_layer': 'L3 / L2.5 Provisioning',
+                'network_domain': 'Service Provider Core & Inter-AS',
+                'methodology': 'Peering eBGP VPNv4 y Retención de Rutas sin VRFs',
+                'body': 'Establecer la sesión BGP VPNv4 con el ASBR del operador vecino y almacenar todas las rutas VPNv4 sin necesidad de configurar VRFs locales.',
+                'expected': 'Rutas VPNv4 aceptadas y retenidas en la memoria del ASBR.',
+                'commands': {
+                    'juniper': ['set routing-options autonomous-system <local_as>', 'set protocols bgp group INTER_AS_OPT_B type external', 'set protocols bgp group INTER_AS_OPT_B family inet-vpn unicast', 'set protocols bgp group INTER_AS_OPT_B peer-as <remote_as>', 'set protocols bgp group INTER_AS_OPT_B neighbor <asbr_remote_ip>', 'set routing-options rib-groups INTER_AS_OPTB import-rib bgp.l3vpn.0'],
+                    'cisco_iosxr': ['router bgp <local_as>', ' address-family vpnv4 unicast', '  retain route-target all', ' !', ' neighbor <asbr_remote_ip>', '  remote-as <remote_as>', '  address-family vpnv4 unicast', '   route-policy PASS-ALL in', '   route-policy PASS-ALL out', '  !', ' !', ' commit'],
+                    'cisco_iosxe': ['router bgp <local_as>', ' no bgp default ipv4-unicast', ' no bgp default route-target filter', ' neighbor <asbr_remote_ip> remote-as <remote_as>', ' address-family vpnv4', '  neighbor <asbr_remote_ip> activate', '  neighbor <asbr_remote_ip> send-community extended', '  neighbor <asbr_remote_ip> next-hop-unchanged', ' exit-address-family']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'mpls_interas_opt_c_tshoot': {
+        'name': 'Inter-AS Option C: Diagnóstico de BGP Labeled Unicast (BGP-LU) y Túnel LSP Extremo a Extremo',
+        'description': 'Diagnóstico integral de la pila de 3 etiquetas en Inter-AS Opción C: transporte underlay, distribución de Loopbacks de PE vía BGP-LU (AFI/SAFI 1/4) y sesión Multi-hop MP-eBGP VPNv4.',
+        'vendors': ['juniper', 'cisco_iosxr', 'cisco_iosxe'],
+        'steps': {
+            'interas_opt_c_step1': {
+                'title': 'Validación de BGP-LU (AFI/SAFI 1/4 - Labeled Unicast) en ASBRs y PEs',
+                'tier': 4,
+                'osi_layer': 'L2.5 (BGP-LU / RFC 8277) / L3 (Multi-hop MP-eBGP VPNv4)',
+                'network_domain': 'Service Provider Core & Inter-AS',
+                'methodology': 'Auditoría de Anuncio de Etiquetas para Loopbacks de PEs (BGP-LU)',
+                'body': 'Comprobar que la Loopback del PE remoto está presente en la tabla inet.3 / LFIB con una etiqueta BGP asignada para el LSP inter-dominio.',
+                'expected': 'Loopback remota instalada en la RIB MPLS/inet.3 con etiqueta BGP-LU asignada y Next-Hop resoluble.',
+                'commands': {
+                    'juniper': ['show route table inet.3 <remote_pe_loopback> exact', 'show bgp neighbor <asbr_remote_ip> | match "labeled-unicast"', 'show route table mpls.0 | match <remote_pe_loopback>'],
+                    'cisco_iosxr': ['show bgp ipv4 labeled-unicast <remote_pe_loopback>', 'show mpls forwarding-table prefix <remote_pe_loopback>', 'show cef <remote_pe_loopback> detail'],
+                    'cisco_iosxe': ['show ip bgp ipv4 labeled-unicast <remote_pe_loopback>', 'show mpls forwarding-table | include <remote_pe_loopback>', 'show ip cef <remote_pe_loopback> detail']
+                },
+                'choices': [{'label': 'Siguiente: Sesión Multi-hop MP-eBGP VPNv4', 'next': 'interas_opt_c_step2'}]
+            },
+            'interas_opt_c_step2': {
+                'title': 'Inspección de Sesión Multi-hop MP-eBGP VPNv4 (PE a PE o RR a RR)',
+                'tier': 4,
+                'osi_layer': 'L2.5 / L3',
+                'network_domain': 'Service Provider Core & Inter-AS',
+                'methodology': 'Verificación de Peering Multihop VPNv4 entre Loopbacks',
+                'body': 'Confirmar que la sesión directa o indirecta eBGP VPNv4 multihop se encuentra en estado Established usando las Loopbacks como Source/Destination.',
+                'expected': 'Sesión VPNv4 activa, prefijos cliente recibidos con Next-Hop apuntando a la Loopback del PE remoto (sin cambio a next-hop-self).',
+                'commands': {
+                    'juniper': ['show bgp neighbor <remote_pe_loopback>', 'show route table <vrf>.inet.0 <customer_prefix> extensive'],
+                    'cisco_iosxr': ['show bgp vpnv4 unicast neighbors <remote_pe_loopback>', 'show bgp vrf <vrf> <customer_prefix> detail'],
+                    'cisco_iosxe': ['show ip bgp vpnv4 all neighbors <remote_pe_loopback>', 'show ip route vrf <vrf> <customer_prefix>']
+                },
+                'choices': [{'label': 'Siguiente: Trazabilidad Pila 3 Etiquetas', 'next': 'interas_opt_c_step3'}]
+            },
+            'interas_opt_c_step3': {
+                'title': 'Trazabilidad de la Pila de Etiquetas (3-Label Stack Traceroute)',
+                'tier': 4,
+                'osi_layer': 'L2.5 / L3',
+                'network_domain': 'Service Provider Core & Inter-AS',
+                'methodology': 'Verificación de Pila de 3 Etiquetas (VPN + BGP-LU + IGP/LDP)',
+                'body': 'Verificar que el plano de datos transporta la triple etiqueta: Etiqueta VPN (L3VPN interior), Etiqueta BGP-LU (Inter-AS) y Etiqueta IGP/LDP (Transporte local AS).',
+                'expected': 'LSP Ping/Traceroute exitoso resolviendo la pila de etiquetas a través del core y la frontera ASBR.',
+                'commands': {
+                    'juniper': ['traceroute mpls l3vpn <vrf> prefix <customer_prefix>', 'ping mpls ldp <remote_pe_loopback>/32'],
+                    'cisco_iosxr': ['traceroute mpls ipv4 <remote_pe_loopback>/32', 'traceroute vrf <vrf> <customer_prefix>'],
+                    'cisco_iosxe': ['traceroute mpls ipv4 <remote_pe_loopback> 255.255.255.255', 'traceroute vrf <vrf> <customer_prefix>']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'mpls_interas_opt_c_config': {
+        'name': 'Inter-AS Option C: Despliegue de BGP-LU en ASBR y MP-eBGP Multi-hop en PE',
+        'description': 'Aprovisionamiento de BGP Labeled Unicast (RFC 8277 / RFC 3107) en los ASBRs para la extensión de LSPs inter-AS y sesión Multi-hop MP-eBGP VPNv4.',
+        'vendors': ['juniper', 'cisco_iosxr', 'cisco_iosxe'],
+        'steps': {
+            'interas_opt_c_cfg_step1': {
+                'title': 'Aprovisionamiento de BGP-LU en el ASBR (Anuncio de Etiquetas para Loopbacks)',
+                'tier': 4,
+                'osi_layer': 'L2.5 / L3 Multi-AS Transport Architecture',
+                'network_domain': 'Service Provider Core & Inter-AS',
+                'methodology': 'Configuración de BGP Labeled Unicast (SAFI 4)',
+                'body': 'Configurar la sesión eBGP entre ASBRs para intercambiar prefijos /32 de Loopback de PEs con etiquetas MPLS asociadas.',
+                'expected': 'Sesión BGP-LU establecida y prefijos /32 anunciados con etiquetas RFC 8277.',
+                'commands': {
+                    'juniper': ['set protocols bgp group ASBR_LU type external', 'set protocols bgp group ASBR_LU family inet labeled-unicast', 'set protocols bgp group ASBR_LU peer-as <remote_as>', 'set protocols bgp group ASBR_LU neighbor <asbr_remote_ip>', 'set protocols bgp group ASBR_LU export EXPORT_PE_LOOPBACKS'],
+                    'cisco_iosxr': ['router bgp <local_as>', ' neighbor <asbr_remote_ip>', '  remote-as <remote_as>', '  address-family ipv4 labeled-unicast', '   route-policy PASS-LABELED-LOOPBACKS in', '   route-policy PASS-LABELED-LOOPBACKS out', '  !', ' !', ' commit'],
+                    'cisco_iosxe': ['router bgp <local_as>', ' neighbor <asbr_remote_ip> remote-as <remote_as>', ' address-family ipv4', '  neighbor <asbr_remote_ip> activate', '  neighbor <asbr_remote_ip> send-label', ' exit-address-family']
+                },
+                'choices': [{'label': 'Siguiente: Multi-hop MP-eBGP VPNv4 en PEs', 'next': 'interas_opt_c_cfg_step2'}]
+            },
+            'interas_opt_c_cfg_step2': {
+                'title': 'Configuración de Sesión Multi-hop MP-eBGP VPNv4 en los Nodos PE',
+                'tier': 4,
+                'osi_layer': 'L2.5 / L3 Multi-AS Transport Architecture',
+                'network_domain': 'Service Provider Core & Inter-AS',
+                'methodology': 'Peering Multihop VPNv4 eBGP directo entre PEs',
+                'body': 'Establecer la relación de vecindad VPNv4 directa entre los PEs o Route Reflectors a través de los límites del AS, manteniendo el Next-Hop original.',
+                'expected': 'Sesión VPNv4 activa entre loopbacks y aprendizaje de rutas VPN extremo a extremo.',
+                'commands': {
+                    'juniper': ['set protocols bgp group PE_INTERAS_C type external', 'set protocols bgp group PE_INTERAS_C multihop ttl 64', 'set protocols bgp group PE_INTERAS_C local-address <local_pe_loopback>', 'set protocols bgp group PE_INTERAS_C family inet-vpn unicast', 'set protocols bgp group PE_INTERAS_C peer-as <remote_as>', 'set protocols bgp group PE_INTERAS_C neighbor <remote_pe_loopback>'],
+                    'cisco_iosxr': ['router bgp <local_as>', ' neighbor <remote_pe_loopback>', '  remote-as <remote_as>', '  ebgp-multihop 64', '  update-source Loopback0', '  address-family vpnv4 unicast', '   route-policy PASS-ALL in', '   route-policy PASS-ALL out', '  !', ' !', ' commit'],
+                    'cisco_iosxe': ['router bgp <local_as>', ' neighbor <remote_pe_loopback> remote-as <remote_as>', ' neighbor <remote_pe_loopback> ebgp-multihop 64', ' neighbor <remote_pe_loopback> update-source Loopback0', ' address-family vpnv4', '  neighbor <remote_pe_loopback> activate', '  neighbor <remote_pe_loopback> send-community extended', ' exit-address-family']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    }
+}
+
+# Add TECH_CONCEPTS for Inter-AS
+TECH_CONCEPTS['mpls_interas_opt_b_tshoot'] = {
+    'concept': 'MPLS L3VPN Inter-AS Option B (ASBR Label Swap)',
+    'summary': 'Diagnóstico de sesiones MP-eBGP VPNv4 entre ASBRs vecinos sin requerir VRFs locales en la frontera.',
+    'details': 'Verifica la retención de rutas VPNv4 en el ASBR, el comportamiento next-hop-self y la conmutación de etiquetas (Label Swapping) en la LFIB.'
+}
+TECH_CONCEPTS['mpls_interas_opt_b_config'] = {
+    'concept': 'MPLS L3VPN Inter-AS Option B Configuration',
+    'summary': 'Aprovisionamiento de ASBR para el transporte de rutas VPNv4 y swap de etiquetas entre Sistemas Autónomos.',
+    'details': 'Configura sesiones eBGP VPNv4 con retain route-target all y next-hop-self sobre interfaces con MPLS sin LDP.'
+}
+TECH_CONCEPTS['mpls_interas_opt_c_tshoot'] = {
+    'concept': 'MPLS L3VPN Inter-AS Option C (BGP-LU & Multi-hop MP-eBGP)',
+    'summary': 'Diagnóstico de la pila de 3 etiquetas en Inter-AS Option C (L3VPN + BGP-LU + IGP/LDP).',
+    'details': 'Audita el transporte de Loopbacks vía BGP Labeled Unicast (RFC 8277), las sesiones Multihop VPNv4 entre PEs y la trazabilidad de la pila de 3 etiquetas.'
+}
+TECH_CONCEPTS['mpls_interas_opt_c_config'] = {
+    'concept': 'MPLS L3VPN Inter-AS Option C Configuration',
+    'summary': 'Despliegue de BGP Labeled Unicast (SAFI 4) en ASBRs y sesiones eBGP Multi-hop VPNv4 entre PEs.',
+    'details': 'Extiende LSPs extremo a extremo a través de múltiples dominios AS permitiendo conectividad L3VPN escalable sin sobrecargar la memoria de los ASBRs.'
+}
+
+KB.update(INTER_AS_MODULES)
+
+
+
+# Service Provider Segment Routing (SR-MPLS) TI-LFA Modules
+SR_MPLS_MODULES = {
+    'sr_mpls_tilfa_tshoot': {
+        'name': 'SR-MPLS & TI-LFA: Diagnóstico de SIDs, SRGB y Protección de Enlace/Nodo (<50ms)',
+        'description': 'Verificación de distribución de Prefix-SIDs, Adjacency-SIDs, consistencia de SRGB y cálculo del path de backup TI-LFA (P-Node y Q-Node) para convergencia sub-50ms.',
+        'vendors': ['juniper', 'cisco_iosxr', 'cisco_iosxe'],
+        'steps': {
+            'sr_tilfa_tshoot_step1': {
+                'title': 'Validación de SRGB y Anuncio de Prefix-SIDs en el IGP',
+                'tier': 3,
+                'osi_layer': 'L2.5 (SR-MPLS / LFIB) / L3 (IS-IS / OSPF SR Extensions)',
+                'network_domain': 'Transport & Segment Routing',
+                'methodology': 'Auditoría de Consistencia de Rango SRGB y Anuncio TLV Prefix-SID',
+                'body': 'Comprobar que el rango SRGB está activo de forma homogénea y que el Prefix-SID del nodo remoto se recibe correctamente en el TLV del IGP.',
+                'expected': 'SRGB configurado (ej. 16000-23999), Prefix-SID instalado en la base de datos del IGP sin conflictos de etiquetado.',
+                'commands': {
+                    'juniper': ['show isis database extensive | match "Prefix-SID|SRGB|<target_prefix>"', 'show route table inet.3 <target_prefix>', 'show route table mpls.0 match-prefix <prefix_sid>'],
+                    'cisco_iosxr': ['show isis database verbose | include (Prefix-SID|SRGB|<target_prefix>)', 'show segment-routing mpls forwarding', 'show segment-routing mpls gb'],
+                    'cisco_iosxe': ['show isis database detail | include (Prefix-SID|SRGB|<target_prefix>)', 'show segment-routing mpls forwarding', 'show segment-routing mpls state']
+                },
+                'choices': [{'label': 'Siguiente: Inspección Adjacency-SIDs (Adj-SIDs)', 'next': 'sr_tilfa_tshoot_step2'}]
+            },
+            'sr_tilfa_tshoot_step2': {
+                'title': 'Inspección de Adjacency-SIDs (Adj-SIDs) Dinámicos y Protección',
+                'tier': 3,
+                'osi_layer': 'L2.5 / L3',
+                'network_domain': 'Transport & Segment Routing',
+                'methodology': 'Verificación de Adj-SIDs Dinámicos y B-Flag de Protección',
+                'body': 'Verificar la asignación de Adj-SIDs locales en los enlaces punto a punto y la bandera de elegibilidad para protección de backup.',
+                'expected': 'Adj-SIDs dinámicos presentes con flag de protección habilitado (B-Flag / Backup active).',
+                'commands': {
+                    'juniper': ['show isis adjacency extensive | match "Adj-SID|Weight|Protection"', 'show route table mpls.0 protocol isis'],
+                    'cisco_iosxr': ['show isis adjacency <protected_interface> detail', 'show segment-routing forwarding adjacency'],
+                    'cisco_iosxe': ['show isis segment-routing adjacency', 'show segment-routing mpls adjacency']
+                },
+                'choices': [{'label': 'Siguiente: Verificación Ruta Backup TI-LFA', 'next': 'sr_tilfa_tshoot_step3'}]
+            },
+            'sr_tilfa_tshoot_step3': {
+                'title': 'Verificación de la Ruta de Backup TI-LFA y Pila de Etiquetas (PQ Node)',
+                'tier': 3,
+                'osi_layer': 'L2.5 / L3',
+                'network_domain': 'Transport & Segment Routing',
+                'methodology': 'Auditoría de Pila de Etiquetas de Reparación TI-LFA (P-Space / Q-Space)',
+                'body': 'Confirmar que el cálculo SPF de TI-LFA generó un camino de respaldo libre de bucles con su respectivo stack de etiquetas (P-Space / Q-Space repair list).',
+                'expected': 'Entrada de forwarding con salto Repair preprogramado en hardware (FIB) apuntando al P-Node/Q-Node.',
+                'commands': {
+                    'juniper': ['show isis backup coverage', 'show route table inet.0 <target_prefix> exact detail | match "Backup|Repair|Label"', 'show route forwarding-table destination <target_prefix> extensive'],
+                    'cisco_iosxr': ['show isis fast-reroute <target_prefix> detail', 'show isis fast-reroute summary', 'show cef <target_prefix> detail'],
+                    'cisco_iosxe': ['show ip route isis | include <target_prefix>', 'show ip cef <target_prefix> detail | include (repair|backup|labels)']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'sr_mpls_tilfa_config': {
+        'name': 'SR-MPLS & TI-LFA: Despliegue de Plano de Transporte con IS-IS y Protección Rápida',
+        'description': 'Configuración integral de Segment Routing bajo IS-IS: definición del bloque SRGB global, asignación de Node/Prefix-SID en Loopback0 y activación de TI-LFA por interfaz.',
+        'vendors': ['juniper', 'cisco_iosxr', 'cisco_iosxe'],
+        'steps': {
+            'sr_tilfa_cfg_step1': {
+                'title': 'Definición del Segment Routing Global Block (SRGB)',
+                'tier': 4,
+                'osi_layer': 'L2.5 / L3 SR-MPLS Backbone Provisioning',
+                'network_domain': 'Transport & Segment Routing',
+                'methodology': 'Reserva de Rango Global de Etiquetas MPLS para SIDs',
+                'body': 'Establecer el rango global de etiquetas MPLS reservado exclusivamente para la asignación de Prefix-SIDs / Node-SIDs.',
+                'expected': 'Rango SRGB bloqueado en la base de etiquetas del sistema sin solapamiento con etiquetas dinámicas LDP/RSVP.',
+                'commands': {
+                    'juniper': ['set protocols mpls segment-routing-global-block label-range lower-bound <srgb_start> upper-bound <srgb_end>'],
+                    'cisco_iosxr': ['segment-routing', ' global-block <srgb_start> <srgb_end>', '!', 'commit'],
+                    'cisco_iosxe': ['segment-routing mpls', ' global-block <srgb_start> <srgb_end>', ' connected-prefix-sid-map', '  address-family ipv4']
+                },
+                'choices': [{'label': 'Siguiente: Asignación Node-SID en Loopback0', 'next': 'sr_tilfa_cfg_step2'}]
+            },
+            'sr_tilfa_cfg_step2': {
+                'title': 'Asignación de Node-SID en Loopback y Habilitación de Segment Routing en IS-IS',
+                'tier': 4,
+                'osi_layer': 'L2.5 / L3 Provisioning',
+                'network_domain': 'Transport & Segment Routing',
+                'methodology': 'Configuración de Extensión SR en IGP y Asignación de Node-SID Index',
+                'body': 'Configurar la extensión SR en el protocolo de enrutamiento y anunciar el índice SID unívoco asignado a la interfaz Loopback0.',
+                'expected': 'Node-SID propagado en los LSP TLVs de IS-IS a través de todo el dominio IGP.',
+                'commands': {
+                    'juniper': ['set interfaces lo0 unit 0 family inet address <loopback_ip>/32', 'set protocols isis source-packet-routing node-segment ipv4-index <node_sid_index>', 'set protocols isis segment-routing-mpls'],
+                    'cisco_iosxr': ['router isis 100', ' is-type level-2-only', ' net 49.0001.0000.0000.000<node_sid_index>.00', ' address-family ipv4 unicast', '  segment-routing mpls', ' !', ' interface Loopback0', '  address-family ipv4 unicast', '   prefix-sid index <node_sid_index>', '  !', ' !', '!', 'commit'],
+                    'cisco_iosxe': ['router isis 100', ' net 49.0001.0000.0000.000<node_sid_index>.00', ' metric-style wide', ' segment-routing mpls', '!', 'interface Loopback0', ' ip address <loopback_ip> 255.255.255.255', ' ip router isis 100', ' isis ipv4 prefix-sid index <node_sid_index>']
+                },
+                'choices': [{'label': 'Siguiente: Aprovisionamiento TI-LFA en Interfaces Core', 'next': 'sr_tilfa_cfg_step3'}]
+            },
+            'sr_tilfa_cfg_step3': {
+                'title': 'Aprovisionamiento de TI-LFA (Topology-Independent LFA) en Enlaces Core',
+                'tier': 4,
+                'osi_layer': 'L2.5 / L3 Provisioning',
+                'network_domain': 'Transport & Segment Routing',
+                'methodology': 'Activación de Cálculo Post-Convergencia TI-LFA por Interfaz',
+                'body': 'Habilitar el cálculo de rutas de respaldo precomputadas directamente sobre las interfaces físicas de transporte para cubrir fallas de enlace y nodo.',
+                'expected': 'Cálculo SPF alternativo habilitado en la interfaz con cobertura del 100% de la topología.',
+                'commands': {
+                    'juniper': ['set protocols isis interface <core_interface> point-to-point', 'set protocols isis interface <core_interface> level 2 post-convergence-lfa', 'set protocols isis interface <core_interface> level 2 fast-reroute priority-cost'],
+                    'cisco_iosxr': ['router isis 100', ' interface <core_interface>', '  point-to-point', '  address-family ipv4 unicast', '   fast-reroute per-prefix', '   fast-reroute per-prefix ti-lfa', '  !', ' !', '!', 'commit'],
+                    'cisco_iosxe': ['interface <core_interface>', ' ip router isis 100', ' isis network point-to-point', ' isis fast-reroute protection-type link', ' isis fast-reroute per-prefix ti-lfa level-2']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    }
+}
+
+# Add TECH_CONCEPTS for SR-MPLS
+TECH_CONCEPTS['sr_mpls_tilfa_tshoot'] = {
+    'concept': 'SR-MPLS & TI-LFA (Fast Reroute sub-50ms)',
+    'summary': 'Diagnóstico de plano de control y datos en redes Segment Routing con protección rápida de enlace y nodo.',
+    'details': 'Verifica la asignación homogénea de SRGB (16000-23999), la propagación de Prefix-SIDs/Adj-SIDs y el stack de etiquetas PQ Node para convergencia sub-50ms.'
+}
+TECH_CONCEPTS['sr_mpls_tilfa_config'] = {
+    'concept': 'SR-MPLS & TI-LFA Provisioning',
+    'summary': 'Aprovisionamiento de Segment Routing sobre IS-IS y protección Topology-Independent LFA.',
+    'details': 'Configura el bloque SRGB global, asigna Node-SIDs en Loopback0 y habilita el cálculo LFA post-convergencia en interfaces core.'
+}
+
+KB.update(SR_MPLS_MODULES)
