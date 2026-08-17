@@ -1,17 +1,17 @@
 """
 data/config_templates.py — Plantillas de Configuración & Explicador Comando por Comando por Vendor.
-Organizadas rigurosamente por el Plan de Estudios CCNA & CCNP para TODOS los Equipos de la Red.
+Con Filtrado Estricto de Capacidades Reales por Fabricante.
 """
 
 from typing import Dict, Any, List
 
 CONFIG_TEMPLATES: Dict[str, Dict[str, Any]] = {
     'noc_ccna_base': {
-        'title': '🛡️ CCNA / CCNP — Inicialización, Hardening & Gestión NOC (Todos los Vendors)',
-        'description': 'Plantilla estándar de inicialización y hardening (ISO 27001) desde cero antes de integrar el equipo a producción.',
+        'title': '🛡️ CCNA / CCNP — Inicialización, Hardening & Gestión NOC',
+        'description': 'Plantilla estándar de inicialización y hardening (ISO 27001) adaptada exactamente a los comandos y sintaxis nativa de cada fabricante.',
         'vendors': {
             'cisco_iosxe': {
-                'vendor_name': 'Cisco IOS-XE / ISR / ASR / Catalyst',
+                'vendor_name': 'Cisco IOS-XE (ISR / ASR 1000 / Catalyst 9000)',
                 'code': (
                     "configure terminal\n"
                     "hostname Router-NOC-CE1\n"
@@ -33,15 +33,15 @@ CONFIG_TEMPLATES: Dict[str, Dict[str, Any]] = {
                     "write memory"
                 ),
                 'breakdown': [
-                    {'cmd': 'configure terminal', 'desc': 'Modo de configuración global.'},
-                    {'cmd': 'hostname Router-NOC-CE1', 'desc': 'Asigna nombre de host.'},
-                    {'cmd': 'enable secret SuperPasswordNOC123!', 'desc': 'Clave enable cifrada SHA-256.'},
-                    {'cmd': 'crypto key generate rsa modulus 2048', 'desc': 'Genera llaves SSH 2048-bit.'},
-                    {'cmd': 'transport input ssh', 'desc': 'Bloquea Telnet y restringe acceso a SSHv2.'}
+                    {'cmd': 'configure terminal', 'desc': 'Modo de configuración global de Cisco IOS-XE.'},
+                    {'cmd': 'hostname Router-NOC-CE1', 'desc': 'Asigna el nombre único del equipo.'},
+                    {'cmd': 'enable secret SuperPasswordNOC123!', 'desc': 'Establece la clave enable cifrada con algoritmo SHA-256.'},
+                    {'cmd': 'crypto key generate rsa modulus 2048', 'desc': 'Genera el par de llaves RSA de 2048 bits para SSH.'},
+                    {'cmd': 'transport input ssh', 'desc': 'Deshabilita Telnet y fuerza el uso exclusivo de SSHv2.'}
                 ]
             },
             'cisco_iosxr': {
-                'vendor_name': 'Cisco IOS-XR (ASR 9000 / NCS 5500)',
+                'vendor_name': 'Cisco IOS-XR (ASR 9000 / NCS 5500 / CRS)',
                 'code': (
                     "configure\n"
                     "hostname Router-NOC-CORE1\n"
@@ -56,8 +56,8 @@ CONFIG_TEMPLATES: Dict[str, Dict[str, Any]] = {
                 ),
                 'breakdown': [
                     {'cmd': 'configure', 'desc': 'Inicia sesión en candidato de IOS-XR.'},
-                    {'cmd': 'username admin group root-lr...', 'desc': 'Crea usuario en el grupo de permisos totales root-lr.'},
-                    {'cmd': 'commit', 'desc': 'Aplica los cambios atómicamente.'}
+                    {'cmd': 'username admin group root-lr...', 'desc': 'Crea usuario en el grupo administrativo root-lr.'},
+                    {'cmd': 'commit', 'desc': 'Aplica los cambios atómicamente al plano de control.'}
                 ]
             },
             'juniper': {
@@ -312,10 +312,10 @@ CONFIG_TEMPLATES: Dict[str, Dict[str, Any]] = {
     },
     'ccna_switching_master': {
         'title': '📘 CCNA / CCNP — Switch L2/L3 (VLANs, Trunking, STP/RSTP/MSTP, EtherChannel LACP)',
-        'description': 'Configuración completa de switching de campus para todos los fabricantes de la red.',
+        'description': 'Configuración completa de switching de campus reservada exclusivamente para switches y routers con capacidades de conmutación L2/L3 reales.',
         'vendors': {
             'cisco_iosxe': {
-                'vendor_name': 'Cisco IOS-XE / Catalyst 9000',
+                'vendor_name': 'Cisco IOS-XE / Catalyst 9000 / Catalyst 3850',
                 'code': (
                     "configure terminal\n"
                     "vlan 10,20,30,99\n"
@@ -339,12 +339,12 @@ CONFIG_TEMPLATES: Dict[str, Dict[str, Any]] = {
                     "write memory"
                 ),
                 'breakdown': [
-                    {'cmd': 'spanning-tree mode rapid-pvst', 'desc': 'Activa RPVST+.'},
-                    {'cmd': 'channel-group 1 mode active', 'desc': 'EtherChannel LACP activo.'}
+                    {'cmd': 'spanning-tree mode rapid-pvst', 'desc': 'Activa RPVST+ en switches Cisco.'},
+                    {'cmd': 'channel-group 1 mode active', 'desc': 'Agrupación EtherChannel LACP.'}
                 ]
             },
             'juniper': {
-                'vendor_name': 'Juniper JunOS (EX / QFX Series)',
+                'vendor_name': 'Juniper JunOS (EX / QFX Series Switches)',
                 'code': (
                     "configure\n"
                     "set vlans DATOS vlan-id 10\n"
@@ -355,7 +355,7 @@ CONFIG_TEMPLATES: Dict[str, Dict[str, Any]] = {
                     "commit"
                 ),
                 'breakdown': [
-                    {'cmd': 'set interfaces ae0 unit 0...', 'desc': 'Modo trunk en agregación ae0.'}
+                    {'cmd': 'set interfaces ae0 unit 0...', 'desc': 'Modo trunk en agregación LACP ae0.'}
                 ]
             },
             'huawei': {
@@ -380,7 +380,7 @@ CONFIG_TEMPLATES: Dict[str, Dict[str, Any]] = {
                 ]
             },
             'datacom': {
-                'vendor_name': 'Datacom DmOS (DM4000 / DM4300)',
+                'vendor_name': 'Datacom DmOS (DM4000 / DM4300 Switches)',
                 'code': (
                     "configure terminal\n"
                     "vlan 10,20,30,99\n"
@@ -391,6 +391,184 @@ CONFIG_TEMPLATES: Dict[str, Dict[str, Any]] = {
                 ),
                 'breakdown': [
                     {'cmd': 'interface lag 1', 'desc': 'Crea el grupo LAG LACP en DmOS.'}
+                ]
+            },
+            'bdcom': {
+                'vendor_name': 'BDCOM L2/L3 Switches (S2500 / S3900)',
+                'code': (
+                    "config\n"
+                    "vlan 10,20,30,99\n"
+                    "interface GigaEthernet0/1\n"
+                    " switchport mode trunk\n"
+                    " switchport trunk allowed vlan 10,20,30,99\n"
+                    "write memory"
+                ),
+                'breakdown': [
+                    {'cmd': 'switchport mode trunk', 'desc': 'Modo trunk 802.1Q en BDCOM.'}
+                ]
+            },
+            'allied_telesis': {
+                'vendor_name': 'Allied Telesis AW+ (x530 / x950 Switches)',
+                'code': (
+                    "configure terminal\n"
+                    "vlan database\n"
+                    " vlan 10,20,30,99\n"
+                    "interface port-channel1\n"
+                    " switchport mode trunk\n"
+                    "write memory"
+                ),
+                'breakdown': [
+                    {'cmd': 'vlan database', 'desc': 'Ingresa a la base de datos de VLANs en AW+.'}
+                ]
+            },
+            'raisecom': {
+                'vendor_name': 'Raisecom ISCOM (2600G Carrier Ethernet)',
+                'code': (
+                    "config\n"
+                    "vlan 10,20,30,99\n"
+                    "interface port 1\n"
+                    " switchport mode trunk\n"
+                    "write"
+                ),
+                'breakdown': [
+                    {'cmd': 'switchport mode trunk', 'desc': 'Configura el puerto en modo trunk.'}
+                ]
+            },
+            'arista': {
+                'vendor_name': 'Arista EOS (7000 Series Switches)',
+                'code': (
+                    "configure terminal\n"
+                    "vlan 10,20,30,99\n"
+                    "spanning-tree mode mstp\n"
+                    "interface Port-Channel1\n"
+                    " switchport mode trunk\n"
+                    "write memory"
+                ),
+                'breakdown': [
+                    {'cmd': 'spanning-tree mode mstp', 'desc': 'MSTP en Arista EOS.'}
+                ]
+            }
+        }
+    },
+    'noc_gpon_provisioning': {
+        'title': '🌐 Plantilla NOC — Aprovisionamiento FTTH GPON OLT/ONT (Huawei / ZTE / BDCOM / ADTRAN)',
+        'description': 'Plantilla reservada exclusivamente para OLTs GPON de acceso de fibra óptica.',
+        'vendors': {
+            'huawei': {
+                'vendor_name': 'Huawei OLT (MA5800 / MA5608T)',
+                'code': (
+                    "system-view\n"
+                    "interface gpon 0/1\n"
+                    " ont add 1 1 sn-auth \"485754431A2B3C4D\" omci ont-lineprofile-id 10 ont-srvprofile-id 10 desc \"CLIENTE_FTTH_01\"\n"
+                    "quit\n"
+                    "service-port 100 gpon 0/1/1 ont 1 gemport 1 multi-service user-vlan 100 tag-transform translate inner-vlan 100 inbound traffic-table name 100M outbound traffic-table name 100M\n"
+                    "save"
+                ),
+                'breakdown': [
+                    {'cmd': 'ont add 1 1 sn-auth...', 'desc': 'Registra la ONT por número de serie en la OLT Huawei.'},
+                    {'cmd': 'service-port 100...', 'desc': 'Crea el puerto de servicio para mapear el GEM Port a la VLAN de transporte.'}
+                ]
+            },
+            'zte': {
+                'vendor_name': 'ZTE OLT (ZXAN C300 / C320 / C600)',
+                'code': (
+                    "configure terminal\n"
+                    "interface gpon-olt_1/2/1\n"
+                    " onu 1 type ZTEG-F660 sn ZTEGC1A2B3D4\n"
+                    "exit\n"
+                    "interface gpon-onu_1/2/1:1\n"
+                    " name CLIENTE_FTTH_01\n"
+                    " tcont 1 name T-DATA dba-profile DBA-100M\n"
+                    " gemport 1 name GEM-DATA tcont 1\n"
+                    " service-port 1 vport 1 user-vlan 100 svlan 100\n"
+                    "exit\n"
+                    "write memory"
+                ),
+                'breakdown': [
+                    {'cmd': 'onu 1 type ZTEG-F660...', 'desc': 'Registra la ONU en la OLT ZTE.'},
+                    {'cmd': 'tcont 1 name T-DATA...', 'desc': 'Asigna el contenedor T-CONT DBA.'}
+                ]
+            },
+            'bdcom': {
+                'vendor_name': 'BDCOM GPON OLT P3600 Series',
+                'code': (
+                    "config\n"
+                    "interface gpon 0/1\n"
+                    " gpon onu add 1 1 sn ZTEGC1A2B3D4 line-profile FTTH-LINE srv-profile FTTH-SRV\n"
+                    "exit\n"
+                    "write memory"
+                ),
+                'breakdown': [
+                    {'cmd': 'gpon onu add 1 1 sn...', 'desc': 'Registra la ONU en la OLT BDCOM.'}
+                ]
+            },
+            'adtran': {
+                'vendor_name': 'ADTRAN Total Access 5000 (TA5000 OLT)',
+                'code': (
+                    "enable\n"
+                    "configure terminal\n"
+                    "gpon-olt 1/1\n"
+                    " onu 1 serial-number ADTN12345678\n"
+                    "write"
+                ),
+                'breakdown': [
+                    {'cmd': 'onu 1 serial-number...', 'desc': 'Registra la ONU en la OLT ADTRAN TA5000.'}
+                ]
+            }
+        }
+    },
+    'firewall_fortinet_master': {
+        'title': '🛡️ Plantilla Fortinet FortiOS — Aprovisionamiento Master Enterprise & Estado',
+        'description': 'Reservada para cortafuegos de seguridad perimetral Fortinet FortiOS.',
+        'vendors': {
+            'fortinet': {
+                'vendor_name': 'Fortinet FortiOS (FortiGate 40F - 3000F)',
+                'code': (
+                    "config system global\n"
+                    "  set hostname \"FGT-CORP-ESTADO-GW01\"\n"
+                    "  set timezone 12\n"
+                    "  set admin-sport 8443\n"
+                    "  set admintimeout 15\n"
+                    "end\n"
+                    "config system interface\n"
+                    "  edit \"port1\"\n"
+                    "    set alias \"WAN-INTERNET\"\n"
+                    "    set mode static\n"
+                    "    set ip 200.1.1.2 255.255.255.248\n"
+                    "  next\n"
+                    "end\n"
+                    "config firewall policy\n"
+                    "  edit 1\n"
+                    "    set name \"POL_LAN_TO_WAN\"\n"
+                    "    set srcintf \"port2\"\n"
+                    "    set dstintf \"port1\"\n"
+                    "    set srcaddr \"all\"\n"
+                    "    set dstaddr \"all\"\n"
+                    "    set action accept\n"
+                    "    set nat enable\n"
+                    "    set utm-status enable\n"
+                    "  next\n"
+                    "end"
+                ),
+                'breakdown': [
+                    {'cmd': 'config firewall policy', 'desc': 'Reglas stateful con UTM y Source NAT.'}
+                ]
+            }
+        }
+    },
+    'firewall_sophos_master': {
+        'title': '🛡️ Plantilla Sophos SFOS — Aprovisionamiento Master Enterprise & Estado',
+        'description': 'Reservada para cortafuegos de seguridad perimetral Sophos SFOS.',
+        'vendors': {
+            'sophos': {
+                'vendor_name': 'Sophos SFOS (XG 85-330 / XGS 87-136)',
+                'code': (
+                    "system hostname set XGS-CORP-ESTADO-GW01\n"
+                    "system time-zone set America/Bogota\n"
+                    "system firewall-rule add name POL_LAN_TO_WAN srczone LAN dstzone WAN srcnet Any dstnet Any service Any action accept ips-policy default nat-rule MASQUERADE"
+                ),
+                'breakdown': [
+                    {'cmd': 'system firewall-rule add...', 'desc': 'Regla de cortafuegos por zonas con IPS y SNAT Masquerade.'}
                 ]
             }
         }

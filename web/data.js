@@ -112353,77 +112353,21 @@ const NET_TSHOOT_DATA = {
       "key_concepts": "• **Adyacencia Link-Local:** OSPFv3 forma vecinos utilizando únicamente direcciones de enlace local (link-local - fe80::/10).\n• **Router ID de 32 bits:** Es obligatorio configurar manualmente un Router ID de 32 bits (ej: 1.1.1.1) ya que IPv6 no autogenera Router IDs de 32 bits.\n• **Nuevos LSAs:** Introduce LSAs Tipo 8 (Link LSA) y Tipo 9 (Intra-Area-Prefix LSA) para propagar prefijos sin recalcular el árbol SPF completo.",
       "architecture": "Funciona sobre el protocolo IP 89 utilizando direccionamiento de multicast link-local (`ff02::5` para todos los routers OSPFv3 y `ff02::6` para DR/BDR). Los paquetes se originan siempre con la IP de enlace local del puerto."
     },
-    "switch_l2": {
-      "definition": "La conmutación de Capa 2 (L2 Switching) es el proceso de reenvío de tramas Ethernet dentro del mismo segmento de red física basándose en las direcciones MAC destino. Incluye el etiquetado de VLANs para segmentar redes virtuales y la agregación de enlaces físicos (LACP) para incrementar el ancho de banda y proporcionar redundancia.",
-      "key_concepts": "• **MAC Address Table (CAM):** Base de datos asociativa en memoria que relaciona direcciones MAC físicas con los puertos del switch.\n• **802.1Q VLAN Tagging:** Estándar industrial que inyecta una etiqueta de 4 bytes en la cabecera Ethernet para identificar a qué VLAN pertenece la trama.\n• **LACP (Link Aggregation Control Protocol):** Protocolo 802.3ad que negocia dinámicamente la agrupación de múltiples enlaces físicos en un único canal lógico (EtherChannel).\n• **Access vs Trunk:** Puertos Access transportan tráfico de una única VLAN sin etiqueta. Puertos Trunk transportan múltiples VLANs tagged.",
-      "architecture": "Cuando una trama Ethernet ingresa, el switch lee la MAC Origen y la registra en la tabla CAM asociándola al puerto. Luego lee la MAC Destino: si existe en la tabla CAM, la reenvía al puerto correspondiente; si no existe o es broadcast, inunda (flooding) la trama en todos los puertos miembros de la misma VLAN.",
-      "control_vs_data": "• **Plano de Control:** Protocolos LACP para agrupamiento de puertos y Spanning Tree para prevenir bucles de capa 2 en software.\n• **Plano de Datos:** Conmutación L2 ultra rápida por hardware (ASIC/CAM) basada en coincidencia exacta de direcciones MAC.",
-      "troubleshooting_strategy": "1. **Paso 1 (LACP Negotiation Check):** Validar que las interfaces del EtherChannel estén agrupadas y que LACP esté en estado `u` (in_use) mediante la CLI.\n2. **Paso 2 (VLAN Mismatches):** Confirmar que las VLANs permitidas en el enlace Trunk coincidan de manera exacta en ambos extremos físicos.\n3. **Paso 3 (MAC Flapping):** Si una dirección MAC oscila rápidamente entre diferentes puertos físicos, indica la presencia de un bucle de Capa 2 activo o problemas de direccionamiento.\n4. **Paso 4 (EtherChannel Hashing):** Si hay desbalance de tráfico entre los enlaces del EtherChannel, ajustar el algoritmo de balanceo de carga (hashing) para incluir IPs y puertos en lugar de solo MACs.",
-      "configuration_basics": "• Crear las VLANs deseadas en el switch.\n• Configurar puertos Trunk permitiendo el paso de las VLANs específicas.\n• Crear los canales de agregación asociando las interfaces físicas a un grupo LACP en modo `active`."
+    "static": {
+      "definition": "El enrutamiento estático es la asignación manual de rutas de red en la tabla de enrutamiento de un dispositivo. A diferencia del enrutamiento dinámico, no se adapta automáticamente a cambios topológicos, por lo que requiere intervención administrativa para la redundancia. El diagnóstico incluye la presencia de rutas, inalcanzabilidad del siguiente salto y loops de resolución recursivos.",
+      "key_concepts": "• **RIB (Routing Information Base):** Tabla de enrutamiento que consolida todas las rutas aprendidas por todos los protocolos y rutas estáticas.\\n• **FIB (Forwarding Information Base):** Tabla de reenvío en el plano de datos que contiene únicamente las mejores rutas activas.\\n• **Longest Prefix Match (LPM):** Algoritmo de decisión que prefiere el prefijo más específico (máscara de red más larga) para reenviar un paquete.\\n• **Recursive Lookup:** Búsqueda en la tabla de rutas para resolver el siguiente salto físico cuando el siguiente salto configurado no está directamente conectado.",
+      "architecture": "El enrutamiento estático se procesa principalmente en el plano de control (RIB) donde se evalúa si el siguiente salto es alcanzable. Si es alcanzable, la ruta se instala en el plano de datos (FIB). En plataformas multi-vendor, la distancia administrativa o preferencia define la prioridad de la ruta estática frente a IGP/BGP.",
+      "control_vs_data": "• **Plano de Control:** Evaluación del estado de la interfaz de salida, resolución del siguiente salto recursivo e instalación de la ruta en la RIB.\\n• **Plano de Datos:** Reenvío del paquete a velocidad de línea mediante la coincidencia LPM en la FIB.",
+      "troubleshooting_strategy": "1. **Paso 1 (Route Presence):** Verificar si la ruta está configurada y activa en la tabla de rutas (RIB).\\n2. **Paso 2 (Next-Hop Reachability):** Validar si el siguiente salto es alcanzable mediante ping o si la interfaz de salida física está activa.\\n3. **Paso 3 (Recursive Resolution):** Comprobar si existe una ruta IGP/BGP para resolver el siguiente salto recursivo y descartar bucles recursivos.\\n4. **Paso 4 (Floating/Precedence):** Confirmar si hay otra ruta con mejor distancia administrativa/preferencia que esté ocultando la ruta estática.",
+      "configuration_basics": "• Definir la red de destino y máscara de red.\\n• Especificar la dirección IP del siguiente salto o la interfaz de salida física.\\n• Opcionalmente configurar una distancia administrativa/preferencia personalizada."
     },
-    "vrrp_hsrp": {
-      "definition": "Virtual Router Redundancy Protocol (VRRP) y Hot Standby Router Protocol (HSRP) son protocolos de redundancia de gateway de primera hop (FHRP) que permiten que múltiples routers compartan una IP virtual. Si el router activo falla, el router de standby asume automáticamente la responsabilidad de enrutar el tráfico.",
-      "key_concepts": "• **VIP (Virtual IP):** Dirección IP compartida entre los routers del grupo que actúa como gateway para los hosts.\n• **Priority:** Valor que determina qué router es el activo (mayor valor = preferido).\n• **Preemption:** Capacidad de un router con mayor prioridad de reclamar el rol activo cuando vuelve a estar online.\n• **Tracking:** Reducción dinámica de la prioridad si una interfaz o ruta upstream falla.",
-      "architecture": "Los routers del grupo intercambian mensajes de keepalive (Hellos) para supervisar la salud del activo. En VRRP, el activo responde a ARP requests para la VIP. En HSRP, el activo responde a las peticiones y el standby escucha. El failover típico es de 1-3 segundos (VRRP) o configurable (HSRP).",
-      "control_vs_data": "• **Plano de Control:** Intercambio de Hellos, elección de activo/standby, y respuesta ARP para la VIP.\n• **Plano de Datos:** Reenvío de tráfico de usuario a través del router activo.",
-      "troubleshooting_strategy": "1. **Paso 1 (Estado):** Verificar que un router esté en estado `Master` (VRRP) o `Active` (HSRP) y el otro en `Backup`.\n2. **Paso 2 (Hellos):** Confirmar que los Hellos se reciban en ambas direcciones (posible split-horizon o ACL bloqueando).\n3. **Paso 3 (Tracking):** Validar que el tracking de interfaces upstream funcione y reduzca la prioridad si la ruta falla.",
-      "configuration_basics": "• Definir el grupo VRRP/HSRP con un ID y la VIP.\n• Configurar prioridades diferentes para activo y standby.\n• Habilitar preemption y tracking de interfaces upstream."
-    },
-    "dhcp": {
-      "definition": "Dynamic Host Configuration Protocol (DHCP) es un protocolo cliente-servidor que automatiza la asignación de direcciones IP y parámetros de red a hosts. En entornos de proveedores e infraestructura, se utiliza ampliamente el mecanismo DHCP Relay (o Helper Address) para reenviar las solicitudes broadcast DHCP a través de subredes hacia un servidor centralizado de DHCP.",
-      "key_concepts": "• **DORA Process:** Discover (broadcast cliente), Offer (unicast/broadcast servidor), Request (broadcast cliente), Acknowledge (unicast/broadcast servidor).\n• **DHCP Relay Agent (Helper):** Dispositivo de Capa 3 que reenvía solicitudes de DHCP de clientes remotos hacia servidores en otras subredes.\n• **Giaddr (Gateway IP Address):** Campo insertado por el Relay Agent que indica al servidor DHCP el segmento de red desde el cual proviene el cliente para que el servidor seleccione la IP del pool correcto.\n• **Option 82:** Información de agente de relevo (Circuit-ID, Remote-ID) inyectada en la solicitud para aplicar políticas y asociar al cliente con un puerto físico o VLAN específica.",
-      "architecture": "DHCP opera en la Capa 7 utilizando UDP como protocolo de transporte en los puertos 67 (servidor y relay) y 68 (cliente). El Relay Agent convierte las tramas broadcast de Discover/Request en paquetes unicast dirigidos directamente a las IPs de los servidores DHCP configurados, poblando el campo `giaddr` con la IP de la interfaz L3 donde se recibió el broadcast.",
-      "control_vs_data": "• **Plano de Control:** Gestión de pools, tiempos de concesión (lease time), exclusión de direcciones y asignación de bindings dinámicos.\n• **Plano de Datos:** Transmisión y reenvío L3 de paquetes de configuración UDP.",
-      "troubleshooting_strategy": "1. **Paso 1 (Giaddr & Reachability):** Validar que la interfaz L3 (SVI, subinterfaz) del cliente tenga asignada la IP correcta y conectividad hacia el servidor DHCP.\n2. **Paso 2 (Helpers & Firewalls):** Asegurar que la ip de helper apunte a la IP real del servidor y que los firewalls permitan UDP 67 y 68.\n3. **Paso 3 (Option 82 Validation):** Comprobar si el servidor DHCP requiere o rechaza Option 82. Algunos servidores descartan paquetes si la Option 82 es inconsistente.\n4. **Paso 4 (Pool Capacity):** Verificar en el servidor que el pool de direcciones no esté saturado (sin IPs disponibles).",
-      "configuration_basics": "• Configurar el servidor DHCP o definir la IP del helper/relay en la interfaz L3 local que recibe el broadcast del cliente (`ip helper-address <ip_servidor>` en Cisco).\n• Habilitar el procesamiento de Option 82 globalmente si se requiere identificar los puertos físicos de origen."
-    },
-    "ipv6": {
-      "definition": "IPv6 (Internet Protocol Version 6) es la actualización del protocolo IP estándar diseñada para resolver el agotamiento de direcciones IPv4 al expandir el direccionamiento a 128 bits, simplificar la cabecera del paquete para mejorar el enrutamiento e integrar de forma nativa mecanismos de autoconfiguración y Neighbor Discovery.",
-      "key_concepts": "• **Link-Local Address (fe80::/10):** Dirección IP generada automáticamente en cada interfaz IPv6, válida únicamente dentro del segmento local de Capa 2.\n• **NDP (Neighbor Discovery Protocol):** Protocolo basado en ICMPv6 que reemplaza las funciones de ARP de IPv4.\n• **SLAAC (Stateless Address Autoconfiguration):** Permite que un cliente autoconfigure su IP y gateway combinando el prefijo anunciado por el router con su ID de interfaz local.\n• **Solicited-Node Multicast Address:** Dirección multicast especial utilizada por NDP para mapear direcciones IP a MAC de forma mucho más eficiente que el broadcast de ARP.",
-      "architecture": "IPv6 elimina el concepto de broadcast. En su lugar, el descubrimiento y la resolución de direcciones utilizan direcciones multicast específicas de nodo solicitado (`ff02::1:ff00:0/104`). Las adyacencias L2 se mantienen en una tabla Neighbor Cache que transiciona por estados (Incomplete, Reachable, Stale, Delay, Probe).",
-      "control_vs_data": "• **Plano de Control:** Mensajes ICMPv6 de Neighbor Solicitation (NS), Neighbor Advertisement (NA), Router Solicitation (RS) y Router Advertisement (RA).\n• **Plano de Datos:** Reenvío acelerado por hardware de paquetes IP con cabeceras IPv6 simplificadas de 40 bytes fijos.",
-      "troubleshooting_strategy": "1. **Paso 1 (Link-Local Ping):** Para validar conectividad básica punto a punto, hacer ping a la IP `fe80::` del vecino especificando la interfaz de salida.\n2. **Paso 2 (Neighbor Cache Check):** Revisar la tabla de vecinos (Neighbor Cache) para verificar que las direcciones MAC estén resueltas correctamente.\n3. **Paso 3 (Router Advertisement Filters):** Comprobar que no existan filtros o políticas bloqueando ICMPv6 en las interfaces, ya que esto rompería NDP y SLAAC por completo.\n4. **Paso 4 (IPv6 Routing Table):** Verificar que la tabla de rutas contenga la ruta por defecto IPv6 (`::/0`) apuntando a la dirección Link-Local del router gateway.",
-      "configuration_basics": "• Habilitar el enrutamiento IPv6 global (`ipv6 unicast-routing`).\n• Asignar direcciones IPv6 estáticas o configurar autoconfiguración (`ipv6 address autoconfig`).\n• Habilitar los Router Advertisements en la interfaz interna."
-    },
-    "eigrp": {
-      "definition": "Enhanced Interior Gateway Routing Protocol (EIGRP) es un protocolo de enrutamiento dinámico IGP vector-distancia avanzado (o híbrido) propietario de Cisco. Utiliza el algoritmo DUAL para calcular el camino más corto libre de bucles y ofrece convergencia extremadamente rápida.",
-      "key_concepts": "• **DUAL Algorithm:** Algoritmo matemático para calcular rutas libres de bucles en toda la topología.\n• **Successor / Feasible Successor:** El Successor es la mejor ruta activa para un prefijo. El Feasible Successor es una ruta de respaldo precalculada que cumple la condición de factibilidad.\n• **Reported Distance (RD) / Feasible Distance (FD):** RD es la métrica anunciada por el vecino. FD es la métrica local calculada hacia el destino.\n• **Feasibility Condition (Condición de Factibilidad):** Se cumple si la RD de un vecino es menor que la FD de la ruta actual.",
-      "architecture": "EIGRP establece adyacencias dinámicas mediante paquetes Hello multicast (224.0.0.10) en el protocolo de transporte IP 88. Intercambia actualizaciones de enrutamiento completas solo al inicio, y posteriormente envía únicamente actualizaciones parciales e incrementales limitadas cuando cambia la topología física, reduciendo el consumo de ancho de banda.",
-      "control_vs_data": "• **Plano de Control:** Envío de mensajes Hello, Update, Query y Reply sobre IP 88 y ejecución de DUAL en la CPU del router.\n• **Plano de Datos:** Reenvío de alta velocidad de paquetes IP basándose en la tabla FIB local.",
-      "troubleshooting_strategy": "1. **Paso 1 (AS & K-Values Mismatch):** Validar que el número de Sistema Autónomo y los coeficientes de métrica (K-Values) coincidan exactamente en ambos extremos de la sesión.\n2. **Paso 2 (Unicast/Multicast Reachability):** Comprobar que el tráfico multicast EIGRP (IP 224.0.0.10) no esté bloqueado. Si falla, las adyacencias no pasarán del estado inicial.\n3. **Paso 3 (Stuck In Active - SIA):** Ocurre si un router envía un Query para buscar una ruta alternativa y no recibe Reply de un vecino en 3 minutos. Requiere identificar cuál router intermedio está bloqueando los mensajes.\n4. **Paso 4 (MTU Issues):** Paquetes de actualización grandes pueden ser descartados si hay inconsistencias de MTU en el enlace.",
-      "configuration_basics": "• Levantar el proceso EIGRP con el número de AS (`router eigrp <AS>`).\n• Asociar las interfaces al proceso declarando los prefijos en la sección `network` con máscara wildcard.\n• Configurar `no auto-summary` para evitar la agregación automática de redes."
-    },
-    "ripv2": {
-      "definition": "Routing Information Protocol version 2 (RIPv2) es un protocolo IGP vector-distancia que utiliza el número de saltos (hop count) como métrica. Es simple pero limitado a 15 saltos (16 = inalcanzable).",
-      "key_concepts": "• **Hop Count:** Métrica máxima de 15. Un valor de 16 significa inalcanzable.\n• **Split Horizon:** Técnica que evita enviar rutas de vuelta por la interfaz por la que se aprendieron.\n• **Route Poisoning:** Anuncio de una ruta con métrica 16 para invalidar rápidamente un destino caído.\n• **Triggered Updates:** Actualizaciones inmediatas ante cambios de topología, no solo en el timer periódico.",
-      "architecture": "RIPv2 envía actualizaciones periódicas (cada 30 segundos) mediante multicast UDP 224.0.0.9. Incluye máscara de subred (VLSM), soporte para autenticación MD5 y next-hop. Cada router mantiene una tabla de vecinos y una base de datos de rutas con la mejor métrica.",
-      "control_vs_data": "• **Plano de Control:** Envío de updates UDP 520, procesamiento de request/response, y selección de rutas por menor hop count.\n• **Plano de Datos:** Reenvío IP basado en la tabla de rutas poblada por RIPv2.",
-      "troubleshooting_strategy": "1. **Paso 1 (Timers):** Verificar que los timers (update, invalid, holddown, flush) coincidan en todos los routers.\n2. **Paso 2 (Split Horizon):** En topologías hub-and-spoke, desactivar split horizon si es necesario para propagar rutas.\n3. **Paso 3 (Autenticación):** Confirmar que la autenticación MD5 coincida entre vecinos, o desactivarla si hay mismatch.",
-      "configuration_basics": "• Habilitar el proceso RIPv2 globalmente y bajo las interfaces de red.\n• Configurar redistribución de rutas estáticas o conectadas si es necesario.\n• Ajustar timers y habilitar autenticación MD5 para seguridad."
-    },
-    "segment_routing": {
-      "definition": "Segment Routing (SR) es una arquitectura de enrutamiento basada en la fuente (source routing) que utiliza la cabecera de un paquete para especificar la ruta completa que debe seguir. Reemplaza la necesidad de protocolos de señalización como LDP y RSVP-TE en el core MPLS.",
-      "key_concepts": "• **SID (Segment Identifier):** Identificador de 32 bits que representa una instrucción de enrutamiento (nodo, adjacencia, o servicio).\n• **SRGB (SR Global Block):** Rango de etiquetas MPLS reservado para los SIDs globales de la red.\n• **Prefix-SID:** SID asignado a un prefijo IP (ej. loopback) que permite enrutamiento por el IGP más corto.\n• **Adjacency-SID:** SID que fuerza el envío de tráfico a través de un enlace específico, útil para ingeniería de tráfico.",
-      "architecture": "En SR-MPLS, el router de ingreso (headend) impone una pila de etiquetas MPLS donde cada etiqueta representa un SID. Los routers intermedios realizan un POP (segmento consumido) o SWAP según el tipo de SID. El plano de control distribuye los SIDs mediante extensiones de IGP (OSPF/IS-IS) sin necesidad de LDP/RSVP.",
-      "control_vs_data": "• **Plano de Control:** IGP (OSPF/IS-IS) con extensiones SR para distribuir SIDs y SRGB. No requiere LDP/RSVP.\n• **Plano de Datos:** Reenvío MPLS basado en LFIB con operaciones de POP/SWAP según la pila de SIDs.",
-      "troubleshooting_strategy": "1. **Paso 1 (SRGB):** Verificar que todos los routers usen el mismo SRGB (ej. 16000-23999).\n2. **Paso 2 (IGP Extensions):** Confirmar que OSPF/IS-IS tengan habilitadas las extensiones SR y que los SIDs se propaguen.\n3. **Paso 3 (LFIB):** Validar que la LFIB contenga entradas para los Prefix-SIDs locales y remotos.",
-      "configuration_basics": "• Configurar el SRGB global en cada router.\n• Habilitar las extensiones SR en el proceso IGP.\n• Asignar un Prefix-SID único a la loopback principal."
-    },
-    "aaa": {
-      "definition": "AAA (Authentication, Authorization, and Accounting) es un marco de trabajo de seguridad para controlar de forma centralizada el acceso a los recursos de red. Autentica quién intenta acceder, Autoriza qué privilegios o comandos tiene permitidos ejecutar, y realiza la Auditoría (Accounting) registrando las acciones realizadas para fines de cumplimiento.",
-      "key_concepts": "• **TACACS+:** Protocolo propietario de Cisco basado en TCP (puerto 49). Cifra el paquete completo y separa las funciones de Autenticación, Autorización y Auditoría.\n• **RADIUS:** Protocolo estándar de la industria basado en UDP (puertos 1812/1813). Cifra únicamente la contraseña y combina la Autenticación y Autorización en un solo paso.\n• **Method List:** Lista ordenada de métodos (ej. tacacs, luego local, luego line) que el dispositivo evalúa para autenticar a un usuario.",
-      "architecture": "El dispositivo de red actúa como Network Access Server (NAS), interactuando con el usuario cliente y traduciendo la sesión a peticiones hacia los servidores AAA centralizados (como Cisco ISE, ClearPass o TACACS GUI) que contienen la base de datos de usuarios y políticas.",
-      "control_vs_data": "• **Plano de Control:** Validación de accesos administrativos, autorización de comandos CLI y envío de registros de contabilidad.\n• **Plano de Datos:** No se ve afectado directamente, pero las políticas de autorización pueden empujar atributos (como VLANs, ACLs) que controlen el plano de datos de los puertos de usuarios.",
-      "troubleshooting_strategy": "1. **Paso 1 (Server Reachability):** Comprobar conectividad L3 y puerto TCP 49 (TACACS) o UDP 1812/1813 (RADIUS) hacia el servidor.\n2. **Paso 2 (Shared Secret):** Validar que la clave compartida (shared secret) coincida exactamente en el dispositivo de red y en el servidor AAA.\n3. **Paso 3 (Local Failback):** Asegurar que exista un método local al final de la lista de métodos para no perder acceso administrativo en caso de caída del servidor central.\n4. **Paso 4 (Debug Application):** Utilizar depuración detallada (ej. `debug tacacs`) para analizar el intercambio de paquetes y los códigos de respuesta del servidor.",
-      "configuration_basics": "• Habilitar aaa globalmente (`aaa new-model`).\n• Definir los hosts de los servidores con sus llaves de cifrado.\n• Crear las listas de métodos para autenticación (`aaa authentication login ...`), autorización (`aaa authorization exec ...`) y accounting."
-    },
-    "nat": {
-      "definition": "Network Address Translation (NAT) es una tecnología que modifica las direcciones IP y puertos en las cabeceras de los paquetes IP mientras están en tránsito a través de un dispositivo de red. Su propósito principal es conservar el espacio de direccionamiento IPv4 público al permitir que múltiples hosts privados compartan un número limitado de direcciones públicas, además de ocultar la topología de red interna.",
-      "key_concepts": "• **Source NAT (SNAT):** Traduce la dirección IP origen de los paquetes (comúnmente usado para salida a Internet).\n• **Destination NAT (DNAT):** Traduce la dirección IP (y puerto) destino de los paquetes (comúnmente usado para publicar servidores internos).\n• **Static NAT (1:1):** Mapeo estático y bidireccional entre una IP privada y una IP pública dedicada.\n• **PAT / NAT Overload / Masquerade:** Tipo de Source NAT que traduce múltiples IPs privadas usando una sola IP pública y diferentes puertos TCP/UDP.\n• **Port Exhaustion:** Condición crítica donde se agotan los puertos efímeros disponibles para PAT, impidiendo nuevas conexiones.",
-      "architecture": "Los firewalls y routers mantienen una tabla de traducción de direcciones (NAT Session Table / Translation Table). Cuando llega el primer paquete de un flujo, el motor de NAT evalúa las reglas. Si hay coincidencia, crea una entrada de sesión y modifica el paquete (IP/Puerto). Los paquetes subsecuentes de la misma sesión se traducen de forma ultra rápida por hardware (fastpath) evitando re-evaluar las reglas. Al recibir el tráfico de retorno, el dispositivo realiza la traducción inversa consultando la misma sesión.",
-      "control_vs_data": "• **Plano de Control:** Definición de políticas, pools de direcciones, y la lógica inicial de asignación y creación de la sesión NAT en la CPU.\n• **Plano de Datos:** Sustitución en caliente de IPs/puertos y recalculación del checksum IP/TCP/UDP realizada por ASICs o procesadores de red a velocidad de línea.",
-      "troubleshooting_strategy": "1. **Paso 1 (Session Table):** Verificar si la sesión de traducción está registrada en la tabla de NAT con los puertos correctos.\n2. **Paso 2 (Resource Exhaustion):** Monitorear la utilización de puertos efímeros y el límite de sesiones del pool de NAT.\n3. **Paso 3 (Flow Trace):** Ejecutar depuración a nivel de flujo de paquetes (Flow Debug/Trace) para confirmar si el motor descarta el paquete o falla en traducirlo.\n4. **Paso 4 (Routing & Firewalls):** Asegurar que existan rutas de retorno para la IP pública traducida y que las políticas de seguridad permitan el tráfico post-NAT o pre-NAT según el vendor.",
-      "configuration_basics": "• Definir interfaces o zonas de confianza (Inside/Trust) y no confianza (Outside/Untrust).\n• Habilitar la regla de traducción (Source/Destination/Static) y asociarla a la interfaz de salida o pool público.\n• Crear las políticas de firewall correspondientes que permitan el paso de tráfico."
+    "dmvpn": {
+      "definition": "Dynamic Multipoint VPN (DMVPN) es una arquitectura de VPN multipunto de Cisco que permite establecer redes VPN dinámicas, seguras y escalables sobre redes públicas (Internet) utilizando una topología Hub-and-Spoke, con soporte para el establecimiento directo de túneles Spoke-to-Spoke sin transitar por el Hub.",
+      "key_concepts": "• **mGRE (Multipoint GRE):** Permite que una única interfaz de túnel GRE soporte múltiples túneles dinámicos reduciendo la configuración.\n• **NHRP (Next Hop Resolution Protocol):** Actúa como la base de datos tipo \"ARP\" que mapea la IP del túnel interna de los Spokes con su IP pública externa (NBMA).\n• **NBMA (Non-Broadcast Multi-Access):** Dirección IP pública real del dispositivo WAN.\n• **Spoke-to-Spoke Tunneling:** Capacidad de dos sucursales de comunicarse directamente resolviendo sus direcciones públicas a través del Hub.",
+      "architecture": "Los Spokes levantan un túnel mGRE permanente contra el Hub central y se registran en el servidor NHRP del Hub. Al enviar tráfico entre Spokes, el Spoke solicita la IP NBMA del Spoke destino al Hub a través de NHRP. Una vez resuelto, se negocia una asociación de seguridad IPsec directa y se establece un túnel directo dinámico sobre el cual fluyen los datos.",
+      "control_vs_data": "• **Plano de Control:** Registro NHRP, resolución de next-hops y negociación de llaves de cifrado IPsec (IKEv1/IKEv2) en software.\n• **Plano de Datos:** Encapsulación de tramas de datos del cliente en GRE y cifrado IPsec (ESP) con aceleración por hardware de cifrado.",
+      "troubleshooting_strategy": "1. **Paso 1 (NHRP Database):** Verificar en el Hub que los Spokes estén registrados en estado `dynamic` y ver sus IPs NBMA.\n2. **Paso 2 (IPsec Security Association):** Comprobar que el estado de ISAKMP/IPsec esté activo (`QM_IDLE` / `ACTIVE`).\n3. **Paso 3 (Routing over DMVPN):** Asegurar que las adyacencias del protocolo de enrutamiento (OSPF, EIGRP o BGP) se establezcan sobre las IPs del túnel. OSPF requiere cambiar la red a tipo point-to-multipoint.\n4. **Paso 4 (MTU/MSS Adjustments):** El doble overhead de GRE e IPsec requiere ajustar la MTU del túnel a 1400 bytes y el TCP MSS a 1360 bytes.",
+      "configuration_basics": "• Configurar interfaz Tunnel, asignarle una IP y establecer `tunnel mode gre multipoint`.\n• Habilitar NHRP, designar el NHS (Next Hop Server) del Hub central y mapear la IP del Hub a su dirección pública.\n• Configurar perfiles IPsec y asociarlos al túnel."
     },
     "mpbgp": {
       "definition": "Multiprotocol BGP (MP-BGP) es una extensión de Border Gateway Protocol (BGP) que le permite transportar información de alcanzabilidad de capa de red (NLRI) para múltiples protocolos de red y Address Families, tales como IPv6, VPNv4/VPNv6 (para L3VPNs), EVPN (para conmutación de Capa 2/3 sobre VXLAN) y tráfico Multicast.",
@@ -112433,13 +112377,13 @@ const NET_TSHOOT_DATA = {
       "troubleshooting_strategy": "1. **Paso 1 (Capability Exchange):** Verificar que la address family necesaria esté activada (activate) bajo el peer BGP.\n2. **Paso 2 (RD/RT Consistency):** Confirmar que el PE de origen exporte el RT que el PE de destino esté importando en su VRF.\n3. **Paso 3 (Next-Hop Resolution):** Comprobar que el BGP Next-Hop (generalmente el Loopback0 del PE origen) sea alcanzable y tenga una etiqueta de transporte MPLS válida (LDP/RSVP).\n4. **Paso 4 (Route Reflector Status):** Si se usan RRs, verificar que las familias estén activadas en el RR y que las rutas no sean descartadas por prevención de bucles.",
       "configuration_basics": "• Definir el peer BGP en el sistema autónomo.\n• Ingresar al modo específico de address-family (ej. `address-family vpnv4 unicast` o `address-family l2vpn evpn`).\n• Activar (`neighbor activate`) al peer dentro de esa address-family y habilitar el envío de comunidades extendidas."
     },
-    "static": {
-      "definition": "El enrutamiento estático es la asignación manual de rutas de red en la tabla de enrutamiento de un dispositivo. A diferencia del enrutamiento dinámico, no se adapta automáticamente a cambios topológicos, por lo que requiere intervención administrativa para la redundancia. El diagnóstico incluye la presencia de rutas, inalcanzabilidad del siguiente salto y loops de resolución recursivos.",
-      "key_concepts": "• **RIB (Routing Information Base):** Tabla de enrutamiento que consolida todas las rutas aprendidas por todos los protocolos y rutas estáticas.\\n• **FIB (Forwarding Information Base):** Tabla de reenvío en el plano de datos que contiene únicamente las mejores rutas activas.\\n• **Longest Prefix Match (LPM):** Algoritmo de decisión que prefiere el prefijo más específico (máscara de red más larga) para reenviar un paquete.\\n• **Recursive Lookup:** Búsqueda en la tabla de rutas para resolver el siguiente salto físico cuando el siguiente salto configurado no está directamente conectado.",
-      "architecture": "El enrutamiento estático se procesa principalmente en el plano de control (RIB) donde se evalúa si el siguiente salto es alcanzable. Si es alcanzable, la ruta se instala en el plano de datos (FIB). En plataformas multi-vendor, la distancia administrativa o preferencia define la prioridad de la ruta estática frente a IGP/BGP.",
-      "control_vs_data": "• **Plano de Control:** Evaluación del estado de la interfaz de salida, resolución del siguiente salto recursivo e instalación de la ruta en la RIB.\\n• **Plano de Datos:** Reenvío del paquete a velocidad de línea mediante la coincidencia LPM en la FIB.",
-      "troubleshooting_strategy": "1. **Paso 1 (Route Presence):** Verificar si la ruta está configurada y activa en la tabla de rutas (RIB).\\n2. **Paso 2 (Next-Hop Reachability):** Validar si el siguiente salto es alcanzable mediante ping o si la interfaz de salida física está activa.\\n3. **Paso 3 (Recursive Resolution):** Comprobar si existe una ruta IGP/BGP para resolver el siguiente salto recursivo y descartar bucles recursivos.\\n4. **Paso 4 (Floating/Precedence):** Confirmar si hay otra ruta con mejor distancia administrativa/preferencia que esté ocultando la ruta estática.",
-      "configuration_basics": "• Definir la red de destino y máscara de red.\\n• Especificar la dirección IP del siguiente salto o la interfaz de salida física.\\n• Opcionalmente configurar una distancia administrativa/preferencia personalizada."
+    "aaa": {
+      "definition": "AAA (Authentication, Authorization, and Accounting) es un marco de trabajo de seguridad para controlar de forma centralizada el acceso a los recursos de red. Autentica quién intenta acceder, Autoriza qué privilegios o comandos tiene permitidos ejecutar, y realiza la Auditoría (Accounting) registrando las acciones realizadas para fines de cumplimiento.",
+      "key_concepts": "• **TACACS+:** Protocolo propietario de Cisco basado en TCP (puerto 49). Cifra el paquete completo y separa las funciones de Autenticación, Autorización y Auditoría.\n• **RADIUS:** Protocolo estándar de la industria basado en UDP (puertos 1812/1813). Cifra únicamente la contraseña y combina la Autenticación y Autorización en un solo paso.\n• **Method List:** Lista ordenada de métodos (ej. tacacs, luego local, luego line) que el dispositivo evalúa para autenticar a un usuario.",
+      "architecture": "El dispositivo de red actúa como Network Access Server (NAS), interactuando con el usuario cliente y traduciendo la sesión a peticiones hacia los servidores AAA centralizados (como Cisco ISE, ClearPass o TACACS GUI) que contienen la base de datos de usuarios y políticas.",
+      "control_vs_data": "• **Plano de Control:** Validación de accesos administrativos, autorización de comandos CLI y envío de registros de contabilidad.\n• **Plano de Datos:** No se ve afectado directamente, pero las políticas de autorización pueden empujar atributos (como VLANs, ACLs) que controlen el plano de datos de los puertos de usuarios.",
+      "troubleshooting_strategy": "1. **Paso 1 (Server Reachability):** Comprobar conectividad L3 y puerto TCP 49 (TACACS) o UDP 1812/1813 (RADIUS) hacia el servidor.\n2. **Paso 2 (Shared Secret):** Validar que la clave compartida (shared secret) coincida exactamente en el dispositivo de red y en el servidor AAA.\n3. **Paso 3 (Local Failback):** Asegurar que exista un método local al final de la lista de métodos para no perder acceso administrativo en caso de caída del servidor central.\n4. **Paso 4 (Debug Application):** Utilizar depuración detallada (ej. `debug tacacs`) para analizar el intercambio de paquetes y los códigos de respuesta del servidor.",
+      "configuration_basics": "• Habilitar aaa globalmente (`aaa new-model`).\n• Definir los hosts de los servidores con sus llaves de cifrado.\n• Crear las listas de métodos para autenticación (`aaa authentication login ...`), autorización (`aaa authorization exec ...`) y accounting."
     },
     "sdwan": {
       "definition": "Software-Defined WAN (SD-WAN) es una arquitectura de red WAN definida por software que abstrae el hardware físico de transporte (MPLS, Internet, LTE) para construir una red overlay segura e inteligente, gestionada de forma centralizada a través de controladores de plano de control y de administración.",
@@ -112449,21 +112393,21 @@ const NET_TSHOOT_DATA = {
       "troubleshooting_strategy": "1. **Paso 1 (Control Connections Status):** Verificar que el router Edge tenga sesiones activas hacia vManage, vSmart y vBond. Sin conexión de control, el Edge no recibirá políticas.\n2. **Paso 2 (BFD Session Flaps):** Analizar si hay caídas de BFD sobre los túneles IPsec, lo que indica pérdida de conectividad física L3 o atenuación severa en el enlace WAN.\n3. **Paso 3 (OMP Route Verification):** Comprobar que las redes locales de las sucursales sean aprendidas y anunciadas por OMP hacia el vSmart.\n4. **Paso 4 (Policy Matching):** Si el tráfico no utiliza el enlace WAN esperado, revisar la política central de App-Aware Routing instalada en el Edge.",
       "configuration_basics": "• Configurar los parámetros del sistema (System IP, Site-ID, Organization Name).\n• Configurar las interfaces WAN físicas asignándoles un color TLOC y habilitando la encapsulación IPsec.\n• Levantar las conexiones de control hacia los controladores usando plantillas."
     },
-    "bfd": {
-      "definition": "Bidirectional Forwarding Detection (BFD) es un protocolo de detección rápida de fallas de enlace diseñado para proporcionar tiempos de convergencia ultra rápidos (sub-segundo) para protocolos de enrutamiento como BGP, OSPF, IS-IS. Su único objetivo es detectar fallas de conectividad bidireccional en el camino de datos.",
-      "key_concepts": "• **Hello Interval (Mínimo Transmit/Receive):** Tiempo en milisegundos entre paquetes de control BFD.\n• **Detection Multiplier:** Número de hellos perdidos seguidos antes de declarar el enlace como caído (down).\n• **Async Mode:** Modo por defecto donde ambos extremos envían hellos periódicos.\n• **Echo Function:** Función donde se envían paquetes de eco con la IP de origen del propio router para validar el plano de datos del switch adyacente sin procesar BFD en la CPU del vecino.",
-      "architecture": "BFD funciona encapsulado en UDP (puerto 3784 para enlaces simples de un solo salto, y puerto 3785 para múltiples saltos). Es independiente de los protocolos de capa de red y enrutamiento, pero interactúa con ellos: al caerse la sesión BFD, este notifica de inmediato a BGP/OSPF para que boten sus adyacencias de inmediato en lugar de esperar a que expiren los keepalives tradicionalmente.",
-      "control_vs_data": "• **Plano de Control:** Negociación inicial de los timers y estados de sesión BFD ejecutada por el software principal.\n• **Plano de Datos:** Procesamiento ultrarrápido y periódico de paquetes Hello UDP (a menudo implementado directamente en ASICs de las linecards en routers de gama alta para evitar sobrecargar el procesador principal).",
-      "troubleshooting_strategy": "1. **Paso 1 (Timer Alignment):** Validar que los timers configurados en ambos extremos sean soportados por el hardware local.\n2. **Paso 2 (UDP Reachability):** Confirmar que no existan ACLs o firewalls bloqueando el tráfico UDP puerto 3784/3785.\n3. **Paso 3 (Interface Status):** Verificar si la interfaz física reporta flaps de capa 1 que puedan interrumpir las ráfagas BFD.\n4. **Paso 4 (Control Plane Load):** Si la CPU del router está muy alta, BFD puede expirar falsamente (flapping) si no está descargado en hardware.",
-      "configuration_basics": "• Habilitar BFD bajo la interfaz física o lógica implicada.\n• Configurar el intervalo mínimo de transmisión (`min-tx-interval`), de recepción (`min-rx-interval`) y el multiplicador (`multiplier`).\n• Asociar BFD al protocolo de enrutamiento deseado (ej. `bfd` bajo el proceso OSPF o grupo BGP)."
+    "ripv2": {
+      "definition": "Routing Information Protocol version 2 (RIPv2) es un protocolo IGP vector-distancia que utiliza el número de saltos (hop count) como métrica. Es simple pero limitado a 15 saltos (16 = inalcanzable).",
+      "key_concepts": "• **Hop Count:** Métrica máxima de 15. Un valor de 16 significa inalcanzable.\n• **Split Horizon:** Técnica que evita enviar rutas de vuelta por la interfaz por la que se aprendieron.\n• **Route Poisoning:** Anuncio de una ruta con métrica 16 para invalidar rápidamente un destino caído.\n• **Triggered Updates:** Actualizaciones inmediatas ante cambios de topología, no solo en el timer periódico.",
+      "architecture": "RIPv2 envía actualizaciones periódicas (cada 30 segundos) mediante multicast UDP 224.0.0.9. Incluye máscara de subred (VLSM), soporte para autenticación MD5 y next-hop. Cada router mantiene una tabla de vecinos y una base de datos de rutas con la mejor métrica.",
+      "control_vs_data": "• **Plano de Control:** Envío de updates UDP 520, procesamiento de request/response, y selección de rutas por menor hop count.\n• **Plano de Datos:** Reenvío IP basado en la tabla de rutas poblada por RIPv2.",
+      "troubleshooting_strategy": "1. **Paso 1 (Timers):** Verificar que los timers (update, invalid, holddown, flush) coincidan en todos los routers.\n2. **Paso 2 (Split Horizon):** En topologías hub-and-spoke, desactivar split horizon si es necesario para propagar rutas.\n3. **Paso 3 (Autenticación):** Confirmar que la autenticación MD5 coincida entre vecinos, o desactivarla si hay mismatch.",
+      "configuration_basics": "• Habilitar el proceso RIPv2 globalmente y bajo las interfaces de red.\n• Configurar redistribución de rutas estáticas o conectadas si es necesario.\n• Ajustar timers y habilitar autenticación MD5 para seguridad."
     },
-    "netflow": {
-      "definition": "NetFlow (y su estándar IPFIX / NetFlow v10) es un protocolo de telemetría de red que recopila metadatos e información estadística sobre flujos de tráfico IP que ingresan o salen de las interfaces de un dispositivo de red. Permite analizar quién, cuándo, cómo y hacia dónde se está enviando tráfico a través de la infraestructura.",
-      "key_concepts": "• **Flow (Flujo):** Secuencia unidireccional de paquetes con campos clave idénticos.\n• **7 Key Fields (Campos Clave):** IP Origen, IP Destino, Puerto Origen, Puerto Destino, Tipo de Protocolo L3, ToS (Class of Service), e Interfaz Física de entrada.\n• **NetFlow Cache:** Memoria local del router donde se almacenan y consolidan las estadísticas de flujos activos.\n• **Timers (Active/Inactive):** Tiempos de exportación de flujos. Un flujo activo prolongado se exporta cada X minutos (default 30) y un flujo inactivo se purga inmediatamente.",
-      "architecture": "A medida que los paquetes pasan por el router, se revisan sus cabeceras. Si coincide con un flujo existente en el caché, se actualizan los contadores (bytes, paquetes). Si no existe, se crea una entrada en el caché. Al expirar un flujo, los registros se encapsulan en datagramas UDP (comúnmente puerto 2055 o 9995) y se envían hacia un servidor colector de NetFlow para su análisis y almacenamiento.",
-      "control_vs_data": "• **Plano de Control:** Configuración de monitores, exportadores y samplers desde la CLI o plantillas del orquestador.\n• **Plano de Datos:** Inspección de cabeceras de paquetes a velocidad de línea en los ASICs para alimentar la caché de NetFlow sin CPU overhead.",
-      "troubleshooting_strategy": "1. **Paso 1 (Exporter Reachability):** Verificar que el router tenga ruta L3 hacia el colector NetFlow y que el puerto UDP no esté bloqueado.\n2. **Paso 2 (Sampling Rate):** En enlaces de alta capacidad (10G/100G), configurar muestreo aleatorio (Random Sampled NetFlow, ej. 1 de 1000) para no saturar la CPU ni desbordar la tabla de caché.\n3. **Paso 3 (Timer Adjustments):** Asegurar que el Active Timer esté configurado a 1 minuto (60s) para evitar ráfagas de exportaciones y reportes inexactos.\n4. **Paso 4 (Source Interface):** Configurar siempre una interfaz origen estable (como Loopback0) para la exportación de paquetes UDP.",
-      "configuration_basics": "• Crear un Record (define qué medir), un Exporter (define a dónde enviar) y un Monitor (vincula el record y el exporter).\n• Aplicar el Monitor bajo la interfaz deseada indicando la dirección del tráfico (`input` o `output`)."
+    "vrrp_hsrp": {
+      "definition": "Virtual Router Redundancy Protocol (VRRP) y Hot Standby Router Protocol (HSRP) son protocolos de redundancia de gateway de primera hop (FHRP) que permiten que múltiples routers compartan una IP virtual. Si el router activo falla, el router de standby asume automáticamente la responsabilidad de enrutar el tráfico.",
+      "key_concepts": "• **VIP (Virtual IP):** Dirección IP compartida entre los routers del grupo que actúa como gateway para los hosts.\n• **Priority:** Valor que determina qué router es el activo (mayor valor = preferido).\n• **Preemption:** Capacidad de un router con mayor prioridad de reclamar el rol activo cuando vuelve a estar online.\n• **Tracking:** Reducción dinámica de la prioridad si una interfaz o ruta upstream falla.",
+      "architecture": "Los routers del grupo intercambian mensajes de keepalive (Hellos) para supervisar la salud del activo. En VRRP, el activo responde a ARP requests para la VIP. En HSRP, el activo responde a las peticiones y el standby escucha. El failover típico es de 1-3 segundos (VRRP) o configurable (HSRP).",
+      "control_vs_data": "• **Plano de Control:** Intercambio de Hellos, elección de activo/standby, y respuesta ARP para la VIP.\n• **Plano de Datos:** Reenvío de tráfico de usuario a través del router activo.",
+      "troubleshooting_strategy": "1. **Paso 1 (Estado):** Verificar que un router esté en estado `Master` (VRRP) o `Active` (HSRP) y el otro en `Backup`.\n2. **Paso 2 (Hellos):** Confirmar que los Hellos se reciban en ambas direcciones (posible split-horizon o ACL bloqueando).\n3. **Paso 3 (Tracking):** Validar que el tracking de interfaces upstream funcione y reduzca la prioridad si la ruta falla.",
+      "configuration_basics": "• Definir el grupo VRRP/HSRP con un ID y la VIP.\n• Configurar prioridades diferentes para activo y standby.\n• Habilitar preemption y tracking de interfaces upstream."
     },
     "noc_operaciones": {
       "definition": "Principios operativos y diagnóstico de la tecnología noc_operaciones.",
@@ -112481,29 +112425,37 @@ const NET_TSHOOT_DATA = {
       "troubleshooting_strategy": "1. **Paso 1 (ACL Match Verification):** Validar que la ACL de coincidencia tenga contadores activos (que esté haciendo match con el tráfico de origen real).\n2. **Paso 2 (Next-Hop Reachability):** Comprobar que el Next-Hop definido en la política esté activo y sea alcanzable. Si el next-hop está caído, PBR fallará silenciosamente y el router volverá a enrutar de forma normal.\n3. **Paso 3 (Interface Direction):** Asegurar que PBR esté aplicado en la interfaz de **entrada** de los paquetes. PBR no se puede aplicar a paquetes que están saliendo del router.\n4. **Paso 4 (PBR Statistics):** Monitorear la utilización de memoria TCAM, ya que reglas PBR excesivas o complejas pueden superar el límite de hardware y forzar el procesamiento por software (CPU).",
       "configuration_basics": "• Crear una ACL indicando el tráfico origen y destino.\n• Definir un route-map con `match ip address <ACL>` y `set ip next-hop <IP_Salida>`.\n• Aplicar la política en la interfaz de entrada mediante `ip policy route-map <nombre>`."
     },
-    "dmvpn": {
-      "definition": "Dynamic Multipoint VPN (DMVPN) es una arquitectura de VPN multipunto de Cisco que permite establecer redes VPN dinámicas, seguras y escalables sobre redes públicas (Internet) utilizando una topología Hub-and-Spoke, con soporte para el establecimiento directo de túneles Spoke-to-Spoke sin transitar por el Hub.",
-      "key_concepts": "• **mGRE (Multipoint GRE):** Permite que una única interfaz de túnel GRE soporte múltiples túneles dinámicos reduciendo la configuración.\n• **NHRP (Next Hop Resolution Protocol):** Actúa como la base de datos tipo \"ARP\" que mapea la IP del túnel interna de los Spokes con su IP pública externa (NBMA).\n• **NBMA (Non-Broadcast Multi-Access):** Dirección IP pública real del dispositivo WAN.\n• **Spoke-to-Spoke Tunneling:** Capacidad de dos sucursales de comunicarse directamente resolviendo sus direcciones públicas a través del Hub.",
-      "architecture": "Los Spokes levantan un túnel mGRE permanente contra el Hub central y se registran en el servidor NHRP del Hub. Al enviar tráfico entre Spokes, el Spoke solicita la IP NBMA del Spoke destino al Hub a través de NHRP. Una vez resuelto, se negocia una asociación de seguridad IPsec directa y se establece un túnel directo dinámico sobre el cual fluyen los datos.",
-      "control_vs_data": "• **Plano de Control:** Registro NHRP, resolución de next-hops y negociación de llaves de cifrado IPsec (IKEv1/IKEv2) en software.\n• **Plano de Datos:** Encapsulación de tramas de datos del cliente en GRE y cifrado IPsec (ESP) con aceleración por hardware de cifrado.",
-      "troubleshooting_strategy": "1. **Paso 1 (NHRP Database):** Verificar en el Hub que los Spokes estén registrados en estado `dynamic` y ver sus IPs NBMA.\n2. **Paso 2 (IPsec Security Association):** Comprobar que el estado de ISAKMP/IPsec esté activo (`QM_IDLE` / `ACTIVE`).\n3. **Paso 3 (Routing over DMVPN):** Asegurar que las adyacencias del protocolo de enrutamiento (OSPF, EIGRP o BGP) se establezcan sobre las IPs del túnel. OSPF requiere cambiar la red a tipo point-to-multipoint.\n4. **Paso 4 (MTU/MSS Adjustments):** El doble overhead de GRE e IPsec requiere ajustar la MTU del túnel a 1400 bytes y el TCP MSS a 1360 bytes.",
-      "configuration_basics": "• Configurar interfaz Tunnel, asignarle una IP y establecer `tunnel mode gre multipoint`.\n• Habilitar NHRP, designar el NHS (Next Hop Server) del Hub central y mapear la IP del Hub a su dirección pública.\n• Configurar perfiles IPsec y asociarlos al túnel."
+    "nat": {
+      "definition": "Network Address Translation (NAT) es una tecnología que modifica las direcciones IP y puertos en las cabeceras de los paquetes IP mientras están en tránsito a través de un dispositivo de red. Su propósito principal es conservar el espacio de direccionamiento IPv4 público al permitir que múltiples hosts privados compartan un número limitado de direcciones públicas, además de ocultar la topología de red interna.",
+      "key_concepts": "• **Source NAT (SNAT):** Traduce la dirección IP origen de los paquetes (comúnmente usado para salida a Internet).\n• **Destination NAT (DNAT):** Traduce la dirección IP (y puerto) destino de los paquetes (comúnmente usado para publicar servidores internos).\n• **Static NAT (1:1):** Mapeo estático y bidireccional entre una IP privada y una IP pública dedicada.\n• **PAT / NAT Overload / Masquerade:** Tipo de Source NAT que traduce múltiples IPs privadas usando una sola IP pública y diferentes puertos TCP/UDP.\n• **Port Exhaustion:** Condición crítica donde se agotan los puertos efímeros disponibles para PAT, impidiendo nuevas conexiones.",
+      "architecture": "Los firewalls y routers mantienen una tabla de traducción de direcciones (NAT Session Table / Translation Table). Cuando llega el primer paquete de un flujo, el motor de NAT evalúa las reglas. Si hay coincidencia, crea una entrada de sesión y modifica el paquete (IP/Puerto). Los paquetes subsecuentes de la misma sesión se traducen de forma ultra rápida por hardware (fastpath) evitando re-evaluar las reglas. Al recibir el tráfico de retorno, el dispositivo realiza la traducción inversa consultando la misma sesión.",
+      "control_vs_data": "• **Plano de Control:** Definición de políticas, pools de direcciones, y la lógica inicial de asignación y creación de la sesión NAT en la CPU.\n• **Plano de Datos:** Sustitución en caliente de IPs/puertos y recalculación del checksum IP/TCP/UDP realizada por ASICs o procesadores de red a velocidad de línea.",
+      "troubleshooting_strategy": "1. **Paso 1 (Session Table):** Verificar si la sesión de traducción está registrada en la tabla de NAT con los puertos correctos.\n2. **Paso 2 (Resource Exhaustion):** Monitorear la utilización de puertos efímeros y el límite de sesiones del pool de NAT.\n3. **Paso 3 (Flow Trace):** Ejecutar depuración a nivel de flujo de paquetes (Flow Debug/Trace) para confirmar si el motor descarta el paquete o falla en traducirlo.\n4. **Paso 4 (Routing & Firewalls):** Asegurar que existan rutas de retorno para la IP pública traducida y que las políticas de seguridad permitan el tráfico post-NAT o pre-NAT según el vendor.",
+      "configuration_basics": "• Definir interfaces o zonas de confianza (Inside/Trust) y no confianza (Outside/Untrust).\n• Habilitar la regla de traducción (Source/Destination/Static) y asociarla a la interfaz de salida o pool público.\n• Crear las políticas de firewall correspondientes que permitan el paso de tráfico."
     },
-    "adtran_ta5000": {
-      "definition": "El ADTRAN Total Access 5000 (TA5000) es un chasis multiservicio de acceso de alta densidad ampliamente implementado por operadores de telecomunicaciones para desplegar servicios de fibra óptica FTTH (GPON, XGS-PON) y banda ancha. Actúa como la OLT (Optical Line Terminal) central que gestiona la conectividad física de los clientes de fibra.",
-      "key_concepts": "• **GPON / XGS-PON:** Tecnologías de red óptica pasiva que comparten fibra óptica en configuraciones punto a multipunto (splitters).\n• **T-CONT (Transmission Container):** Clases de tráfico asignadas a la ONT para gestionar el ancho de banda aguas arriba (Upstream DBA).\n• **GEM Port (GPON Encapsulation Method):** Puerto lógico utilizado para encapsular tramas Ethernet y enviarlas sobre GPON.\n• **OMCI:** Protocolo de señalización estándar de control utilizado por la OLT para aprovisionar y configurar la ONT remotamente.",
-      "architecture": "El TA5000 utiliza tarjetas de servicio PON que se conectan a través de una red óptica de distribución (ODN) pasiva hacia las ONTs de clientes. Aguas abajo (Downstream), el tráfico se envía mediante difusión TDM (todas las ONTs reciben, pero solo procesan lo encriptado para su ID). Aguas arriba (Upstream), se utiliza TDMA con asignación dinámica de slots de tiempo (DBA) para evitar colisiones entre ONTs.",
-      "control_vs_data": "• **Plano de Control:** Gestión de estados de ONTs, provisión de perfiles OMCI, encriptación de GEM ports y asignación DBA en la CPU del módulo de control (SCM).\n• **Plano de Datos:** Conmutación e inserción/remoción de VLANs (Q-in-Q o Single Tag) a velocidad de línea en las tarjetas de servicio y puertos uplink.",
-      "troubleshooting_strategy": "1. **Paso 1 (Optical Power Levels):** Monitorear la potencia óptica de Tx/Rx. Los umbrales típicos GPON deben mantenerse entre -8 dBm y -27 dBm. Un nivel peor causa descartes de tramas.\n2. **Paso 2 (ONT State Machine):** Verificar que la ONT alcance el estado `O5` (Operation State). Si oscila en O3/O4, indica problemas de distancia, atenuación o serial duplicado.\n3. **Paso 3 (VLAN/Service Port mapping):** Confirmar que el Service Port en la OLT coincida con la VLAN de cliente y GEM port provisto.\n4. **Paso 4 (GEM Port Errors):** Verificar contadores BIP (Bit Interleaved Parity) para identificar errores físicos en el hilo de fibra.",
-      "configuration_basics": "• Registrar el Serial Number de la ONT en la interfaz GPON.\n• Asociar perfiles de línea y T-CONTs para limitar el ancho de banda.\n• Crear el Service Port para asociar la VLAN del cliente desde el puerto GPON al puerto de Uplink del switch."
+    "dhcp": {
+      "definition": "Dynamic Host Configuration Protocol (DHCP) es un protocolo cliente-servidor que automatiza la asignación de direcciones IP y parámetros de red a hosts. En entornos de proveedores e infraestructura, se utiliza ampliamente el mecanismo DHCP Relay (o Helper Address) para reenviar las solicitudes broadcast DHCP a través de subredes hacia un servidor centralizado de DHCP.",
+      "key_concepts": "• **DORA Process:** Discover (broadcast cliente), Offer (unicast/broadcast servidor), Request (broadcast cliente), Acknowledge (unicast/broadcast servidor).\n• **DHCP Relay Agent (Helper):** Dispositivo de Capa 3 que reenvía solicitudes de DHCP de clientes remotos hacia servidores en otras subredes.\n• **Giaddr (Gateway IP Address):** Campo insertado por el Relay Agent que indica al servidor DHCP el segmento de red desde el cual proviene el cliente para que el servidor seleccione la IP del pool correcto.\n• **Option 82:** Información de agente de relevo (Circuit-ID, Remote-ID) inyectada en la solicitud para aplicar políticas y asociar al cliente con un puerto físico o VLAN específica.",
+      "architecture": "DHCP opera en la Capa 7 utilizando UDP como protocolo de transporte en los puertos 67 (servidor y relay) y 68 (cliente). El Relay Agent convierte las tramas broadcast de Discover/Request en paquetes unicast dirigidos directamente a las IPs de los servidores DHCP configurados, poblando el campo `giaddr` con la IP de la interfaz L3 donde se recibió el broadcast.",
+      "control_vs_data": "• **Plano de Control:** Gestión de pools, tiempos de concesión (lease time), exclusión de direcciones y asignación de bindings dinámicos.\n• **Plano de Datos:** Transmisión y reenvío L3 de paquetes de configuración UDP.",
+      "troubleshooting_strategy": "1. **Paso 1 (Giaddr & Reachability):** Validar que la interfaz L3 (SVI, subinterfaz) del cliente tenga asignada la IP correcta y conectividad hacia el servidor DHCP.\n2. **Paso 2 (Helpers & Firewalls):** Asegurar que la ip de helper apunte a la IP real del servidor y que los firewalls permitan UDP 67 y 68.\n3. **Paso 3 (Option 82 Validation):** Comprobar si el servidor DHCP requiere o rechaza Option 82. Algunos servidores descartan paquetes si la Option 82 es inconsistente.\n4. **Paso 4 (Pool Capacity):** Verificar en el servidor que el pool de direcciones no esté saturado (sin IPs disponibles).",
+      "configuration_basics": "• Configurar el servidor DHCP o definir la IP del helper/relay en la interfaz L3 local que recibe el broadcast del cliente (`ip helper-address <ip_servidor>` en Cisco).\n• Habilitar el procesamiento de Option 82 globalmente si se requiere identificar los puertos físicos de origen."
     },
-    "ccc_interface_switch": {
-      "definition": "CCC (Cross-Connect / Circuit Cross-Connect) es una tecnología que permite establecer circuitos dedicados de Capa 2 entre dos interfaces lógicas o físicas (locales en el mismo equipo, o remotas a través de un core MPLS, lo que se conoce como L2Circuit o Pseudowire) transportando tramas de red de forma transparente sin inspección de direcciones MAC.",
-      "key_concepts": "• **Local Cross-Connect:** Conexión estática directa punto a punto entre dos interfaces físicas en el mismo switch/router.\n• **Remote L2Circuit / Pseudowire:** Túnel virtual de capa 2 que emula la conexión física a través de una red de transporte MPLS.\n• **Virtual Circuit ID (VC-ID):** Identificador numérico único de 32 bits utilizado por ambos extremos para establecer el pseudowire.\n• **Control Word:** Cabecera opcional de 4 bytes insertada entre la etiqueta MPLS y la trama Ethernet para secuenciación y control.",
-      "architecture": "En un L2Circuit, la trama Ethernet entrante en el PE de origen se encapsula en una pila de etiquetas MPLS: una etiqueta interna (etiqueta de circuito virtual / VC label distribuida por Targeted LDP) y una etiqueta externa (etiqueta de transporte distribuida por IGP LDP/RSVP). El core MPLS conmuta el paquete basándose únicamente en la etiqueta de transporte.",
-      "control_vs_data": "• **Plano de Control:** Negociación y señalización del estado del pseudowire utilizando sesiones Targeted LDP (UDP 646) directas entre los routers PEs.\n• **Plano de Datos:** Encapsulación de tramas de cliente y conmutación de etiquetas MPLS en hardware de alta velocidad.",
-      "troubleshooting_strategy": "1. **Paso 1 (Targeted LDP Session):** Validar que la sesión Targeted LDP entre los PEs origen/destino esté en estado `Established`.\n2. **Paso 2 (VC-ID Mismatch):** Confirmar que el VC-ID y tipo de encapsulación (VLAN o Ethernet) coincida exactamente en ambos lados.\n3. **Paso 3 (Core MTU):** La MTU a lo largo del core MPLS debe ser lo suficientemente grande (típicamente >= 1526 bytes) para acomodar la trama Ethernet original del cliente más la cabecera MPLS y Control Word.\n4. **Paso 4 (Control Word Consistency):** Deshabilitar o habilitar control word en ambos extremos de forma consistente.",
-      "configuration_basics": "• Configurar interfaces en modo de encapsulación L2 (ej. `ethernet-ccc` o `vlan-ccc`).\n• Definir el circuito L2 especificando el peer IP remoto, el VC-ID y la interfaz L2 local asociada."
+    "bfd": {
+      "definition": "Bidirectional Forwarding Detection (BFD) es un protocolo de detección rápida de fallas de enlace diseñado para proporcionar tiempos de convergencia ultra rápidos (sub-segundo) para protocolos de enrutamiento como BGP, OSPF, IS-IS. Su único objetivo es detectar fallas de conectividad bidireccional en el camino de datos.",
+      "key_concepts": "• **Hello Interval (Mínimo Transmit/Receive):** Tiempo en milisegundos entre paquetes de control BFD.\n• **Detection Multiplier:** Número de hellos perdidos seguidos antes de declarar el enlace como caído (down).\n• **Async Mode:** Modo por defecto donde ambos extremos envían hellos periódicos.\n• **Echo Function:** Función donde se envían paquetes de eco con la IP de origen del propio router para validar el plano de datos del switch adyacente sin procesar BFD en la CPU del vecino.",
+      "architecture": "BFD funciona encapsulado en UDP (puerto 3784 para enlaces simples de un solo salto, y puerto 3785 para múltiples saltos). Es independiente de los protocolos de capa de red y enrutamiento, pero interactúa con ellos: al caerse la sesión BFD, este notifica de inmediato a BGP/OSPF para que boten sus adyacencias de inmediato en lugar de esperar a que expiren los keepalives tradicionalmente.",
+      "control_vs_data": "• **Plano de Control:** Negociación inicial de los timers y estados de sesión BFD ejecutada por el software principal.\n• **Plano de Datos:** Procesamiento ultrarrápido y periódico de paquetes Hello UDP (a menudo implementado directamente en ASICs de las linecards en routers de gama alta para evitar sobrecargar el procesador principal).",
+      "troubleshooting_strategy": "1. **Paso 1 (Timer Alignment):** Validar que los timers configurados en ambos extremos sean soportados por el hardware local.\n2. **Paso 2 (UDP Reachability):** Confirmar que no existan ACLs o firewalls bloqueando el tráfico UDP puerto 3784/3785.\n3. **Paso 3 (Interface Status):** Verificar si la interfaz física reporta flaps de capa 1 que puedan interrumpir las ráfagas BFD.\n4. **Paso 4 (Control Plane Load):** Si la CPU del router está muy alta, BFD puede expirar falsamente (flapping) si no está descargado en hardware.",
+      "configuration_basics": "• Habilitar BFD bajo la interfaz física o lógica implicada.\n• Configurar el intervalo mínimo de transmisión (`min-tx-interval`), de recepción (`min-rx-interval`) y el multiplicador (`multiplier`).\n• Asociar BFD al protocolo de enrutamiento deseado (ej. `bfd` bajo el proceso OSPF o grupo BGP)."
+    },
+    "switch_l2": {
+      "definition": "La conmutación de Capa 2 (L2 Switching) es el proceso de reenvío de tramas Ethernet dentro del mismo segmento de red física basándose en las direcciones MAC destino. Incluye el etiquetado de VLANs para segmentar redes virtuales y la agregación de enlaces físicos (LACP) para incrementar el ancho de banda y proporcionar redundancia.",
+      "key_concepts": "• **MAC Address Table (CAM):** Base de datos asociativa en memoria que relaciona direcciones MAC físicas con los puertos del switch.\n• **802.1Q VLAN Tagging:** Estándar industrial que inyecta una etiqueta de 4 bytes en la cabecera Ethernet para identificar a qué VLAN pertenece la trama.\n• **LACP (Link Aggregation Control Protocol):** Protocolo 802.3ad que negocia dinámicamente la agrupación de múltiples enlaces físicos en un único canal lógico (EtherChannel).\n• **Access vs Trunk:** Puertos Access transportan tráfico de una única VLAN sin etiqueta. Puertos Trunk transportan múltiples VLANs tagged.",
+      "architecture": "Cuando una trama Ethernet ingresa, el switch lee la MAC Origen y la registra en la tabla CAM asociándola al puerto. Luego lee la MAC Destino: si existe en la tabla CAM, la reenvía al puerto correspondiente; si no existe o es broadcast, inunda (flooding) la trama en todos los puertos miembros de la misma VLAN.",
+      "control_vs_data": "• **Plano de Control:** Protocolos LACP para agrupamiento de puertos y Spanning Tree para prevenir bucles de capa 2 en software.\n• **Plano de Datos:** Conmutación L2 ultra rápida por hardware (ASIC/CAM) basada en coincidencia exacta de direcciones MAC.",
+      "troubleshooting_strategy": "1. **Paso 1 (LACP Negotiation Check):** Validar que las interfaces del EtherChannel estén agrupadas y que LACP esté en estado `u` (in_use) mediante la CLI.\n2. **Paso 2 (VLAN Mismatches):** Confirmar que las VLANs permitidas en el enlace Trunk coincidan de manera exacta en ambos extremos físicos.\n3. **Paso 3 (MAC Flapping):** Si una dirección MAC oscila rápidamente entre diferentes puertos físicos, indica la presencia de un bucle de Capa 2 activo o problemas de direccionamiento.\n4. **Paso 4 (EtherChannel Hashing):** Si hay desbalance de tráfico entre los enlaces del EtherChannel, ajustar el algoritmo de balanceo de carga (hashing) para incluir IPs y puertos en lugar de solo MACs.",
+      "configuration_basics": "• Crear las VLANs deseadas en el switch.\n• Configurar puertos Trunk permitiendo el paso de las VLANs específicas.\n• Crear los canales de agregación asociando las interfaces físicas a un grupo LACP en modo `active`."
     },
     "fiber_ont": {
       "definition": "El aprovisionamiento de fibra óptica GPON ONT/ONU implica registrar y configurar el equipamiento de terminación óptica en las instalaciones del cliente (Optical Network Terminal) desde el nodo central (OLT). Su objetivo es autenticar el hardware óptico del cliente y habilitar los flujos de servicios L2/L3 asociados.",
@@ -112513,6 +112465,14 @@ const NET_TSHOOT_DATA = {
       "troubleshooting_strategy": "1. **Paso 1 (Optical Link Budget):** Medir la potencia con un OPM. La atenuación típica de un splitter 1:64 no debe exceder los -25 dBm a -28 dBm. Valores peores causan desconexión.\n2. **Paso 2 (Rogue ONU Isolation):** Si todas las ONTs de un puerto PON caen a estado O1/O2, apagar administrativamente las ONTs una a una o usar un analizador PON para aislar la ONT dañada que emite luz continua.\n3. **Paso 3 (OMCI Provisioning Check):** Si la ONT llega a O5 pero el cliente no navega, verificar que los perfiles de GEM ports y Service Ports estén instalados en la OLT y que la VLAN de cliente esté permitida en el uplink.",
       "configuration_basics": "• Buscar la ONT no aprovisionada en el puerto PON (`show onu unconfigured` u homólogo).\n• Registrar el Serial Number y ONU-ID asignado.\n• Asociar perfiles de línea y de tráfico para mapear las VLANs de servicios."
     },
+    "segment_routing": {
+      "definition": "Segment Routing (SR) es una arquitectura de enrutamiento basada en la fuente (source routing) que utiliza la cabecera de un paquete para especificar la ruta completa que debe seguir. Reemplaza la necesidad de protocolos de señalización como LDP y RSVP-TE en el core MPLS.",
+      "key_concepts": "• **SID (Segment Identifier):** Identificador de 32 bits que representa una instrucción de enrutamiento (nodo, adjacencia, o servicio).\n• **SRGB (SR Global Block):** Rango de etiquetas MPLS reservado para los SIDs globales de la red.\n• **Prefix-SID:** SID asignado a un prefijo IP (ej. loopback) que permite enrutamiento por el IGP más corto.\n• **Adjacency-SID:** SID que fuerza el envío de tráfico a través de un enlace específico, útil para ingeniería de tráfico.",
+      "architecture": "En SR-MPLS, el router de ingreso (headend) impone una pila de etiquetas MPLS donde cada etiqueta representa un SID. Los routers intermedios realizan un POP (segmento consumido) o SWAP según el tipo de SID. El plano de control distribuye los SIDs mediante extensiones de IGP (OSPF/IS-IS) sin necesidad de LDP/RSVP.",
+      "control_vs_data": "• **Plano de Control:** IGP (OSPF/IS-IS) con extensiones SR para distribuir SIDs y SRGB. No requiere LDP/RSVP.\n• **Plano de Datos:** Reenvío MPLS basado en LFIB con operaciones de POP/SWAP según la pila de SIDs.",
+      "troubleshooting_strategy": "1. **Paso 1 (SRGB):** Verificar que todos los routers usen el mismo SRGB (ej. 16000-23999).\n2. **Paso 2 (IGP Extensions):** Confirmar que OSPF/IS-IS tengan habilitadas las extensiones SR y que los SIDs se propaguen.\n3. **Paso 3 (LFIB):** Validar que la LFIB contenga entradas para los Prefix-SIDs locales y remotos.",
+      "configuration_basics": "• Configurar el SRGB global en cada router.\n• Habilitar las extensiones SR en el proceso IGP.\n• Asignar un Prefix-SID único a la loopback principal."
+    },
     "seguridad": {
       "definition": "Seguridad de red a nivel de infraestructura incluye el control de acceso a puertos (NAC), filtrado de tráfico mediante ACLs, y cifrado de enlaces con MACsec para proteger la confidencialidad e integridad de los datos en tránsito.",
       "key_concepts": "• **ACL (Access Control List):** Reglas de filtrado de tráfico basadas en direcciones IP, puertos, protocolos o VLANs.\n• **802.1X (Port-Based NAC):** Mecanismo de autenticación de dispositivos antes de permitir el acceso a la red mediante un servidor RADIUS.\n• **MACsec (IEEE 802.1AE):** Cifrado de Capa 2 que protege tramas Ethernet entre dos dispositivos físicos.\n• **DHCP Snooping:** Función de seguridad que valida mensajes DHCP y construye una tabla de bindings confiables.",
@@ -112520,6 +112480,22 @@ const NET_TSHOOT_DATA = {
       "control_vs_data": "• **Plano de Control:** Gestión de sesiones EAPOL, autenticación RADIUS, y aplicación de políticas de seguridad.\n• **Plano de Datos:** Filtrado de tramas por ACLs en TCAM, cifrado/descifrado MACsec en hardware, y validación de bindings DHCP.",
       "troubleshooting_strategy": "1. **Paso 1 (802.1X):** Verificar que el puerto esté en estado `authorized` y que el servidor RADIUS responda.\n2. **Paso 2 (ACLs):** Comprobar contadores de matches en las ACLs para confirmar que las reglas están siendo evaluadas.\n3. **Paso 3 (MACsec):** Validar que la sesión MACsec esté `secured` y que los contadores de descarte de integridad no crezcan.",
       "configuration_basics": "• Configurar ACLs con reglas explícitas de permit/deny y aplicarlas en interfaces.\n• Habilitar 802.1X en los puertos de acceso y definir el servidor RADIUS.\n• Configurar MACsec con claves precompartidas (PSK) o 802.1X-derived keys."
+    },
+    "netflow": {
+      "definition": "NetFlow (y su estándar IPFIX / NetFlow v10) es un protocolo de telemetría de red que recopila metadatos e información estadística sobre flujos de tráfico IP que ingresan o salen de las interfaces de un dispositivo de red. Permite analizar quién, cuándo, cómo y hacia dónde se está enviando tráfico a través de la infraestructura.",
+      "key_concepts": "• **Flow (Flujo):** Secuencia unidireccional de paquetes con campos clave idénticos.\n• **7 Key Fields (Campos Clave):** IP Origen, IP Destino, Puerto Origen, Puerto Destino, Tipo de Protocolo L3, ToS (Class of Service), e Interfaz Física de entrada.\n• **NetFlow Cache:** Memoria local del router donde se almacenan y consolidan las estadísticas de flujos activos.\n• **Timers (Active/Inactive):** Tiempos de exportación de flujos. Un flujo activo prolongado se exporta cada X minutos (default 30) y un flujo inactivo se purga inmediatamente.",
+      "architecture": "A medida que los paquetes pasan por el router, se revisan sus cabeceras. Si coincide con un flujo existente en el caché, se actualizan los contadores (bytes, paquetes). Si no existe, se crea una entrada en el caché. Al expirar un flujo, los registros se encapsulan en datagramas UDP (comúnmente puerto 2055 o 9995) y se envían hacia un servidor colector de NetFlow para su análisis y almacenamiento.",
+      "control_vs_data": "• **Plano de Control:** Configuración de monitores, exportadores y samplers desde la CLI o plantillas del orquestador.\n• **Plano de Datos:** Inspección de cabeceras de paquetes a velocidad de línea en los ASICs para alimentar la caché de NetFlow sin CPU overhead.",
+      "troubleshooting_strategy": "1. **Paso 1 (Exporter Reachability):** Verificar que el router tenga ruta L3 hacia el colector NetFlow y que el puerto UDP no esté bloqueado.\n2. **Paso 2 (Sampling Rate):** En enlaces de alta capacidad (10G/100G), configurar muestreo aleatorio (Random Sampled NetFlow, ej. 1 de 1000) para no saturar la CPU ni desbordar la tabla de caché.\n3. **Paso 3 (Timer Adjustments):** Asegurar que el Active Timer esté configurado a 1 minuto (60s) para evitar ráfagas de exportaciones y reportes inexactos.\n4. **Paso 4 (Source Interface):** Configurar siempre una interfaz origen estable (como Loopback0) para la exportación de paquetes UDP.",
+      "configuration_basics": "• Crear un Record (define qué medir), un Exporter (define a dónde enviar) y un Monitor (vincula el record y el exporter).\n• Aplicar el Monitor bajo la interfaz deseada indicando la dirección del tráfico (`input` o `output`)."
+    },
+    "eigrp": {
+      "definition": "Enhanced Interior Gateway Routing Protocol (EIGRP) es un protocolo de enrutamiento dinámico IGP vector-distancia avanzado (o híbrido) propietario de Cisco. Utiliza el algoritmo DUAL para calcular el camino más corto libre de bucles y ofrece convergencia extremadamente rápida.",
+      "key_concepts": "• **DUAL Algorithm:** Algoritmo matemático para calcular rutas libres de bucles en toda la topología.\n• **Successor / Feasible Successor:** El Successor es la mejor ruta activa para un prefijo. El Feasible Successor es una ruta de respaldo precalculada que cumple la condición de factibilidad.\n• **Reported Distance (RD) / Feasible Distance (FD):** RD es la métrica anunciada por el vecino. FD es la métrica local calculada hacia el destino.\n• **Feasibility Condition (Condición de Factibilidad):** Se cumple si la RD de un vecino es menor que la FD de la ruta actual.",
+      "architecture": "EIGRP establece adyacencias dinámicas mediante paquetes Hello multicast (224.0.0.10) en el protocolo de transporte IP 88. Intercambia actualizaciones de enrutamiento completas solo al inicio, y posteriormente envía únicamente actualizaciones parciales e incrementales limitadas cuando cambia la topología física, reduciendo el consumo de ancho de banda.",
+      "control_vs_data": "• **Plano de Control:** Envío de mensajes Hello, Update, Query y Reply sobre IP 88 y ejecución de DUAL en la CPU del router.\n• **Plano de Datos:** Reenvío de alta velocidad de paquetes IP basándose en la tabla FIB local.",
+      "troubleshooting_strategy": "1. **Paso 1 (AS & K-Values Mismatch):** Validar que el número de Sistema Autónomo y los coeficientes de métrica (K-Values) coincidan exactamente en ambos extremos de la sesión.\n2. **Paso 2 (Unicast/Multicast Reachability):** Comprobar que el tráfico multicast EIGRP (IP 224.0.0.10) no esté bloqueado. Si falla, las adyacencias no pasarán del estado inicial.\n3. **Paso 3 (Stuck In Active - SIA):** Ocurre si un router envía un Query para buscar una ruta alternativa y no recibe Reply de un vecino en 3 minutos. Requiere identificar cuál router intermedio está bloqueando los mensajes.\n4. **Paso 4 (MTU Issues):** Paquetes de actualización grandes pueden ser descartados si hay inconsistencias de MTU en el enlace.",
+      "configuration_basics": "• Levantar el proceso EIGRP con el número de AS (`router eigrp <AS>`).\n• Asociar las interfaces al proceso declarando los prefijos en la sección `network` con máscara wildcard.\n• Configurar `no auto-summary` para evitar la agregación automática de redes."
     },
     "wireshark_tcpdump": {
       "definition": "Wireshark y tcpdump son herramientas estándar de captura y análisis de paquetes de red que permiten interceptar, registrar y visualizar en detalle el tráfico de datos crudo que viaja a través de una o más interfaces físicas o lógicas de un dispositivo.",
@@ -112529,6 +112505,22 @@ const NET_TSHOOT_DATA = {
       "troubleshooting_strategy": "1. **Paso 1 (Capture Target):** Asegurar que se capture en la interfaz correcta. Recordar que las interfaces lógicas (ej. VLAN, Túneles) pueden ocultar campos de cabeceras físicas.\n2. **Paso 2 (Promiscuous Mode SPAN):** Si se captura en un switch, asegurar de configurar puerto espejo (SPAN / RSPAN / ERSPAN) en el switch para redirigir el tráfico hacia la NIC de captura.\n3. **Paso 3 (BPF Optimization):** En interfaces Gigabit o superiores con mucho volumen de tráfico, usar siempre filtros de captura estrictos (`-f`) en tcpdump para evitar pérdida de paquetes (packet drops) por desbordamiento de buffer.\n4. **Paso 4 (Packet Truncation):** Utilizar la opción de snaplen adecuada (`-s 0`) en tcpdump para capturar el paquete completo en lugar de solo las cabeceras.",
       "configuration_basics": "• Capturar paquetes en consola: `tcpdump -i eth0 -n -s 0 -w captura.pcap tcp port 179`.\n• Leer captura en consola: `tcpdump -nn -r captura.pcap`."
     },
+    "ccc_interface_switch": {
+      "definition": "CCC (Cross-Connect / Circuit Cross-Connect) es una tecnología que permite establecer circuitos dedicados de Capa 2 entre dos interfaces lógicas o físicas (locales en el mismo equipo, o remotas a través de un core MPLS, lo que se conoce como L2Circuit o Pseudowire) transportando tramas de red de forma transparente sin inspección de direcciones MAC.",
+      "key_concepts": "• **Local Cross-Connect:** Conexión estática directa punto a punto entre dos interfaces físicas en el mismo switch/router.\n• **Remote L2Circuit / Pseudowire:** Túnel virtual de capa 2 que emula la conexión física a través de una red de transporte MPLS.\n• **Virtual Circuit ID (VC-ID):** Identificador numérico único de 32 bits utilizado por ambos extremos para establecer el pseudowire.\n• **Control Word:** Cabecera opcional de 4 bytes insertada entre la etiqueta MPLS y la trama Ethernet para secuenciación y control.",
+      "architecture": "En un L2Circuit, la trama Ethernet entrante en el PE de origen se encapsula en una pila de etiquetas MPLS: una etiqueta interna (etiqueta de circuito virtual / VC label distribuida por Targeted LDP) y una etiqueta externa (etiqueta de transporte distribuida por IGP LDP/RSVP). El core MPLS conmuta el paquete basándose únicamente en la etiqueta de transporte.",
+      "control_vs_data": "• **Plano de Control:** Negociación y señalización del estado del pseudowire utilizando sesiones Targeted LDP (UDP 646) directas entre los routers PEs.\n• **Plano de Datos:** Encapsulación de tramas de cliente y conmutación de etiquetas MPLS en hardware de alta velocidad.",
+      "troubleshooting_strategy": "1. **Paso 1 (Targeted LDP Session):** Validar que la sesión Targeted LDP entre los PEs origen/destino esté en estado `Established`.\n2. **Paso 2 (VC-ID Mismatch):** Confirmar que el VC-ID y tipo de encapsulación (VLAN o Ethernet) coincida exactamente en ambos lados.\n3. **Paso 3 (Core MTU):** La MTU a lo largo del core MPLS debe ser lo suficientemente grande (típicamente >= 1526 bytes) para acomodar la trama Ethernet original del cliente más la cabecera MPLS y Control Word.\n4. **Paso 4 (Control Word Consistency):** Deshabilitar o habilitar control word en ambos extremos de forma consistente.",
+      "configuration_basics": "• Configurar interfaces en modo de encapsulación L2 (ej. `ethernet-ccc` o `vlan-ccc`).\n• Definir el circuito L2 especificando el peer IP remoto, el VC-ID y la interfaz L2 local asociada."
+    },
+    "ipv6": {
+      "definition": "IPv6 (Internet Protocol Version 6) es la actualización del protocolo IP estándar diseñada para resolver el agotamiento de direcciones IPv4 al expandir el direccionamiento a 128 bits, simplificar la cabecera del paquete para mejorar el enrutamiento e integrar de forma nativa mecanismos de autoconfiguración y Neighbor Discovery.",
+      "key_concepts": "• **Link-Local Address (fe80::/10):** Dirección IP generada automáticamente en cada interfaz IPv6, válida únicamente dentro del segmento local de Capa 2.\n• **NDP (Neighbor Discovery Protocol):** Protocolo basado en ICMPv6 que reemplaza las funciones de ARP de IPv4.\n• **SLAAC (Stateless Address Autoconfiguration):** Permite que un cliente autoconfigure su IP y gateway combinando el prefijo anunciado por el router con su ID de interfaz local.\n• **Solicited-Node Multicast Address:** Dirección multicast especial utilizada por NDP para mapear direcciones IP a MAC de forma mucho más eficiente que el broadcast de ARP.",
+      "architecture": "IPv6 elimina el concepto de broadcast. En su lugar, el descubrimiento y la resolución de direcciones utilizan direcciones multicast específicas de nodo solicitado (`ff02::1:ff00:0/104`). Las adyacencias L2 se mantienen en una tabla Neighbor Cache que transiciona por estados (Incomplete, Reachable, Stale, Delay, Probe).",
+      "control_vs_data": "• **Plano de Control:** Mensajes ICMPv6 de Neighbor Solicitation (NS), Neighbor Advertisement (NA), Router Solicitation (RS) y Router Advertisement (RA).\n• **Plano de Datos:** Reenvío acelerado por hardware de paquetes IP con cabeceras IPv6 simplificadas de 40 bytes fijos.",
+      "troubleshooting_strategy": "1. **Paso 1 (Link-Local Ping):** Para validar conectividad básica punto a punto, hacer ping a la IP `fe80::` del vecino especificando la interfaz de salida.\n2. **Paso 2 (Neighbor Cache Check):** Revisar la tabla de vecinos (Neighbor Cache) para verificar que las direcciones MAC estén resueltas correctamente.\n3. **Paso 3 (Router Advertisement Filters):** Comprobar que no existan filtros o políticas bloqueando ICMPv6 en las interfaces, ya que esto rompería NDP y SLAAC por completo.\n4. **Paso 4 (IPv6 Routing Table):** Verificar que la tabla de rutas contenga la ruta por defecto IPv6 (`::/0`) apuntando a la dirección Link-Local del router gateway.",
+      "configuration_basics": "• Habilitar el enrutamiento IPv6 global (`ipv6 unicast-routing`).\n• Asignar direcciones IPv6 estáticas o configurar autoconfiguración (`ipv6 address autoconfig`).\n• Habilitar los Router Advertisements en la interfaz interna."
+    },
     "evc": {
       "definition": "Ethernet Virtual Connection (EVC) es un servicio de transporte L2 punto-a-punto o multipunto definido por el estándar MEF que abstrae la red física subyacente para entregar circuitos Ethernet virtuales entre interfaces de usuario (UNI) con calidad de servicio garantizada (SLA).",
       "key_concepts": "• **UNI (User Network Interface):** Puerto físico donde el servicio EVC termina en el equipo del cliente.\n• **EVC (Ethernet Virtual Connection):** Circuito lógico que transporta tramas Ethernet entre UNIs.\n• **E-Line (P2P):** Servicio punto a punto (equivalente a un pseudowire).\n• **E-LAN (MP2MP):** Servicio multipunto que emula una LAN.\n• **EVPL (Ethernet Virtual Private Line):** Variante de E-Line que permite multiplexar múltiples VLANs sobre el mismo EVC.",
@@ -112536,6 +112528,14 @@ const NET_TSHOOT_DATA = {
       "control_vs_data": "• **Plano de Control:** Configuración de service instances, bridge domains, y políticas de clasificación/marcado.\n• **Plano de Datos:** Forwarding de tramas Ethernet basado en la clasificación de VLAN y el bridge domain asociado.",
       "troubleshooting_strategy": "1. **Paso 1 (Clasificación):** Verificar que la clasificación de tramas en el puerto UNI coincida con la VLAN esperada.\n2. **Paso 2 (Bridge Domain):** Confirmar que el bridge domain o service instance esté activo y asociado a las interfaces correctas.\n3. **Paso 3 (CoS/QoS):** Validar que el marcado de prioridad y los parámetros de CIR/EIR no descarten tráfico legítimo.",
       "configuration_basics": "• Crear un bridge domain o service instance con el ID del EVC.\n• Asociar el puerto UNI al bridge domain con la clasificación correcta (VLAN, CoS).\n• Configurar los parámetros de calidad (CIR, EIR) según el SLA del cliente."
+    },
+    "adtran_ta5000": {
+      "definition": "El ADTRAN Total Access 5000 (TA5000) es un chasis multiservicio de acceso de alta densidad ampliamente implementado por operadores de telecomunicaciones para desplegar servicios de fibra óptica FTTH (GPON, XGS-PON) y banda ancha. Actúa como la OLT (Optical Line Terminal) central que gestiona la conectividad física de los clientes de fibra.",
+      "key_concepts": "• **GPON / XGS-PON:** Tecnologías de red óptica pasiva que comparten fibra óptica en configuraciones punto a multipunto (splitters).\n• **T-CONT (Transmission Container):** Clases de tráfico asignadas a la ONT para gestionar el ancho de banda aguas arriba (Upstream DBA).\n• **GEM Port (GPON Encapsulation Method):** Puerto lógico utilizado para encapsular tramas Ethernet y enviarlas sobre GPON.\n• **OMCI:** Protocolo de señalización estándar de control utilizado por la OLT para aprovisionar y configurar la ONT remotamente.",
+      "architecture": "El TA5000 utiliza tarjetas de servicio PON que se conectan a través de una red óptica de distribución (ODN) pasiva hacia las ONTs de clientes. Aguas abajo (Downstream), el tráfico se envía mediante difusión TDM (todas las ONTs reciben, pero solo procesan lo encriptado para su ID). Aguas arriba (Upstream), se utiliza TDMA con asignación dinámica de slots de tiempo (DBA) para evitar colisiones entre ONTs.",
+      "control_vs_data": "• **Plano de Control:** Gestión de estados de ONTs, provisión de perfiles OMCI, encriptación de GEM ports y asignación DBA en la CPU del módulo de control (SCM).\n• **Plano de Datos:** Conmutación e inserción/remoción de VLANs (Q-in-Q o Single Tag) a velocidad de línea en las tarjetas de servicio y puertos uplink.",
+      "troubleshooting_strategy": "1. **Paso 1 (Optical Power Levels):** Monitorear la potencia óptica de Tx/Rx. Los umbrales típicos GPON deben mantenerse entre -8 dBm y -27 dBm. Un nivel peor causa descartes de tramas.\n2. **Paso 2 (ONT State Machine):** Verificar que la ONT alcance el estado `O5` (Operation State). Si oscila en O3/O4, indica problemas de distancia, atenuación o serial duplicado.\n3. **Paso 3 (VLAN/Service Port mapping):** Confirmar que el Service Port en la OLT coincida con la VLAN de cliente y GEM port provisto.\n4. **Paso 4 (GEM Port Errors):** Verificar contadores BIP (Bit Interleaved Parity) para identificar errores físicos en el hilo de fibra.",
+      "configuration_basics": "• Registrar el Serial Number de la ONT en la interfaz GPON.\n• Asociar perfiles de línea y T-CONTs para limitar el ancho de banda.\n• Crear el Service Port para asociar la VLAN del cliente desde el puerto GPON al puerto de Uplink del switch."
     },
     "nat_config": {
       "definition": "La configuración de NAT implica definir cómo el dispositivo debe mapear las direcciones IP locales (privadas) con las globales (públicas). Dependiendo del caso de uso, se requiere NAT de Origen (para que los clientes salgan a Internet), NAT de Destino (para publicar servicios web u otros al exterior) o NAT Estático 1:1.",
@@ -129402,37 +129402,37 @@ const NET_TSHOOT_DATA = {
   },
   "CONFIG_TEMPLATES": {
     "noc_ccna_base": {
-      "title": "🛡️ CCNA / CCNP — Inicialización, Hardening & Gestión NOC (Todos los Vendors)",
-      "description": "Plantilla estándar de inicialización y hardening (ISO 27001) desde cero antes de integrar el equipo a producción.",
+      "title": "🛡️ CCNA / CCNP — Inicialización, Hardening & Gestión NOC",
+      "description": "Plantilla estándar de inicialización y hardening (ISO 27001) adaptada exactamente a los comandos y sintaxis nativa de cada fabricante.",
       "vendors": {
         "cisco_iosxe": {
-          "vendor_name": "Cisco IOS-XE / ISR / ASR / Catalyst",
+          "vendor_name": "Cisco IOS-XE (ISR / ASR 1000 / Catalyst 9000)",
           "code": "configure terminal\nhostname Router-NOC-CE1\nbanner motd ^C ACCESO AUTORIZADO UNICAMENTE PERSONAL NOC ^C\nenable secret SuperPasswordNOC123!\nusername admin privilege 15 secret SuperAdminNOC123!\nclock timezone COT -5\nip domain name noc.operador.net\ncrypto key generate rsa modulus 2048\nip ssh version 2\nline vty 0 4\n exec-timeout 5 0\n transport input ssh\n login local\nntp server 10.0.0.1 prefer\nlogging host 10.0.0.50\nsnmp-server community NOC_READ RO\nend\nwrite memory",
           "breakdown": [
             {
               "cmd": "configure terminal",
-              "desc": "Modo de configuración global."
+              "desc": "Modo de configuración global de Cisco IOS-XE."
             },
             {
               "cmd": "hostname Router-NOC-CE1",
-              "desc": "Asigna nombre de host."
+              "desc": "Asigna el nombre único del equipo."
             },
             {
               "cmd": "enable secret SuperPasswordNOC123!",
-              "desc": "Clave enable cifrada SHA-256."
+              "desc": "Establece la clave enable cifrada con algoritmo SHA-256."
             },
             {
               "cmd": "crypto key generate rsa modulus 2048",
-              "desc": "Genera llaves SSH 2048-bit."
+              "desc": "Genera el par de llaves RSA de 2048 bits para SSH."
             },
             {
               "cmd": "transport input ssh",
-              "desc": "Bloquea Telnet y restringe acceso a SSHv2."
+              "desc": "Deshabilita Telnet y fuerza el uso exclusivo de SSHv2."
             }
           ]
         },
         "cisco_iosxr": {
-          "vendor_name": "Cisco IOS-XR (ASR 9000 / NCS 5500)",
+          "vendor_name": "Cisco IOS-XR (ASR 9000 / NCS 5500 / CRS)",
           "code": "configure\nhostname Router-NOC-CORE1\nusername admin group root-lr secret SuperAdminNOC123!\nclock timezone COT -5\ndomain name noc.operador.net\ncrypto key generate rsa 2048\nssh server v2\nline default exec-timeout 5 0\nntp server 10.0.0.1 prefer\ncommit",
           "breakdown": [
             {
@@ -129441,11 +129441,11 @@ const NET_TSHOOT_DATA = {
             },
             {
               "cmd": "username admin group root-lr...",
-              "desc": "Crea usuario en el grupo de permisos totales root-lr."
+              "desc": "Crea usuario en el grupo administrativo root-lr."
             },
             {
               "cmd": "commit",
-              "desc": "Aplica los cambios atómicamente."
+              "desc": "Aplica los cambios atómicamente al plano de control."
             }
           ]
         },
@@ -129619,29 +129619,29 @@ const NET_TSHOOT_DATA = {
     },
     "ccna_switching_master": {
       "title": "📘 CCNA / CCNP — Switch L2/L3 (VLANs, Trunking, STP/RSTP/MSTP, EtherChannel LACP)",
-      "description": "Configuración completa de switching de campus para todos los fabricantes de la red.",
+      "description": "Configuración completa de switching de campus reservada exclusivamente para switches y routers con capacidades de conmutación L2/L3 reales.",
       "vendors": {
         "cisco_iosxe": {
-          "vendor_name": "Cisco IOS-XE / Catalyst 9000",
+          "vendor_name": "Cisco IOS-XE / Catalyst 9000 / Catalyst 3850",
           "code": "configure terminal\nvlan 10,20,30,99\nspanning-tree mode rapid-pvst\nspanning-tree vlan 10,20,30,99 root primary\ninterface range GigabitEthernet0/1 - 2\n channel-group 1 mode active\nexit\ninterface Port-channel1\n switchport mode trunk\n switchport trunk native vlan 99\nexit\ninterface GigabitEthernet1/0/1\n switchport mode access\n switchport access vlan 10\n switchport voice vlan 20\n switchport port-security\n switchport port-security maximum 2\n switchport port-security violation shutdown\nend\nwrite memory",
           "breakdown": [
             {
               "cmd": "spanning-tree mode rapid-pvst",
-              "desc": "Activa RPVST+."
+              "desc": "Activa RPVST+ en switches Cisco."
             },
             {
               "cmd": "channel-group 1 mode active",
-              "desc": "EtherChannel LACP activo."
+              "desc": "Agrupación EtherChannel LACP."
             }
           ]
         },
         "juniper": {
-          "vendor_name": "Juniper JunOS (EX / QFX Series)",
+          "vendor_name": "Juniper JunOS (EX / QFX Series Switches)",
           "code": "configure\nset vlans DATOS vlan-id 10\nset vlans VOZ vlan-id 20\nset protocols rstp interface ge-0/0/0.0 edge\nset interfaces ge-0/0/1 ether-options 802.3ad ae0\nset interfaces ae0 unit 0 family ethernet-switching interface-mode trunk\ncommit",
           "breakdown": [
             {
               "cmd": "set interfaces ae0 unit 0...",
-              "desc": "Modo trunk en agregación ae0."
+              "desc": "Modo trunk en agregación LACP ae0."
             }
           ]
         },
@@ -129660,12 +129660,138 @@ const NET_TSHOOT_DATA = {
           ]
         },
         "datacom": {
-          "vendor_name": "Datacom DmOS (DM4000 / DM4300)",
+          "vendor_name": "Datacom DmOS (DM4000 / DM4300 Switches)",
           "code": "configure terminal\nvlan 10,20,30,99\ninterface lag 1\n mode lacp\n switchport mode trunk\nend",
           "breakdown": [
             {
               "cmd": "interface lag 1",
               "desc": "Crea el grupo LAG LACP en DmOS."
+            }
+          ]
+        },
+        "bdcom": {
+          "vendor_name": "BDCOM L2/L3 Switches (S2500 / S3900)",
+          "code": "config\nvlan 10,20,30,99\ninterface GigaEthernet0/1\n switchport mode trunk\n switchport trunk allowed vlan 10,20,30,99\nwrite memory",
+          "breakdown": [
+            {
+              "cmd": "switchport mode trunk",
+              "desc": "Modo trunk 802.1Q en BDCOM."
+            }
+          ]
+        },
+        "allied_telesis": {
+          "vendor_name": "Allied Telesis AW+ (x530 / x950 Switches)",
+          "code": "configure terminal\nvlan database\n vlan 10,20,30,99\ninterface port-channel1\n switchport mode trunk\nwrite memory",
+          "breakdown": [
+            {
+              "cmd": "vlan database",
+              "desc": "Ingresa a la base de datos de VLANs en AW+."
+            }
+          ]
+        },
+        "raisecom": {
+          "vendor_name": "Raisecom ISCOM (2600G Carrier Ethernet)",
+          "code": "config\nvlan 10,20,30,99\ninterface port 1\n switchport mode trunk\nwrite",
+          "breakdown": [
+            {
+              "cmd": "switchport mode trunk",
+              "desc": "Configura el puerto en modo trunk."
+            }
+          ]
+        },
+        "arista": {
+          "vendor_name": "Arista EOS (7000 Series Switches)",
+          "code": "configure terminal\nvlan 10,20,30,99\nspanning-tree mode mstp\ninterface Port-Channel1\n switchport mode trunk\nwrite memory",
+          "breakdown": [
+            {
+              "cmd": "spanning-tree mode mstp",
+              "desc": "MSTP en Arista EOS."
+            }
+          ]
+        }
+      }
+    },
+    "noc_gpon_provisioning": {
+      "title": "🌐 Plantilla NOC — Aprovisionamiento FTTH GPON OLT/ONT (Huawei / ZTE / BDCOM / ADTRAN)",
+      "description": "Plantilla reservada exclusivamente para OLTs GPON de acceso de fibra óptica.",
+      "vendors": {
+        "huawei": {
+          "vendor_name": "Huawei OLT (MA5800 / MA5608T)",
+          "code": "system-view\ninterface gpon 0/1\n ont add 1 1 sn-auth \"485754431A2B3C4D\" omci ont-lineprofile-id 10 ont-srvprofile-id 10 desc \"CLIENTE_FTTH_01\"\nquit\nservice-port 100 gpon 0/1/1 ont 1 gemport 1 multi-service user-vlan 100 tag-transform translate inner-vlan 100 inbound traffic-table name 100M outbound traffic-table name 100M\nsave",
+          "breakdown": [
+            {
+              "cmd": "ont add 1 1 sn-auth...",
+              "desc": "Registra la ONT por número de serie en la OLT Huawei."
+            },
+            {
+              "cmd": "service-port 100...",
+              "desc": "Crea el puerto de servicio para mapear el GEM Port a la VLAN de transporte."
+            }
+          ]
+        },
+        "zte": {
+          "vendor_name": "ZTE OLT (ZXAN C300 / C320 / C600)",
+          "code": "configure terminal\ninterface gpon-olt_1/2/1\n onu 1 type ZTEG-F660 sn ZTEGC1A2B3D4\nexit\ninterface gpon-onu_1/2/1:1\n name CLIENTE_FTTH_01\n tcont 1 name T-DATA dba-profile DBA-100M\n gemport 1 name GEM-DATA tcont 1\n service-port 1 vport 1 user-vlan 100 svlan 100\nexit\nwrite memory",
+          "breakdown": [
+            {
+              "cmd": "onu 1 type ZTEG-F660...",
+              "desc": "Registra la ONU en la OLT ZTE."
+            },
+            {
+              "cmd": "tcont 1 name T-DATA...",
+              "desc": "Asigna el contenedor T-CONT DBA."
+            }
+          ]
+        },
+        "bdcom": {
+          "vendor_name": "BDCOM GPON OLT P3600 Series",
+          "code": "config\ninterface gpon 0/1\n gpon onu add 1 1 sn ZTEGC1A2B3D4 line-profile FTTH-LINE srv-profile FTTH-SRV\nexit\nwrite memory",
+          "breakdown": [
+            {
+              "cmd": "gpon onu add 1 1 sn...",
+              "desc": "Registra la ONU en la OLT BDCOM."
+            }
+          ]
+        },
+        "adtran": {
+          "vendor_name": "ADTRAN Total Access 5000 (TA5000 OLT)",
+          "code": "enable\nconfigure terminal\ngpon-olt 1/1\n onu 1 serial-number ADTN12345678\nwrite",
+          "breakdown": [
+            {
+              "cmd": "onu 1 serial-number...",
+              "desc": "Registra la ONU en la OLT ADTRAN TA5000."
+            }
+          ]
+        }
+      }
+    },
+    "firewall_fortinet_master": {
+      "title": "🛡️ Plantilla Fortinet FortiOS — Aprovisionamiento Master Enterprise & Estado",
+      "description": "Reservada para cortafuegos de seguridad perimetral Fortinet FortiOS.",
+      "vendors": {
+        "fortinet": {
+          "vendor_name": "Fortinet FortiOS (FortiGate 40F - 3000F)",
+          "code": "config system global\n  set hostname \"FGT-CORP-ESTADO-GW01\"\n  set timezone 12\n  set admin-sport 8443\n  set admintimeout 15\nend\nconfig system interface\n  edit \"port1\"\n    set alias \"WAN-INTERNET\"\n    set mode static\n    set ip 200.1.1.2 255.255.255.248\n  next\nend\nconfig firewall policy\n  edit 1\n    set name \"POL_LAN_TO_WAN\"\n    set srcintf \"port2\"\n    set dstintf \"port1\"\n    set srcaddr \"all\"\n    set dstaddr \"all\"\n    set action accept\n    set nat enable\n    set utm-status enable\n  next\nend",
+          "breakdown": [
+            {
+              "cmd": "config firewall policy",
+              "desc": "Reglas stateful con UTM y Source NAT."
+            }
+          ]
+        }
+      }
+    },
+    "firewall_sophos_master": {
+      "title": "🛡️ Plantilla Sophos SFOS — Aprovisionamiento Master Enterprise & Estado",
+      "description": "Reservada para cortafuegos de seguridad perimetral Sophos SFOS.",
+      "vendors": {
+        "sophos": {
+          "vendor_name": "Sophos SFOS (XG 85-330 / XGS 87-136)",
+          "code": "system hostname set XGS-CORP-ESTADO-GW01\nsystem time-zone set America/Bogota\nsystem firewall-rule add name POL_LAN_TO_WAN srczone LAN dstzone WAN srcnet Any dstnet Any service Any action accept ips-policy default nat-rule MASQUERADE",
+          "breakdown": [
+            {
+              "cmd": "system firewall-rule add...",
+              "desc": "Regla de cortafuegos por zonas con IPS y SNAT Masquerade."
             }
           ]
         }
