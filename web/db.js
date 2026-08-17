@@ -8177,5 +8177,353 @@ export const networkData = [
         }
       }
     ]
+  },
+  {
+    "id": "fortinet_interface_discovery_l1_l7",
+    "title": "Fortinet FortiOS: Descubrimiento de Interfaces y Diagnóstico Integral Capa 1 a Capa 7",
+    "category": "Troubleshooting Diagnóstico",
+    "type": "troubleshooting",
+    "tier": 1,
+    "layer": "Capa 1 — Física & Óptica",
+    "description": "Guía integral de Fortinet FortiOS: Descubrimiento de Interfaces y Diagnóstico Integral Capa 1 a Capa 7 con comandos nativos por fabricante.",
+    "variables": [
+      {
+        "id": "ip_address",
+        "label": "Ip Address",
+        "default": "192.168.10.2"
+      }
+    ],
+    "steps": [
+      {
+        "step": 1,
+        "title": "Capa 1 (Física & Óptica): Descubrimiento de Interfaces y DDM SFP",
+        "goal": "Identificar todos los puertos físicos instalados, verificar si el enlace físico está levantado (Link Up/Down), auto-negociación y lecturas DDM del módulo transceptor SFP.",
+        "expected": "Puertos físicos visibles, estado Link Up a 1Gbps/10Gbps Full Duplex y potencia óptica recibida entre -3 dBm y -20 dBm.",
+        "commands": {
+          "fortinet": "get system interface physical\nget system interface transceiver\ndiagnose hardware deviceinfo nic port1\ndiagnose hardware deviceinfo nic port2"
+        }
+      },
+      {
+        "step": 2,
+        "title": "Capa 2 (Enlace de Datos): VLANs, Trunks LACP, MACs y VDOMs",
+        "goal": "Mapear sub-interfaces VLAN (dot1q), puertos agregados (8002.3ad LACP), tabla de direcciones MACs aprendidas y asignación a Virtual Domains (VDOMs).",
+        "expected": "VLANs vinculadas al puerto correcto, interfaz LACP en estado Negotiated y tabla MAC poblada.",
+        "commands": {
+          "fortinet": "get system interface\ndiagnose netlink interface list\ndiagnose sys npu-port list\ndiagnose mac-address list"
+        }
+      },
+      {
+        "step": 3,
+        "title": "Capa 3 (Red): Direccionamiento IP, Rutas Estáticas/Dinámicas y ARP",
+        "goal": "Comprobar las direcciones IP asignadas a cada interfaz, verificar la tabla de resolución ARP y validar la ruta por defecto y rutas dinámicas (BGP/OSPF).",
+        "expected": "IPs locales asignadas, tabla ARP resolviendo la MAC del Gateway y ruta 0.0.0.0/0 activa.",
+        "commands": {
+          "fortinet": "diagnose ip address list\nget system arp\nget router info routing-table all\nexecute ping 8.8.8.8"
+        }
+      },
+      {
+        "step": 4,
+        "title": "Capa 4 (Transporte): Tabla de Sesiones Stateful y Puertos TCP/UDP",
+        "goal": "Inspeccionar la tabla de conexiones en tiempo real para determinar si el puerto TCP/UDP (ej. 80, 443, 22, 53) está siendo aceptado o descartado por el firewall.",
+        "expected": "Sesión visible en la tabla con estado ESTABLISHED y contadores de paquetes bidireccionales en aumento.",
+        "commands": {
+          "fortinet": "diagnose sys session filter src <ip_address>\ndiagnose sys session filter dport 443\ndiagnose sys session list\ndiagnose firewall session list"
+        }
+      },
+      {
+        "step": 5,
+        "title": "Capa 5 (Sesión & Túneles VPN IPsec / SSL)",
+        "goal": "Verificar el establecimiento de túneles IPsec Site-to-Site y túneles SSL VPN de usuarios remotos.",
+        "expected": "Fase 1 y Fase 2 en estado UP con selectores de tráfico activos y usuarios SSL VPN autenticados.",
+        "commands": {
+          "fortinet": "diagnose vpn ike gateway list\ndiagnose vpn tunnel list\nget vpn ssl monitor"
+        }
+      },
+      {
+        "step": 6,
+        "title": "Capa 6 (Presentación): Decodificación Deep SSL & Perfiles UTM",
+        "goal": "Verificar la re-configuración de certificados SSL/TLS y el estado del motor WAD de inspección profunda.",
+        "expected": "Motor WAD funcionando sin estado de alto consumo de memoria o fallos de inspección SSL.",
+        "commands": {
+          "fortinet": "diagnose test application wad 100\ndiagnose debug rating\nconfig firewall ssl-ssh-profile\nget"
+        }
+      },
+      {
+        "step": 7,
+        "title": "Capa 7 (Aplicación): Packet Sniffer & Debug Flow Trace en Tiempo Real",
+        "goal": "Ejecutar la prueba definitiva de Capa 7 capturando paquetes en la interfaz e imprimiendo la decisión exacta del firewall (Policy ID, NAT, IPS, Route Lookup).",
+        "expected": "Salida detallada mostrando el ingreso del paquete, la política permitida (ej. Allowed by rule 1) y la interfaz de salida.",
+        "commands": {
+          "fortinet": "diagnose sniffer packet any \"host <ip_address> and port 443\" 4 0 l\ndiagnose debug flow filter addr <ip_address>\ndiagnose debug flow show function-name enable\ndiagnose debug flow trace start 100\ndiagnose debug enable"
+        }
+      }
+    ]
+  },
+  {
+    "id": "sophos_interface_discovery_l1_l7",
+    "title": "Sophos SFOS: Descubrimiento de Interfaces y Diagnóstico Integral Capa 1 a Capa 7",
+    "category": "Troubleshooting Diagnóstico",
+    "type": "troubleshooting",
+    "tier": 1,
+    "layer": "Capa 1 — Física & Óptica",
+    "description": "Guía integral de Sophos SFOS: Descubrimiento de Interfaces y Diagnóstico Integral Capa 1 a Capa 7 con comandos nativos por fabricante.",
+    "variables": [
+      {
+        "id": "ip_address",
+        "label": "Ip Address",
+        "default": "192.168.10.2"
+      }
+    ],
+    "steps": [
+      {
+        "step": 1,
+        "title": "Capa 1 (Física & Óptica): Descubrimiento de Puertos y Estado Ethtool",
+        "goal": "Descubrir la asignación de puertos físicos (Port1 WAN, Port2 LAN, etc.), verificar duplex, velocidad y auto-negociación usando la consola del kernel.",
+        "expected": "Enlace detectado (Link detected: yes), velocidad a 1000baseT/Full y puerto físico activo.",
+        "commands": {
+          "sophos": "console> show network interface\nsystem diagnostics show version-info\nethtool Port1\nethtool Port2"
+        }
+      },
+      {
+        "step": 2,
+        "title": "Capa 2 (Enlace de Datos): VLANs, Bridges y Tabla de MACs",
+        "goal": "Inspeccionar la configuración de VLANs etiquetadas, interfaces puente (br0), y tabla de resolución de vecinos L2.",
+        "expected": "VLANs asignadas a la interfaz física adecuada y vecinos L2 aprendidos.",
+        "commands": {
+          "sophos": "ifconfig -a\nbrctl show\nip neighbor show\narp -an"
+        }
+      },
+      {
+        "step": 3,
+        "title": "Capa 3 (Red): Direccionamiento IP, Zonas de Seguridad y Gateway",
+        "goal": "Verificar las direcciones IP asignadas, asignación de zonas de seguridad y la tabla de enrutamiento del sistema Sophos.",
+        "expected": "IPs correctamente vinculadas a su zona respectiva y Gateway predeterminado alcanzable.",
+        "commands": {
+          "sophos": "console> show network default-gateway\nip route show\nconsole> ping host 8.8.8.8"
+        }
+      },
+      {
+        "step": 4,
+        "title": "Capa 4 (Transporte): Tabla Conntrack y Rastreo de Paquetes Descartados (drppkt)",
+        "goal": "Inspeccionar la tabla conntrack del kernel Linux y ejecutar la herramienta nativa drppkt para identificar si el firewall está descartando conexiones TCP/UDP.",
+        "expected": "Conexiones visibles en conntrack y cero descartes anómalos en el motor drppkt.",
+        "commands": {
+          "sophos": "conntrack -L | grep <ip_address>\ndrppkt | grep <ip_address>"
+        }
+      },
+      {
+        "step": 5,
+        "title": "Capa 5 (Sesión): Estado de Daemons del Sistema y Sophos Central",
+        "goal": "Verificar el estado de ejecución de los servicios internos del sistema (service -S) y la conectividad con la plataforma Sophos Central.",
+        "expected": "Servicios en estado RUNNING y Sophos Central conectado (Connected).",
+        "commands": {
+          "sophos": "service -S\ncentral-management show-status\nsystem ipsec status"
+        }
+      },
+      {
+        "step": 6,
+        "title": "Capa 6 (Presentación): Monitoreo de Logs en Tiempo Real (Garner Engine)",
+        "goal": "Monitorear los archivos de registro del motor de procesamiento unificado Garner para detectar bloqueos SSL/TLS o reglas de proxy.",
+        "expected": "Logs registrando eventos de tráfico sin excepciones de kernel o caídas de daemon.",
+        "commands": {
+          "sophos": "tail -f /log/garner.log\ntail -f /log/httpd.log"
+        }
+      },
+      {
+        "step": 7,
+        "title": "Capa 7 (Aplicación): Captura Tcpdump y Monitoreo de Filtros IPS/AppFilter",
+        "goal": "Ejecutar una captura de paquetes tcpdump en tiempo real desde la consola de Sophos e inspeccionar los registros de IPS y filtro de aplicaciones.",
+        "expected": "Trazas de paquetes visibles con banderas TCP SYN/ACK correctas y tráfico de aplicación permitido.",
+        "commands": {
+          "sophos": "console> tcpdump \"host <ip_address>\"\ntcpdump -i any \"host <ip_address> and port 443\" -n -e\ntail -f /log/ips.log\ntail -f /log/appfilter.log"
+        }
+      }
+    ]
+  },
+  {
+    "id": "master_interface_discovery_l1_l7",
+    "title": "Descubrimiento de Interfaces y Diagnóstico Máster Capa 1 a Capa 7 (Todos los Vendors)",
+    "category": "Troubleshooting Diagnóstico",
+    "type": "troubleshooting",
+    "tier": 1,
+    "layer": "Capa 1 — Física / Transceivers / DDM",
+    "description": "Guía integral de Descubrimiento de Interfaces y Diagnóstico Máster Capa 1 a Capa 7 (Todos los Vendors) con comandos nativos por fabricante.",
+    "variables": [
+      {
+        "id": "ip_address",
+        "label": "Ip Address",
+        "default": "192.168.10.2"
+      }
+    ],
+    "steps": [
+      {
+        "step": 1,
+        "title": "Capa 1 (Física & Óptica): Descubrimiento de Interfaces y Diagnóstico SFP / DDM",
+        "goal": "Descubrir todas las interfaces físicas instaladas en el chasis/tarjeta HWIC, validar velocidad/dúplex y medir la lectura DDM de potencia ópticas en transceptores SFP/SFP+.",
+        "expected": "Enlace físico UP, auto-negociación a 1G/10G Full Duplex y potencia de recepción RX dentro del rango (-3 dBm a -20 dBm).",
+        "commands": {
+          "juniper": "show interfaces diagnostics optics ge-0/0/0\nshow interfaces ge-0/0/0 media\nshow chassis hardware",
+          "cisco_iosxr": "show controllers optics 0/0/0/0\nshow interfaces GigabitEthernet0/0/0/0 status\nshow inventory",
+          "cisco_iosxe": "show hw-module subslot 0/0 transceiver 0 status\nshow interfaces GigabitEthernet0/0/1 status\nshow inventory",
+          "fortinet": "get system interface physical\nget system interface transceiver\ndiagnose hardware deviceinfo nic port1",
+          "sophos": "console> show network interface\nethtool Port1\nethtool Port2",
+          "mikrotik": "/interface ethernet print detail\n/interface ethernet monitor [find name=ether1]\n/interface SFP-sfp1 monitor-once",
+          "huawei": "display interface GigabitEthernet0/0/1\ndisplay transceiver interface GigabitEthernet0/0/1 verbose",
+          "datacom": "show interface optical-diagnostics\nshow interface transceiver\nshow interface eth 1/1",
+          "bdcom": "show interface status\nshow interface g0/1",
+          "allied_telesis": "show interface optical-diagnostics\nshow interface port1.0.1",
+          "raisecom": "show ddm interface port 1\nshow port 1",
+          "teltonika": "gsmctl -q\ngsmctl -K\nip link show",
+          "zte": "show gpon onu state\nshow interface gei_0/1/1",
+          "adtran": "show interface ethernet 0/1\nshow optics-diagnostics",
+          "optone_vkom": "# Verificar LEDs: PWR (Verde), FX LINK/ACT (Fijo/Parpadeo), TP LINK/ACT (Fijo)\n# Medir potencia RX con Power Meter óptico a 1310nm/1550nm (Esperado: -8 a -22 dBm)",
+          "linux": "ip link show\nethtool eth0\nethtool -m eth0"
+        }
+      },
+      {
+        "step": 2,
+        "title": "Capa 2 (Enlace de Datos): Sub-interfaces VLAN, Agregaciones LACP y Tabla de MACs",
+        "goal": "Identificar VLANs asignadas, agregación de enlaces (802.3ad LACP / EtherChannel / AE), estado de Spanning Tree (STP) y mapa de direcciones MAC aprendidas en el puerto.",
+        "expected": "VLANs vinculadas, puerto de agregado LACP en estado Established/Up y direcciones MAC aprendidas.",
+        "commands": {
+          "juniper": "show ethernet-switching table\nshow lacp interfaces\nshow vlans",
+          "cisco_iosxr": "show l2vpn forwarding bridge-group detail\nshow lacp system-id\nshow mac-address-table",
+          "cisco_iosxe": "show mac address-table interface GigabitEthernet0/0/1\nshow interfaces trunk\nshow etherchannel summary",
+          "fortinet": "get system interface\ndiagnose netlink interface list\ndiagnose mac-address list",
+          "sophos": "ifconfig -a\nbrctl show\nip neighbor show",
+          "mikrotik": "/interface bridge host print\n/interface vlan print\n/interface bonding print",
+          "huawei": "display mac-address interface GigabitEthernet0/0/1\ndisplay vlan\ndisplay eth-trunk",
+          "datacom": "show mac-address-table\nshow vlan\nshow spanning-tree",
+          "bdcom": "show mac address-table\nshow vlan",
+          "allied_telesis": "show mac address-table\nshow vlan",
+          "raisecom": "show mac-address-table interface port 1\nshow vlan",
+          "teltonika": "uci show network\ncat /proc/net/dev",
+          "zte": "show mac gpon onu\nshow vlan",
+          "adtran": "show mac-address-table\nshow vlan",
+          "optone_vkom": "# L1/L2 Transparente — Asegurar modo Full Duplex forzado en switch conectado",
+          "linux": "bridge fdb show\nip link show type vlan\ncat /proc/net/bonding/bond0"
+        }
+      },
+      {
+        "step": 3,
+        "title": "Capa 3 (Red): Direccionamiento IP, Tabla ARP y Enrutamiento unicast",
+        "goal": "Comprobar las direcciones IP locales asignadas, verificar la tabla de resolución ARP y validar la ruta por defecto y prefijos aprendidos por IGP/BGP.",
+        "expected": "IPs locales asignadas, tabla ARP resolviendo el Gateway de salto y ruta por defecto activa.",
+        "commands": {
+          "juniper": "show route table inet.0\nshow arp no-resolve\nping 8.8.8.8 count 3 rapid",
+          "cisco_iosxr": "show ip route\nshow arp\nping 8.8.8.8 count 3",
+          "cisco_iosxe": "show ip route\nshow ip arp\nping 8.8.8.8 repeat 3",
+          "fortinet": "diagnose ip address list\nget system arp\nget router info routing-table all\nexecute ping 8.8.8.8",
+          "sophos": "console> show network default-gateway\nip route show\nconsole> ping host 8.8.8.8",
+          "mikrotik": "/ip route print\n/ip arp print\n/ping 8.8.8.8 count=3",
+          "huawei": "display ip routing-table\ndisplay arp all\nping 8.8.8.8",
+          "datacom": "show ip route\nshow ip arp",
+          "bdcom": "show ip route\nshow arp",
+          "allied_telesis": "show ip route\nshow ip arp",
+          "raisecom": "show ip route\nshow arp",
+          "teltonika": "ip route show\nip addr show\nping -c 3 8.8.8.8",
+          "zte": "show ip route\nshow arp",
+          "adtran": "show ip route\nshow arp",
+          "optone_vkom": "# Verificar conectividad de IP de gestión del conversor si aplica",
+          "linux": "ip route show\nip neigh show\nping -c 3 8.8.8.8"
+        }
+      },
+      {
+        "step": 4,
+        "title": "Capa 4 (Transporte): Tabla de Conexiones Stateful y Filtros de Puertos TCP/UDP",
+        "goal": "Verificar si las conexiones TCP/UDP (ej. 80, 443, 22, 53) están siendo permitidas o descartadas por listas de acceso (ACLs) o motores de firewall stateful.",
+        "expected": "Sesiones en estado ESTABLISHED con incremento continuo en los contadores de tráfico.",
+        "commands": {
+          "juniper": "show firewall log\nshow system connections\nshow security flow session",
+          "cisco_iosxr": "show tcp brief\nshow access-lists",
+          "cisco_iosxe": "show tcp brief\nshow ip access-lists",
+          "fortinet": "diagnose sys session filter src <ip_address>\ndiagnose sys session list\ndiagnose firewall session list",
+          "sophos": "conntrack -L | grep <ip_address>\ndrppkt | grep <ip_address>",
+          "mikrotik": "/ip firewall connection print where src-address~\"<ip_address>\"",
+          "huawei": "display firewall session table\ndisplay acl all",
+          "datacom": "show access-lists",
+          "bdcom": "show access-lists",
+          "allied_telesis": "show access-list",
+          "raisecom": "show acl",
+          "teltonika": "logread | grep firewall",
+          "zte": "show acl",
+          "adtran": "show ip access-list",
+          "optone_vkom": "# Capa 4 no aplica directamente en conversores L1",
+          "linux": "ss -tulpn\nconntrack -L\nnft list ruleset"
+        }
+      },
+      {
+        "step": 5,
+        "title": "Capa 5 (Sesión): Estado de Daemons, Túneles VPN y Sesiones de Administración",
+        "goal": "Inspeccionar la estabilidad de las sesiones de administración (SSH/VTY) y la negociación de túneles VPN Site-to-Site o Dial-Up.",
+        "expected": "Túneles VPN en estado UP (Phase 1/2 activas) y servicios de administración respondiendo.",
+        "commands": {
+          "juniper": "show security ike security-associations\nshow security ipsec security-associations",
+          "cisco_iosxr": "show crypto ipsec sa\nshow crypto ikev2 sa",
+          "cisco_iosxe": "show crypto ipsec sa\nshow crypto isakmp sa",
+          "fortinet": "diagnose vpn ike gateway list\ndiagnose vpn tunnel list\nget vpn ssl monitor",
+          "sophos": "service -S\ncentral-management show-status\nsystem ipsec status",
+          "mikrotik": "/ip ipsec active-peers print\n/interface wireguard print",
+          "huawei": "display ike sa\ndisplay ipsec sa",
+          "datacom": "show interfaces tunnel",
+          "bdcom": "show line vty",
+          "allied_telesis": "show ipsec sa",
+          "raisecom": "show line vty",
+          "teltonika": "logread | grep ipsec\ngsmctl -t",
+          "zte": "show ipsec sa",
+          "adtran": "show crypto ipsec sa",
+          "optone_vkom": "# Capa 5 no aplica en conversores L1",
+          "linux": "ipsec status\nwg show\nsystemctl status frr"
+        }
+      },
+      {
+        "step": 6,
+        "title": "Capa 6 (Presentación): Decodificación SSL/TLS y Registros del Sistema",
+        "goal": "Validar la vigencia de certificados digitales, perfiles de inspección SSL/TLS y el envío correcto de logs hacia los servidores Syslog centralizados.",
+        "expected": "Certificados válidos, perfiles SSL aplicados y generación continua de logs.",
+        "commands": {
+          "juniper": "show system log messages\nshow security pki local-certificate",
+          "cisco_iosxr": "show logging\nshow crypto pki certificates",
+          "cisco_iosxe": "show logging\nshow crypto pki certificates",
+          "fortinet": "diagnose test application wad 100\ndiagnose debug rating",
+          "sophos": "tail -f /log/garner.log\ntail -f /log/httpd.log",
+          "mikrotik": "/log print follow-only",
+          "huawei": "display logbuffer",
+          "datacom": "show logging",
+          "bdcom": "show logging",
+          "allied_telesis": "show log",
+          "raisecom": "show log",
+          "teltonika": "logread -f",
+          "zte": "show log",
+          "adtran": "show logging",
+          "optone_vkom": "# Capa 6 no aplica en conversores L1",
+          "linux": "journalctl -f -u frr\nopenssl s_client -connect 127.0.0.1:443"
+        }
+      },
+      {
+        "step": 7,
+        "title": "Capa 7 (Aplicación): Captura de Paquetes en Vivo (Sniffer) & Flow Trace",
+        "goal": "Ejecutar la captura en tiempo real de paquetes en la interfaz física o lógica para diagnosticar el comportamiento exacto de los protocolos de aplicación (HTTP, DNS, BGP, OSPF, DHCP).",
+        "expected": "Captura fluida de tramas mostrando el intercambio de mensajes de nivel de aplicación.",
+        "commands": {
+          "juniper": "monitor traffic interface ge-0/0/0 matching \"host <ip_address>\" extensive\nshow system processes extensive",
+          "cisco_iosxr": "monitor capture CAP interface GigabitEthernet0/0/0/0 match ipv4 any any\nshow monitor capture CAP buffer detailed",
+          "cisco_iosxe": "monitor capture CAP interface GigabitEthernet0/0/1 both match any\nshow monitor capture CAP buffer detailed",
+          "fortinet": "diagnose sniffer packet any \"host <ip_address> and port 443\" 4 0 l\ndiagnose debug flow filter addr <ip_address>\ndiagnose debug flow trace start 100\ndiagnose debug enable",
+          "sophos": "console> tcpdump \"host <ip_address>\"\ntail -f /log/ips.log",
+          "mikrotik": "/tool packet-sniffer quick ip-address=<ip_address>",
+          "huawei": "packet-capture ipv4-packet port GigabitEthernet0/0/1",
+          "datacom": "show monitor",
+          "bdcom": "show monitor",
+          "allied_telesis": "show monitor",
+          "raisecom": "show monitor",
+          "teltonika": "tcpdump -i any \"host <ip_address>\" -n",
+          "zte": "show monitor",
+          "adtran": "show monitor",
+          "optone_vkom": "# Capa 7 no aplica en conversores L1",
+          "linux": "tcpdump -i any \"host <ip_address>\" -n -e -X"
+        }
+      }
+    ]
   }
 ];

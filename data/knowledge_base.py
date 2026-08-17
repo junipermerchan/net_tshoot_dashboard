@@ -13358,3 +13358,505 @@ TECH_CONCEPTS['sr_mpls_tilfa_config'] = {
 }
 
 KB.update(SR_MPLS_MODULES)
+
+
+
+# NOC Interface Discovery & Layer 1 to Layer 7 Complete Diagnostic Workflows
+NOC_INTERFACE_DISCOVERY_MODULES = {
+    'fortinet_interface_discovery_l1_l7': {
+        'name': 'Fortinet FortiOS: Descubrimiento de Interfaces y Diagnóstico Integral Capa 1 a Capa 7',
+        'description': 'Procedimiento operativo de NOC para descubrir interfaces físicas/lógicas en FortiGate y diagnosticar fallas desde la capa física (SFP/DOM) hasta la capa de aplicación (Packet Flow Trace & Sniffer).',
+        'vendors': ['fortinet'],
+        'steps': {
+            'forti_l1': {
+                'title': 'Capa 1 (Física & Óptica): Descubrimiento de Interfaces y DDM SFP',
+                'tier': 1,
+                'osi_layer': 'Capa 1 — Física & Óptica',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Inspección de Estado Físico, Velocidad/Dúplex y Potencia Óptica RX/TX (dBm)',
+                'body': 'Identificar todos los puertos físicos instalados, verificar si el enlace físico está levantado (Link Up/Down), auto-negociación y lecturas DDM del módulo transceptor SFP.',
+                'expected': 'Puertos físicos visibles, estado Link Up a 1Gbps/10Gbps Full Duplex y potencia óptica recibida entre -3 dBm y -20 dBm.',
+                'commands': {
+                    'fortinet': [
+                        'get system interface physical',
+                        'get system interface transceiver',
+                        'diagnose hardware deviceinfo nic port1',
+                        'diagnose hardware deviceinfo nic port2'
+                    ]
+                },
+                'choices': [{'label': 'Siguiente: Capa 2 (Enlace & Switch Fabric)', 'next': 'forti_l2'}]
+            },
+            'forti_l2': {
+                'title': 'Capa 2 (Enlace de Datos): VLANs, Trunks LACP, MACs y VDOMs',
+                'tier': 2,
+                'osi_layer': 'Capa 2 — Enlace de Datos',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Auditoría de Sub-interfaces VLAN, Agregación LACP y Tabla de MACs',
+                'body': 'Mapear sub-interfaces VLAN (dot1q), puertos agregados (8002.3ad LACP), tabla de direcciones MACs aprendidas y asignación a Virtual Domains (VDOMs).',
+                'expected': 'VLANs vinculadas al puerto correcto, interfaz LACP en estado Negotiated y tabla MAC poblada.',
+                'commands': {
+                    'fortinet': [
+                        'get system interface',
+                        'diagnose netlink interface list',
+                        'diagnose sys npu-port list',
+                        'diagnose mac-address list'
+                    ]
+                },
+                'choices': [{'label': 'Siguiente: Capa 3 (Red, IP & Rutas)', 'next': 'forti_l3'}]
+            },
+            'forti_l3': {
+                'title': 'Capa 3 (Red): Direccionamiento IP, Rutas Estáticas/Dinámicas y ARP',
+                'tier': 2,
+                'osi_layer': 'Capa 3 — Red (IP / Routing)',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Verificación de Direcciones IP, Tabla ARP y Tabla de Enrutamiento del Kernel',
+                'body': 'Comprobar las direcciones IP asignadas a cada interfaz, verificar la tabla de resolución ARP y validar la ruta por defecto y rutas dinámicas (BGP/OSPF).',
+                'expected': 'IPs locales asignadas, tabla ARP resolviendo la MAC del Gateway y ruta 0.0.0.0/0 activa.',
+                'commands': {
+                    'fortinet': [
+                        'diagnose ip address list',
+                        'get system arp',
+                        'get router info routing-table all',
+                        'execute ping 8.8.8.8'
+                    ]
+                },
+                'choices': [{'label': 'Siguiente: Capa 4 (Transporte & Sesiones TCP/UDP)', 'next': 'forti_l4'}]
+            },
+            'forti_l4': {
+                'title': 'Capa 4 (Transporte): Tabla de Sesiones Stateful y Puertos TCP/UDP',
+                'tier': 3,
+                'osi_layer': 'Capa 4 — Transporte (TCP / UDP)',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Inspección de la Tabla de Conexiones Stateful y Filtros de Sesión',
+                'body': 'Inspeccionar la tabla de conexiones en tiempo real para determinar si el puerto TCP/UDP (ej. 80, 443, 22, 53) está siendo aceptado o descartado por el firewall.',
+                'expected': 'Sesión visible en la tabla con estado ESTABLISHED y contadores de paquetes bidireccionales en aumento.',
+                'commands': {
+                    'fortinet': [
+                        'diagnose sys session filter src <ip_address>',
+                        'diagnose sys session filter dport 443',
+                        'diagnose sys session list',
+                        'diagnose firewall session list'
+                    ]
+                },
+                'choices': [{'label': 'Siguiente: Capa 5 (VPN / Sesiones IPsec & SSL)', 'next': 'forti_l5'}]
+            },
+            'forti_l5': {
+                'title': 'Capa 5 (Sesión & Túneles VPN IPsec / SSL)',
+                'tier': 3,
+                'osi_layer': 'Capa 5 — Sesión (VPN & Tunnels)',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Diagnóstico de Negociación IKE Phase 1/2 y Túneles SSL VPN',
+                'body': 'Verificar el establecimiento de túneles IPsec Site-to-Site y túneles SSL VPN de usuarios remotos.',
+                'expected': 'Fase 1 y Fase 2 en estado UP con selectores de tráfico activos y usuarios SSL VPN autenticados.',
+                'commands': {
+                    'fortinet': [
+                        'diagnose vpn ike gateway list',
+                        'diagnose vpn tunnel list',
+                        'get vpn ssl monitor'
+                    ]
+                },
+                'choices': [{'label': 'Siguiente: Capa 6 (Presentación & SSL Inspection)', 'next': 'forti_l6'}]
+            },
+            'forti_l6': {
+                'title': 'Capa 6 (Presentación): Decodificación Deep SSL & Perfiles UTM',
+                'tier': 4,
+                'osi_layer': 'Capa 6 — Presentación (SSL/TLS Decryption)',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Auditoría del Motor WAD (Web Proxy / Deep SSL Inspection)',
+                'body': 'Verificar la re-configuración de certificados SSL/TLS y el estado del motor WAD de inspección profunda.',
+                'expected': 'Motor WAD funcionando sin estado de alto consumo de memoria o fallos de inspección SSL.',
+                'commands': {
+                    'fortinet': [
+                        'diagnose test application wad 100',
+                        'diagnose debug rating',
+                        'config firewall ssl-ssh-profile',
+                        'get'
+                    ]
+                },
+                'choices': [{'label': 'Siguiente: Capa 7 (Aplicación & Flow Trace)', 'next': 'forti_l7'}]
+            },
+            'forti_l7': {
+                'title': 'Capa 7 (Aplicación): Packet Sniffer & Debug Flow Trace en Tiempo Real',
+                'tier': 4,
+                'osi_layer': 'Capa 7 — Aplicación (Flow Trace & Sniffer)',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Seguimiento del Motor de Políticas FortiOS en Tiempo Real (Debug Flow)',
+                'body': 'Ejecutar la prueba definitiva de Capa 7 capturando paquetes en la interfaz e imprimiendo la decisión exacta del firewall (Policy ID, NAT, IPS, Route Lookup).',
+                'expected': 'Salida detallada mostrando el ingreso del paquete, la política permitida (ej. Allowed by rule 1) y la interfaz de salida.',
+                'commands': {
+                    'fortinet': [
+                        'diagnose sniffer packet any "host <ip_address> and port 443" 4 0 l',
+                        'diagnose debug flow filter addr <ip_address>',
+                        'diagnose debug flow show function-name enable',
+                        'diagnose debug flow trace start 100',
+                        'diagnose debug enable'
+                    ]
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'sophos_interface_discovery_l1_l7': {
+        'name': 'Sophos SFOS: Descubrimiento de Interfaces y Diagnóstico Integral Capa 1 a Capa 7',
+        'description': 'Procedimiento operativo de NOC para descubrir interfaces físicas (Port1-Port8) en Sophos XG/XGS y diagnosticar desde capa física hasta capturas en tiempo real y logs de seguridad.',
+        'vendors': ['sophos'],
+        'steps': {
+            'sophos_l1': {
+                'title': 'Capa 1 (Física & Óptica): Descubrimiento de Puertos y Estado Ethtool',
+                'tier': 1,
+                'osi_layer': 'Capa 1 — Física & Óptica',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Mapeo de Puertos Físicos (Port1-Port8) y Estado del Enlace Ethernet',
+                'body': 'Descubrir la asignación de puertos físicos (Port1 WAN, Port2 LAN, etc.), verificar duplex, velocidad y auto-negociación usando la consola del kernel.',
+                'expected': 'Enlace detectado (Link detected: yes), velocidad a 1000baseT/Full y puerto físico activo.',
+                'commands': {
+                    'sophos': [
+                        'console> show network interface',
+                        'system diagnostics show version-info',
+                        'ethtool Port1',
+                        'ethtool Port2'
+                    ]
+                },
+                'choices': [{'label': 'Siguiente: Capa 2 (Interfaces & MACs)', 'next': 'sophos_l2'}]
+            },
+            'sophos_l2': {
+                'title': 'Capa 2 (Enlace de Datos): VLANs, Bridges y Tabla de MACs',
+                'tier': 2,
+                'osi_layer': 'Capa 2 — Enlace de Datos',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Auditoría de Sub-interfaces VLAN, Puertos Puente y Tabla ARP/MAC',
+                'body': 'Inspeccionar la configuración de VLANs etiquetadas, interfaces puente (br0), y tabla de resolución de vecinos L2.',
+                'expected': 'VLANs asignadas a la interfaz física adecuada y vecinos L2 aprendidos.',
+                'commands': {
+                    'sophos': [
+                        'ifconfig -a',
+                        'brctl show',
+                        'ip neighbor show',
+                        'arp -an'
+                    ]
+                },
+                'choices': [{'label': 'Siguiente: Capa 3 (Red, Zonas & Gateway)', 'next': 'sophos_l3'}]
+            },
+            'sophos_l3': {
+                'title': 'Capa 3 (Red): Direccionamiento IP, Zonas de Seguridad y Gateway',
+                'tier': 2,
+                'osi_layer': 'Capa 3 — Red (IP / Routing)',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Inspección de Direcciones IP, Zonas (WAN/LAN/DMZ) y Rutas Linux',
+                'body': 'Verificar las direcciones IP asignadas, asignación de zonas de seguridad y la tabla de enrutamiento del sistema Sophos.',
+                'expected': 'IPs correctamente vinculadas a su zona respectiva y Gateway predeterminado alcanzable.',
+                'commands': {
+                    'sophos': [
+                        'console> show network default-gateway',
+                        'ip route show',
+                        'console> ping host 8.8.8.8'
+                    ]
+                },
+                'choices': [{'label': 'Siguiente: Capa 4 (Tabla de Conexiones Conntrack)', 'next': 'sophos_l4'}]
+            },
+            'sophos_l4': {
+                'title': 'Capa 4 (Transporte): Tabla Conntrack y Rastreo de Paquetes Descartados (drppkt)',
+                'tier': 3,
+                'osi_layer': 'Capa 4 — Transporte (TCP / UDP)',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Filtro de Conexiones Stateful y Monitoreo de descartes drppkt',
+                'body': 'Inspeccionar la tabla conntrack del kernel Linux y ejecutar la herramienta nativa drppkt para identificar si el firewall está descartando conexiones TCP/UDP.',
+                'expected': 'Conexiones visibles en conntrack y cero descartes anómalos en el motor drppkt.',
+                'commands': {
+                    'sophos': [
+                        'conntrack -L | grep <ip_address>',
+                        'drppkt | grep <ip_address>'
+                    ]
+                },
+                'choices': [{'label': 'Siguiente: Capa 5 (Estado de Servicios & Sophos Central)', 'next': 'sophos_l5'}]
+            },
+            'sophos_l5': {
+                'title': 'Capa 5 (Sesión): Estado de Daemons del Sistema y Sophos Central',
+                'tier': 3,
+                'osi_layer': 'Capa 5 — Sesión (Daemons & Central)',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Auditoría de Daemons de Firewall, IPsec y Gestión Sophos Central',
+                'body': 'Verificar el estado de ejecución de los servicios internos del sistema (service -S) y la conectividad con la plataforma Sophos Central.',
+                'expected': 'Servicios en estado RUNNING y Sophos Central conectado (Connected).',
+                'commands': {
+                    'sophos': [
+                        'service -S',
+                        'central-management show-status',
+                        'system ipsec status'
+                    ]
+                },
+                'choices': [{'label': 'Siguiente: Capa 6 (Logs del Motor Xstream & Garner)', 'next': 'sophos_l6'}]
+            },
+            'sophos_l6': {
+                'title': 'Capa 6 (Presentación): Monitoreo de Logs en Tiempo Real (Garner Engine)',
+                'tier': 4,
+                'osi_layer': 'Capa 6 — Presentación (Garner Logging)',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Rastreo del Log Unificado Garner y Proxy HTTP/HTTPS',
+                'body': 'Monitorear los archivos de registro del motor de procesamiento unificado Garner para detectar bloqueos SSL/TLS o reglas de proxy.',
+                'expected': 'Logs registrando eventos de tráfico sin excepciones de kernel o caídas de daemon.',
+                'commands': {
+                    'sophos': [
+                        'tail -f /log/garner.log',
+                        'tail -f /log/httpd.log'
+                    ]
+                },
+                'choices': [{'label': 'Siguiente: Capa 7 (Captura Tcpdump & Logs IPS/App)', 'next': 'sophos_l7'}]
+            },
+            'sophos_l7': {
+                'title': 'Capa 7 (Aplicación): Captura Tcpdump y Monitoreo de Filtros IPS/AppFilter',
+                'tier': 4,
+                'osi_layer': 'Capa 7 — Aplicación (Live Tcpdump & IPS)',
+                'network_domain': 'Firewall & Security Edge',
+                'methodology': 'Captura Directa de Paquetes y Rastreo de Firmas IPS / Control de Aplicaciones',
+                'body': 'Ejecutar una captura de paquetes tcpdump en tiempo real desde la consola de Sophos e inspeccionar los registros de IPS y filtro de aplicaciones.',
+                'expected': 'Trazas de paquetes visibles con banderas TCP SYN/ACK correctas y tráfico de aplicación permitido.',
+                'commands': {
+                    'sophos': [
+                        'console> tcpdump "host <ip_address>"',
+                        'tcpdump -i any "host <ip_address> and port 443" -n -e',
+                        'tail -f /log/ips.log',
+                        'tail -f /log/appfilter.log'
+                    ]
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    }
+}
+
+# Add TECH_CONCEPTS for Fortinet and Sophos NOC Discovery
+TECH_CONCEPTS['fortinet_interface_discovery_l1_l7'] = {
+    'concept': 'Fortinet FortiOS L1-L7 Discovery & Troubleshooting',
+    'summary': 'Procedimiento integral de NOC para descubrir interfaces y diagnosticar FortiGate desde Capa 1 hasta Capa 7.',
+    'details': 'Cubre lecturas DDM SFP, sub-interfaces VLAN, enrutamiento, tabla de sesiones, túneles VPN, motor WAD SSL y Debug Flow Trace en tiempo real.'
+}
+TECH_CONCEPTS['sophos_interface_discovery_l1_l7'] = {
+    'concept': 'Sophos SFOS L1-L7 Discovery & Troubleshooting',
+    'summary': 'Procedimiento integral de NOC para descubrir interfaces y diagnosticar Sophos XG/XGS desde Capa 1 hasta Capa 7.',
+    'details': 'Cubre ethtool en puertos físicos Port1-Port8, VLANs/bridges, tabla conntrack, herramientas drppkt/garner, Sophos Central y tcpdump en tiempo real.'
+}
+
+KB.update(NOC_INTERFACE_DISCOVERY_MODULES)
+
+
+
+# Master Universal L1 to L7 Interface Discovery & Multi-Vendor Diagnostics
+UNIVERSAL_L1_L7_MODULE = {
+    'master_interface_discovery_l1_l7': {
+        'name': 'Descubrimiento de Interfaces y Diagnóstico Máster Capa 1 a Capa 7 (Todos los Vendors)',
+        'description': 'Flujo estándar operacional de NOC para descubrir interfaces lógicas/físicas y diagnosticar anomalías desde la Capa 1 (Física/SFP/DDM) hasta la Capa 7 (Aplicación/Flow Trace/Sniffer) en los 16 fabricantes y 65 modelos de hardware.',
+        'vendors': [
+            'juniper', 'cisco_iosxr', 'cisco_iosxe', 'fortinet', 'sophos', 'mikrotik',
+            'huawei', 'datacom', 'bdcom', 'allied_telesis', 'raisecom', 'teltonika',
+            'zte', 'adtran', 'optone_vkom', 'linux'
+        ],
+        'steps': {
+            'univ_l1': {
+                'title': 'Capa 1 (Física & Óptica): Descubrimiento de Interfaces y Diagnóstico SFP / DDM',
+                'tier': 1,
+                'osi_layer': 'Capa 1 — Física / Transceivers / DDM',
+                'network_domain': 'Infraestructura Multivendor & NOC Access',
+                'methodology': 'Auditoría de Estado de Enlace Físico (Link Up/Down), Auto-Negociación y Niveles de Potencia Óptica RX/TX (dBm)',
+                'body': 'Descubrir todas las interfaces físicas instaladas en el chasis/tarjeta HWIC, validar velocidad/dúplex y medir la lectura DDM de potencia ópticas en transceptores SFP/SFP+.',
+                'expected': 'Enlace físico UP, auto-negociación a 1G/10G Full Duplex y potencia de recepción RX dentro del rango (-3 dBm a -20 dBm).',
+                'commands': {
+                    'juniper': ['show interfaces diagnostics optics ge-0/0/0', 'show interfaces ge-0/0/0 media', 'show chassis hardware'],
+                    'cisco_iosxr': ['show controllers optics 0/0/0/0', 'show interfaces GigabitEthernet0/0/0/0 status', 'show inventory'],
+                    'cisco_iosxe': ['show hw-module subslot 0/0 transceiver 0 status', 'show interfaces GigabitEthernet0/0/1 status', 'show inventory'],
+                    'fortinet': ['get system interface physical', 'get system interface transceiver', 'diagnose hardware deviceinfo nic port1'],
+                    'sophos': ['console> show network interface', 'ethtool Port1', 'ethtool Port2'],
+                    'mikrotik': ['/interface ethernet print detail', '/interface ethernet monitor [find name=ether1]', '/interface SFP-sfp1 monitor-once'],
+                    'huawei': ['display interface GigabitEthernet0/0/1', 'display transceiver interface GigabitEthernet0/0/1 verbose'],
+                    'datacom': ['show interface optical-diagnostics', 'show interface transceiver', 'show interface eth 1/1'],
+                    'bdcom': ['show interface status', 'show interface g0/1'],
+                    'allied_telesis': ['show interface optical-diagnostics', 'show interface port1.0.1'],
+                    'raisecom': ['show ddm interface port 1', 'show port 1'],
+                    'teltonika': ['gsmctl -q', 'gsmctl -K', 'ip link show'],
+                    'zte': ['show gpon onu state', 'show interface gei_0/1/1'],
+                    'adtran': ['show interface ethernet 0/1', 'show optics-diagnostics'],
+                    'optone_vkom': ['# Verificar LEDs: PWR (Verde), FX LINK/ACT (Fijo/Parpadeo), TP LINK/ACT (Fijo)', '# Medir potencia RX con Power Meter óptico a 1310nm/1550nm (Esperado: -8 a -22 dBm)'],
+                    'linux': ['ip link show', 'ethtool eth0', 'ethtool -m eth0']
+                },
+                'choices': [{'label': 'Siguiente: Capa 2 (Enlace & Switch Fabric)', 'next': 'univ_l2'}]
+            },
+            'univ_l2': {
+                'title': 'Capa 2 (Enlace de Datos): Sub-interfaces VLAN, Agregaciones LACP y Tabla de MACs',
+                'tier': 2,
+                'osi_layer': 'Capa 2 — Enlace de Datos (MAC / VLAN / LACP)',
+                'network_domain': 'Infraestructura Multivendor & NOC Access',
+                'methodology': 'Auditoría de Encapsulación dot1q, Grupos de Troncales LACP y Aprendizaje L2',
+                'body': 'Identificar VLANs asignadas, agregación de enlaces (802.3ad LACP / EtherChannel / AE), estado de Spanning Tree (STP) y mapa de direcciones MAC aprendidas en el puerto.',
+                'expected': 'VLANs vinculadas, puerto de agregado LACP en estado Established/Up y direcciones MAC aprendidas.',
+                'commands': {
+                    'juniper': ['show ethernet-switching table', 'show lacp interfaces', 'show vlans'],
+                    'cisco_iosxr': ['show l2vpn forwarding bridge-group detail', 'show lacp system-id', 'show mac-address-table'],
+                    'cisco_iosxe': ['show mac address-table interface GigabitEthernet0/0/1', 'show interfaces trunk', 'show etherchannel summary'],
+                    'fortinet': ['get system interface', 'diagnose netlink interface list', 'diagnose mac-address list'],
+                    'sophos': ['ifconfig -a', 'brctl show', 'ip neighbor show'],
+                    'mikrotik': ['/interface bridge host print', '/interface vlan print', '/interface bonding print'],
+                    'huawei': ['display mac-address interface GigabitEthernet0/0/1', 'display vlan', 'display eth-trunk'],
+                    'datacom': ['show mac-address-table', 'show vlan', 'show spanning-tree'],
+                    'bdcom': ['show mac address-table', 'show vlan'],
+                    'allied_telesis': ['show mac address-table', 'show vlan'],
+                    'raisecom': ['show mac-address-table interface port 1', 'show vlan'],
+                    'teltonika': ['uci show network', 'cat /proc/net/dev'],
+                    'zte': ['show mac gpon onu', 'show vlan'],
+                    'adtran': ['show mac-address-table', 'show vlan'],
+                    'optone_vkom': ['# L1/L2 Transparente — Asegurar modo Full Duplex forzado en switch conectado'],
+                    'linux': ['bridge fdb show', 'ip link show type vlan', 'cat /proc/net/bonding/bond0']
+                },
+                'choices': [{'label': 'Siguiente: Capa 3 (Red, IP & Rutas)', 'next': 'univ_l3'}]
+            },
+            'univ_l3': {
+                'title': 'Capa 3 (Red): Direccionamiento IP, Tabla ARP y Enrutamiento unicast',
+                'tier': 2,
+                'osi_layer': 'Capa 3 — Red (IP / ARP / Routing)',
+                'network_domain': 'Infraestructura Multivendor & NOC Access',
+                'methodology': 'Verificación de Direcciones IP, Resolución ARP y Tabla de Enrutamiento Forwarding',
+                'body': 'Comprobar las direcciones IP locales asignadas, verificar la tabla de resolución ARP y validar la ruta por defecto y prefijos aprendidos por IGP/BGP.',
+                'expected': 'IPs locales asignadas, tabla ARP resolviendo el Gateway de salto y ruta por defecto activa.',
+                'commands': {
+                    'juniper': ['show route table inet.0', 'show arp no-resolve', 'ping 8.8.8.8 count 3 rapid'],
+                    'cisco_iosxr': ['show ip route', 'show arp', 'ping 8.8.8.8 count 3'],
+                    'cisco_iosxe': ['show ip route', 'show ip arp', 'ping 8.8.8.8 repeat 3'],
+                    'fortinet': ['diagnose ip address list', 'get system arp', 'get router info routing-table all', 'execute ping 8.8.8.8'],
+                    'sophos': ['console> show network default-gateway', 'ip route show', 'console> ping host 8.8.8.8'],
+                    'mikrotik': ['/ip route print', '/ip arp print', '/ping 8.8.8.8 count=3'],
+                    'huawei': ['display ip routing-table', 'display arp all', 'ping 8.8.8.8'],
+                    'datacom': ['show ip route', 'show ip arp'],
+                    'bdcom': ['show ip route', 'show arp'],
+                    'allied_telesis': ['show ip route', 'show ip arp'],
+                    'raisecom': ['show ip route', 'show arp'],
+                    'teltonika': ['ip route show', 'ip addr show', 'ping -c 3 8.8.8.8'],
+                    'zte': ['show ip route', 'show arp'],
+                    'adtran': ['show ip route', 'show arp'],
+                    'optone_vkom': ['# Verificar conectividad de IP de gestión del conversor si aplica'],
+                    'linux': ['ip route show', 'ip neigh show', 'ping -c 3 8.8.8.8']
+                },
+                'choices': [{'label': 'Siguiente: Capa 4 (Transporte & Filtros TCP/UDP)', 'next': 'univ_l4'}]
+            },
+            'univ_l4': {
+                'title': 'Capa 4 (Transporte): Tabla de Conexiones Stateful y Filtros de Puertos TCP/UDP',
+                'tier': 3,
+                'osi_layer': 'Capa 4 — Transporte (TCP / UDP / Conntrack)',
+                'network_domain': 'Infraestructura Multivendor & NOC Access',
+                'methodology': 'Inspección de Conexiones Activas Stateful y Monitoreo de Filtros de Firewall / ACLs',
+                'body': 'Verificar si las conexiones TCP/UDP (ej. 80, 443, 22, 53) están siendo permitidas o descartadas por listas de acceso (ACLs) o motores de firewall stateful.',
+                'expected': 'Sesiones en estado ESTABLISHED con incremento continuo en los contadores de tráfico.',
+                'commands': {
+                    'juniper': ['show firewall log', 'show system connections', 'show security flow session'],
+                    'cisco_iosxr': ['show tcp brief', 'show access-lists'],
+                    'cisco_iosxe': ['show tcp brief', 'show ip access-lists'],
+                    'fortinet': ['diagnose sys session filter src <ip_address>', 'diagnose sys session list', 'diagnose firewall session list'],
+                    'sophos': ['conntrack -L | grep <ip_address>', 'drppkt | grep <ip_address>'],
+                    'mikrotik': ['/ip firewall connection print where src-address~"<ip_address>"'],
+                    'huawei': ['display firewall session table', 'display acl all'],
+                    'datacom': ['show access-lists'],
+                    'bdcom': ['show access-lists'],
+                    'allied_telesis': ['show access-list'],
+                    'raisecom': ['show acl'],
+                    'teltonika': ['logread | grep firewall'],
+                    'zte': ['show acl'],
+                    'adtran': ['show ip access-list'],
+                    'optone_vkom': ['# Capa 4 no aplica directamente en conversores L1'],
+                    'linux': ['ss -tulpn', 'conntrack -L', 'nft list ruleset']
+                },
+                'choices': [{'label': 'Siguiente: Capa 5 (Sesiones, VPNs & Servicios)', 'next': 'univ_l5'}]
+            },
+            'univ_l5': {
+                'title': 'Capa 5 (Sesión): Estado de Daemons, Túneles VPN y Sesiones de Administración',
+                'tier': 3,
+                'osi_layer': 'Capa 5 — Sesión (VPN / SSH / BGP Sessions)',
+                'network_domain': 'Infraestructura Multivendor & NOC Access',
+                'methodology': 'Auditoría de Daemons de Sistema y Estado de Túneles VPN (IPsec/SSL/GRE)',
+                'body': 'Inspeccionar la estabilidad de las sesiones de administración (SSH/VTY) y la negociación de túneles VPN Site-to-Site o Dial-Up.',
+                'expected': 'Túneles VPN en estado UP (Phase 1/2 activas) y servicios de administración respondiendo.',
+                'commands': {
+                    'juniper': ['show security ike security-associations', 'show security ipsec security-associations'],
+                    'cisco_iosxr': ['show crypto ipsec sa', 'show crypto ikev2 sa'],
+                    'cisco_iosxe': ['show crypto ipsec sa', 'show crypto isakmp sa'],
+                    'fortinet': ['diagnose vpn ike gateway list', 'diagnose vpn tunnel list', 'get vpn ssl monitor'],
+                    'sophos': ['service -S', 'central-management show-status', 'system ipsec status'],
+                    'mikrotik': ['/ip ipsec active-peers print', '/interface wireguard print'],
+                    'huawei': ['display ike sa', 'display ipsec sa'],
+                    'datacom': ['show interfaces tunnel'],
+                    'bdcom': ['show line vty'],
+                    'allied_telesis': ['show ipsec sa'],
+                    'raisecom': ['show line vty'],
+                    'teltonika': ['logread | grep ipsec', 'gsmctl -t'],
+                    'zte': ['show ipsec sa'],
+                    'adtran': ['show crypto ipsec sa'],
+                    'optone_vkom': ['# Capa 5 no aplica en conversores L1'],
+                    'linux': ['ipsec status', 'wg show', 'systemctl status frr']
+                },
+                'choices': [{'label': 'Siguiente: Capa 6 (Presentación & SSL/TLS Decryption)', 'next': 'univ_l6'}]
+            },
+            'univ_l6': {
+                'title': 'Capa 6 (Presentación): Decodificación SSL/TLS y Registros del Sistema',
+                'tier': 4,
+                'osi_layer': 'Capa 6 — Presentación (SSL/TLS / Syslog)',
+                'network_domain': 'Infraestructura Multivendor & NOC Access',
+                'methodology': 'Inspección de Certificados SSL/TLS y Transmisión de Syslog Auditable',
+                'body': 'Validar la vigencia de certificados digitales, perfiles de inspección SSL/TLS y el envío correcto de logs hacia los servidores Syslog centralizados.',
+                'expected': 'Certificados válidos, perfiles SSL aplicados y generación continua de logs.',
+                'commands': {
+                    'juniper': ['show system log messages', 'show security pki local-certificate'],
+                    'cisco_iosxr': ['show logging', 'show crypto pki certificates'],
+                    'cisco_iosxe': ['show logging', 'show crypto pki certificates'],
+                    'fortinet': ['diagnose test application wad 100', 'diagnose debug rating'],
+                    'sophos': ['tail -f /log/garner.log', 'tail -f /log/httpd.log'],
+                    'mikrotik': ['/log print follow-only'],
+                    'huawei': ['display logbuffer'],
+                    'datacom': ['show logging'],
+                    'bdcom': ['show logging'],
+                    'allied_telesis': ['show log'],
+                    'raisecom': ['show log'],
+                    'teltonika': ['logread -f'],
+                    'zte': ['show log'],
+                    'adtran': ['show logging'],
+                    'optone_vkom': ['# Capa 6 no aplica en conversores L1'],
+                    'linux': ['journalctl -f -u frr', 'openssl s_client -connect 127.0.0.1:443']
+                },
+                'choices': [{'label': 'Siguiente: Capa 7 (Aplicación & Flow Trace)', 'next': 'univ_l7'}]
+            },
+            'univ_l7': {
+                'title': 'Capa 7 (Aplicación): Captura de Paquetes en Vivo (Sniffer) & Flow Trace',
+                'tier': 4,
+                'osi_layer': 'Capa 7 — Aplicación (Packet Sniffer & Flow Trace)',
+                'network_domain': 'Infraestructura Multivendor & NOC Access',
+                'methodology': 'Captura y Análisis de Paquetes en Tiempo Real en la Interfaz (Sniffer / Debug Flow)',
+                'body': 'Ejecutar la captura en tiempo real de paquetes en la interfaz física o lógica para diagnosticar el comportamiento exacto de los protocolos de aplicación (HTTP, DNS, BGP, OSPF, DHCP).',
+                'expected': 'Captura fluida de tramas mostrando el intercambio de mensajes de nivel de aplicación.',
+                'commands': {
+                    'juniper': ['monitor traffic interface ge-0/0/0 matching "host <ip_address>" extensive', 'show system processes extensive'],
+                    'cisco_iosxr': ['monitor capture CAP interface GigabitEthernet0/0/0/0 match ipv4 any any', 'show monitor capture CAP buffer detailed'],
+                    'cisco_iosxe': ['monitor capture CAP interface GigabitEthernet0/0/1 both match any', 'show monitor capture CAP buffer detailed'],
+                    'fortinet': ['diagnose sniffer packet any "host <ip_address> and port 443" 4 0 l', 'diagnose debug flow filter addr <ip_address>', 'diagnose debug flow trace start 100', 'diagnose debug enable'],
+                    'sophos': ['console> tcpdump "host <ip_address>"', 'tail -f /log/ips.log'],
+                    'mikrotik': ['/tool packet-sniffer quick ip-address=<ip_address>'],
+                    'huawei': ['packet-capture ipv4-packet port GigabitEthernet0/0/1'],
+                    'datacom': ['show monitor'],
+                    'bdcom': ['show monitor'],
+                    'allied_telesis': ['show monitor'],
+                    'raisecom': ['show monitor'],
+                    'teltonika': ['tcpdump -i any "host <ip_address>" -n'],
+                    'zte': ['show monitor'],
+                    'adtran': ['show monitor'],
+                    'optone_vkom': ['# Capa 7 no aplica en conversores L1'],
+                    'linux': ['tcpdump -i any "host <ip_address>" -n -e -X']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    }
+}
+
+# Add TECH_CONCEPTS for Universal L1-L7 Discovery
+TECH_CONCEPTS['master_interface_discovery_l1_l7'] = {
+    'concept': 'Master Universal L1-L7 Interface Discovery & Multi-Vendor Diagnostics',
+    'summary': 'Procedimiento estándar operacional de NOC para descubrir interfaces y diagnosticar anomalías en los 16 fabricantes y 65 modelos de hardware.',
+    'details': 'Cubre desde Capa 1 (SFP/DDM/Optics) hasta Capa 7 (Live Packet Sniffer, Debug Flow Trace, Conntrack y Syslog) para Juniper, Cisco, Fortinet, Sophos, MikroTik, Huawei, Datacom, BDCOM, Allied Telesis, Raisecom, Teltonika, ZTE, ADTRAN, Optone/VKOM y Linux.'
+}
+
+KB.update(UNIVERSAL_L1_L7_MODULE)

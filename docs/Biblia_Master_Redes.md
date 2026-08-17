@@ -4078,3 +4078,138 @@ Total de pasos diagnósticos: **3**
 
 **Resultado Esperado**: Entrada de forwarding con salto Repair preprogramado en hardware (FIB) apuntando al P-Node/Q-Node.
 
+
+### Tecnología: Fortinet FortiOS: Descubrimiento de Interfaces y Diagnóstico Integral Capa 1 a Capa 7
+Total de pasos diagnósticos: **7**
+
+#### Paso `forti_l1`: Capa 1 (Física & Óptica): Descubrimiento de Interfaces y DDM SFP (Tier 1)
+**Descripción**: Identificar todos los puertos físicos instalados, verificar si el enlace físico está levantado (Link Up/Down), auto-negociación y lecturas DDM del módulo transceptor SFP.
+
+**Resultado Esperado**: Puertos físicos visibles, estado Link Up a 1Gbps/10Gbps Full Duplex y potencia óptica recibida entre -3 dBm y -20 dBm.
+
+
+#### Paso `forti_l2`: Capa 2 (Enlace de Datos): VLANs, Trunks LACP, MACs y VDOMs (Tier 2)
+**Descripción**: Mapear sub-interfaces VLAN (dot1q), puertos agregados (8002.3ad LACP), tabla de direcciones MACs aprendidas y asignación a Virtual Domains (VDOMs).
+
+**Resultado Esperado**: VLANs vinculadas al puerto correcto, interfaz LACP en estado Negotiated y tabla MAC poblada.
+
+
+#### Paso `forti_l3`: Capa 3 (Red): Direccionamiento IP, Rutas Estáticas/Dinámicas y ARP (Tier 2)
+**Descripción**: Comprobar las direcciones IP asignadas a cada interfaz, verificar la tabla de resolución ARP y validar la ruta por defecto y rutas dinámicas (BGP/OSPF).
+
+**Resultado Esperado**: IPs locales asignadas, tabla ARP resolviendo la MAC del Gateway y ruta 0.0.0.0/0 activa.
+
+
+#### Paso `forti_l4`: Capa 4 (Transporte): Tabla de Sesiones Stateful y Puertos TCP/UDP (Tier 3)
+**Descripción**: Inspeccionar la tabla de conexiones en tiempo real para determinar si el puerto TCP/UDP (ej. 80, 443, 22, 53) está siendo aceptado o descartado por el firewall.
+
+**Resultado Esperado**: Sesión visible en la tabla con estado ESTABLISHED y contadores de paquetes bidireccionales en aumento.
+
+
+#### Paso `forti_l5`: Capa 5 (Sesión & Túneles VPN IPsec / SSL) (Tier 3)
+**Descripción**: Verificar el establecimiento de túneles IPsec Site-to-Site y túneles SSL VPN de usuarios remotos.
+
+**Resultado Esperado**: Fase 1 y Fase 2 en estado UP con selectores de tráfico activos y usuarios SSL VPN autenticados.
+
+
+#### Paso `forti_l6`: Capa 6 (Presentación): Decodificación Deep SSL & Perfiles UTM (Tier 4)
+**Descripción**: Verificar la re-configuración de certificados SSL/TLS y el estado del motor WAD de inspección profunda.
+
+**Resultado Esperado**: Motor WAD funcionando sin estado de alto consumo de memoria o fallos de inspección SSL.
+
+
+#### Paso `forti_l7`: Capa 7 (Aplicación): Packet Sniffer & Debug Flow Trace en Tiempo Real (Tier 4)
+**Descripción**: Ejecutar la prueba definitiva de Capa 7 capturando paquetes en la interfaz e imprimiendo la decisión exacta del firewall (Policy ID, NAT, IPS, Route Lookup).
+
+**Resultado Esperado**: Salida detallada mostrando el ingreso del paquete, la política permitida (ej. Allowed by rule 1) y la interfaz de salida.
+
+
+### Tecnología: Sophos SFOS: Descubrimiento de Interfaces y Diagnóstico Integral Capa 1 a Capa 7
+Total de pasos diagnósticos: **7**
+
+#### Paso `sophos_l1`: Capa 1 (Física & Óptica): Descubrimiento de Puertos y Estado Ethtool (Tier 1)
+**Descripción**: Descubrir la asignación de puertos físicos (Port1 WAN, Port2 LAN, etc.), verificar duplex, velocidad y auto-negociación usando la consola del kernel.
+
+**Resultado Esperado**: Enlace detectado (Link detected: yes), velocidad a 1000baseT/Full y puerto físico activo.
+
+
+#### Paso `sophos_l2`: Capa 2 (Enlace de Datos): VLANs, Bridges y Tabla de MACs (Tier 2)
+**Descripción**: Inspeccionar la configuración de VLANs etiquetadas, interfaces puente (br0), y tabla de resolución de vecinos L2.
+
+**Resultado Esperado**: VLANs asignadas a la interfaz física adecuada y vecinos L2 aprendidos.
+
+
+#### Paso `sophos_l3`: Capa 3 (Red): Direccionamiento IP, Zonas de Seguridad y Gateway (Tier 2)
+**Descripción**: Verificar las direcciones IP asignadas, asignación de zonas de seguridad y la tabla de enrutamiento del sistema Sophos.
+
+**Resultado Esperado**: IPs correctamente vinculadas a su zona respectiva y Gateway predeterminado alcanzable.
+
+
+#### Paso `sophos_l4`: Capa 4 (Transporte): Tabla Conntrack y Rastreo de Paquetes Descartados (drppkt) (Tier 3)
+**Descripción**: Inspeccionar la tabla conntrack del kernel Linux y ejecutar la herramienta nativa drppkt para identificar si el firewall está descartando conexiones TCP/UDP.
+
+**Resultado Esperado**: Conexiones visibles en conntrack y cero descartes anómalos en el motor drppkt.
+
+
+#### Paso `sophos_l5`: Capa 5 (Sesión): Estado de Daemons del Sistema y Sophos Central (Tier 3)
+**Descripción**: Verificar el estado de ejecución de los servicios internos del sistema (service -S) y la conectividad con la plataforma Sophos Central.
+
+**Resultado Esperado**: Servicios en estado RUNNING y Sophos Central conectado (Connected).
+
+
+#### Paso `sophos_l6`: Capa 6 (Presentación): Monitoreo de Logs en Tiempo Real (Garner Engine) (Tier 4)
+**Descripción**: Monitorear los archivos de registro del motor de procesamiento unificado Garner para detectar bloqueos SSL/TLS o reglas de proxy.
+
+**Resultado Esperado**: Logs registrando eventos de tráfico sin excepciones de kernel o caídas de daemon.
+
+
+#### Paso `sophos_l7`: Capa 7 (Aplicación): Captura Tcpdump y Monitoreo de Filtros IPS/AppFilter (Tier 4)
+**Descripción**: Ejecutar una captura de paquetes tcpdump en tiempo real desde la consola de Sophos e inspeccionar los registros de IPS y filtro de aplicaciones.
+
+**Resultado Esperado**: Trazas de paquetes visibles con banderas TCP SYN/ACK correctas y tráfico de aplicación permitido.
+
+
+### Tecnología: Descubrimiento de Interfaces y Diagnóstico Máster Capa 1 a Capa 7 (Todos los Vendors)
+Total de pasos diagnósticos: **7**
+
+#### Paso `univ_l1`: Capa 1 (Física & Óptica): Descubrimiento de Interfaces y Diagnóstico SFP / DDM (Tier 1)
+**Descripción**: Descubrir todas las interfaces físicas instaladas en el chasis/tarjeta HWIC, validar velocidad/dúplex y medir la lectura DDM de potencia ópticas en transceptores SFP/SFP+.
+
+**Resultado Esperado**: Enlace físico UP, auto-negociación a 1G/10G Full Duplex y potencia de recepción RX dentro del rango (-3 dBm a -20 dBm).
+
+
+#### Paso `univ_l2`: Capa 2 (Enlace de Datos): Sub-interfaces VLAN, Agregaciones LACP y Tabla de MACs (Tier 2)
+**Descripción**: Identificar VLANs asignadas, agregación de enlaces (802.3ad LACP / EtherChannel / AE), estado de Spanning Tree (STP) y mapa de direcciones MAC aprendidas en el puerto.
+
+**Resultado Esperado**: VLANs vinculadas, puerto de agregado LACP en estado Established/Up y direcciones MAC aprendidas.
+
+
+#### Paso `univ_l3`: Capa 3 (Red): Direccionamiento IP, Tabla ARP y Enrutamiento unicast (Tier 2)
+**Descripción**: Comprobar las direcciones IP locales asignadas, verificar la tabla de resolución ARP y validar la ruta por defecto y prefijos aprendidos por IGP/BGP.
+
+**Resultado Esperado**: IPs locales asignadas, tabla ARP resolviendo el Gateway de salto y ruta por defecto activa.
+
+
+#### Paso `univ_l4`: Capa 4 (Transporte): Tabla de Conexiones Stateful y Filtros de Puertos TCP/UDP (Tier 3)
+**Descripción**: Verificar si las conexiones TCP/UDP (ej. 80, 443, 22, 53) están siendo permitidas o descartadas por listas de acceso (ACLs) o motores de firewall stateful.
+
+**Resultado Esperado**: Sesiones en estado ESTABLISHED con incremento continuo en los contadores de tráfico.
+
+
+#### Paso `univ_l5`: Capa 5 (Sesión): Estado de Daemons, Túneles VPN y Sesiones de Administración (Tier 3)
+**Descripción**: Inspeccionar la estabilidad de las sesiones de administración (SSH/VTY) y la negociación de túneles VPN Site-to-Site o Dial-Up.
+
+**Resultado Esperado**: Túneles VPN en estado UP (Phase 1/2 activas) y servicios de administración respondiendo.
+
+
+#### Paso `univ_l6`: Capa 6 (Presentación): Decodificación SSL/TLS y Registros del Sistema (Tier 4)
+**Descripción**: Validar la vigencia de certificados digitales, perfiles de inspección SSL/TLS y el envío correcto de logs hacia los servidores Syslog centralizados.
+
+**Resultado Esperado**: Certificados válidos, perfiles SSL aplicados y generación continua de logs.
+
+
+#### Paso `univ_l7`: Capa 7 (Aplicación): Captura de Paquetes en Vivo (Sniffer) & Flow Trace (Tier 4)
+**Descripción**: Ejecutar la captura en tiempo real de paquetes en la interfaz física o lógica para diagnosticar el comportamiento exacto de los protocolos de aplicación (HTTP, DNS, BGP, OSPF, DHCP).
+
+**Resultado Esperado**: Captura fluida de tramas mostrando el intercambio de mensajes de nivel de aplicación.
+
