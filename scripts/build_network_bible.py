@@ -23,6 +23,7 @@ from data.config_templates import CONFIG_TEMPLATES
 from data.packet_walkthroughs import PACKET_WALKTHROUGHS
 from scripts.validate import validate
 from web.export import export_data
+from scripts.export_db_js import generate_db_js
 
 
 def generate_network_bible_markdown():
@@ -149,9 +150,10 @@ def main():
         sys.exit(1)
     print("✅ Integridad verificada: 0 Errores.")
 
-    # 2. Re-exportar web/data.js
-    print("\n[2/3] Empaquetando y re-exportando base de conocimiento a web/data.js...")
+    # 2. Re-exportar web/data.js y web/db.js
+    print("\n[2/3] Empaquetando y re-exportando base de conocimiento a web/data.js y web/db.js...")
     export_data()
+    generate_db_js()
 
     # 3. Generar la Biblia Master de Redes Markdown
     print("\n[3/3] Construyendo la Biblia Master de Redes (docs/Biblia_Master_Redes.md)...")
