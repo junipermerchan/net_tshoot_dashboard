@@ -75,7 +75,7 @@ def validate():
     # 4. Validar TECH_CONCEPTS
     for tech in full_kb.keys():
         base = tech.replace('_config', '')
-        if base not in TECH_CONCEPTS:
+        if base not in TECH_CONCEPTS and tech not in TECH_CONCEPTS:
             warnings.append(f"[{tech}] Sin TECH_CONCEPTS (base={base}).")
     
     # 5. Validar scientific overrides

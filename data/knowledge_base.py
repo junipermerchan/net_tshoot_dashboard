@@ -12545,3 +12545,217 @@ def _add_subnet_31_config(base):
 _add_subnet_31_config(KB)
 
 
+
+
+# Adding 8 Master Configuration Modules
+MISSING_31_CONFIGS = {
+    'static_routing_config': {
+        'name': 'Configuración de Enrutamiento Estático',
+        'vendors': ['cisco_iosxe', 'cisco_iosxr', 'juniper', 'huawei', 'fortinet', 'sophos', 'mikrotik', 'datacom', 'bdcom', 'allied_telesis', 'raisecom', 'teltonika', 'arista', 'linux'],
+        'steps': {
+            'static_route_start': {
+                'title': 'Configuración de Rutas Estáticas IPv4 e IPv6 (Default Gateway & Floating Routes)',
+                'tier': 1,
+                'osi_layer': 'Capa 3 — Red (IP)',
+                'network_domain': 'Enrutamiento L3',
+                'methodology': 'Aprovisionamiento de Rutas de Salida Específicas y de Respaldo',
+                'body': 'Configuración de ruta estática por defecto (0.0.0.0/0 o ::/0) y rutas flotantes con distancia administrativa superior para failover.',
+                'expected': 'La ruta estática se instala en la RIB (Tabla de Enrutamiento IP).',
+                'commands': {
+                    'cisco_iosxe': ['configure terminal', 'ip route 0.0.0.0 0.0.0.0 200.1.1.1 10', 'ip route 0.0.0.0 0.0.0.0 201.2.2.1 200', 'ipv6 route ::/0 2001:db8:1::1'],
+                    'cisco_iosxr': ['configure', 'router static address-family ipv4 unicast 0.0.0.0/0 200.1.1.1', 'commit'],
+                    'juniper': ['configure', 'set routing-options static route 0.0.0.0/0 next-hop 200.1.1.1 metric 10', 'commit'],
+                    'huawei': ['system-view', 'ip route-static 0.0.0.0 0.0.0.0 200.1.1.1 preference 60', 'save'],
+                    'fortinet': ['config router static', '  edit 1', '    set gateway 200.1.1.1', '    set device "port1"', '  next', 'end'],
+                    'sophos': ['system route add net 0.0.0.0 netmask 0.0.0.0 gateway 200.1.1.1 interface Port1'],
+                    'mikrotik': ['/ip route add dst-address=0.0.0.0/0 gateway=200.1.1.1 distance=1'],
+                    'datacom': ['configure terminal', 'ip route 0.0.0.0/0 200.1.1.1', 'end'],
+                    'bdcom': ['config', 'ip route 0.0.0.0 0.0.0.0 200.1.1.1', 'write memory'],
+                    'allied_telesis': ['configure terminal', 'ip route 0.0.0.0/0 200.1.1.1', 'write memory'],
+                    'raisecom': ['config', 'ip route 0.0.0.0 0 200.1.1.1', 'write'],
+                    'teltonika': ['uci add network route', 'uci set network.@route[-1].target="0.0.0.0/0"', 'uci set network.@route[-1].gateway="200.1.1.1"', 'uci commit network'],
+                    'arista': ['configure terminal', 'ip route 0.0.0.0/0 200.1.1.1', 'write memory'],
+                    'linux': ['ip route add default via 200.1.1.1 dev eth0']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'security_config': {
+        'name': 'Configuración de Seguridad',
+        'vendors': ['fortinet', 'sophos', 'cisco_iosxe', 'juniper', 'huawei'],
+        'steps': {
+            'security_policy_start': {
+                'title': 'Configuración de Políticas de Seguridad & Filtro de Tráfico Stateful (Firewall / ACLs)',
+                'tier': 2,
+                'osi_layer': 'Capa 3 al 7 — Seguridad Perimetral Stateful',
+                'network_domain': 'Seguridad NGFW / UTM',
+                'methodology': 'Aplicación de Reglas de Acceso Basadas en Zonas e Inspección Profunda',
+                'body': 'Configuración de políticas de seguridad para permitir o denegar tráfico entre zonas de red (LAN, WAN, DMZ).',
+                'expected': 'Tráfico autorizado pasa e inspección UTM analiza el flujo.',
+                'commands': {
+                    'fortinet': ['config firewall policy', '  edit 1', '    set name "POL_LAN_TO_WAN"', '    set srcintf "port2"', '    set dstintf "port1"', '    set srcaddr "all"', '    set dstaddr "all"', '    set action accept', '    set nat enable', '  next', 'end'],
+                    'sophos': ['system firewall-rule add name POL_LAN_WAN srczone LAN dstzone WAN srcnet Any dstnet Any service Any action accept nat-rule MASQUERADE'],
+                    'cisco_iosxe': ['ip access-list extended ACL_LAN_OUT', ' permit ip 192.168.10.0 0.0.255.255 any', ' deny ip any any log', 'interface GigabitEthernet0/0/1', ' ip access-group ACL_LAN_OUT in'],
+                    'juniper': ['set security policies from-zone trust to-zone untrust policy POL_OUT match source-address any destination-address any application any', 'set security policies from-zone trust to-zone untrust policy POL_OUT then permit'],
+                    'huawei': ['security-policy', ' rule name POL_LAN_WAN', '  source-zone trust', '  destination-zone untrust', '  action permit']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'evpns_config': {
+        'name': 'Configuración EVPN',
+        'vendors': ['cisco_iosxr', 'juniper', 'arista', 'huawei'],
+        'steps': {
+            'evpn_config_start': {
+                'title': 'Configuración de BGP EVPN (Ethernet VPN - VXLAN / MPLS Data Plane)',
+                'tier': 4,
+                'osi_layer': 'Capa 2 / Capa 3 — BGP EVPN Address-Family (AFI 25 / SAFI 70)',
+                'network_domain': 'Datacenter & Carrier Ethernet Overlay',
+                'methodology': 'Aprovisionamiento de Control Plane EVPN Multi-Tenant',
+                'body': 'Configuración de familia BGP L2VPN EVPN para transportar MACs (Route Type 2) e IPs de clientes sobre VXLAN o MPLS.',
+                'expected': 'Peering MP-BGP EVPN establecido y rutas EVPN Type 2/Type 5 aprendidas.',
+                'commands': {
+                    'cisco_iosxr': ['router bgp 65000', ' address-family l2vpn evpn', ' neighbor 10.0.0.2', '  address-family l2vpn evpn activate'],
+                    'juniper': ['set protocols bgp group EVPN type internal', 'set protocols bgp group EVPN family evpn signaling', 'set evpn encapsulation vxlan'],
+                    'arista': ['router bgp 65000', ' address-family evpn', '  neighbor 10.0.0.2 activate'],
+                    'huawei': ['bgp 65000', ' l2vpn-family evpn', '  peer 10.0.0.2 enable']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'qos_config': {
+        'name': 'Configuración QoS / Traffic Engineering',
+        'vendors': ['cisco_iosxe', 'cisco_iosxr', 'juniper', 'huawei', 'datacom'],
+        'steps': {
+            'qos_start': {
+                'title': 'Configuración de QoS (Clasificación, Marcado DSCP/CoS, Priority Queue & Shaping)',
+                'tier': 3,
+                'osi_layer': 'Capa 3 / Capa 4 — DiffServ DSCP / CoS 802.1p',
+                'network_domain': 'Calidad de Servicio & Gestión de Tráfico',
+                'methodology': 'Protección de Tráfico Sensible (VoIP/Video) y Modelado de Ancho de Banda',
+                'body': 'Configuración de Class-Map para clasificar tráfico por DSCP EF (VoIP), Policy-Map con cola de prioridad estricta y limitación de velocidad.',
+                'expected': 'El tráfico VoIP entra a la cola de prioridad estricta con baja latencia y sin descarte de paquetes.',
+                'commands': {
+                    'cisco_iosxe': ['class-map match-any CLASS_VOIP', ' match ip dscp ef', 'policy-map POLICY_QOS_OUT', ' class CLASS_VOIP', '  priority percent 30', ' class class-default', '  bandwidth remaining percent 70', 'interface GigabitEthernet0/0/1', ' service-policy output POLICY_QOS_OUT'],
+                    'cisco_iosxr': ['class-map match-any CLASS_VOIP', ' match dscp ef', 'policy-map POLICY_QOS_OUT', ' class CLASS_VOIP', '  priority level 1', '  police rate percent 30'],
+                    'juniper': ['set class-of-service classifiers dscp CLASSIFIER_VOIP forwarding-class expedited-forwarding loss-priority low code-points ef'],
+                    'huawei': ['traffic classifier CLASS_VOIP operator or', ' if-match dscp ef', 'traffic behavior BEHAVIOR_VOIP', ' queue ef bandwidth pct 30'],
+                    'datacom': ['policy-map POLICY_QOS', ' class CLASS_VOIP', '  priority']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'rip_config': {
+        'name': 'Configuración RIPv2',
+        'vendors': ['cisco_iosxe', 'huawei', 'mikrotik'],
+        'steps': {
+            'rip_config_start': {
+                'title': 'Configuración de Protocolo RIPv2 (Routing Information Protocol v2)',
+                'tier': 1,
+                'osi_layer': 'Capa 3 — RIP UDP 520',
+                'network_domain': 'Enrutamiento Dinámico Distancia-Vector',
+                'methodology': 'Publicación de Redes mediante Métricas de Conteo de Saltos (Hop Count max 15)',
+                'body': 'Configuración del proceso RIPv2, desactivación de sumarización automática y anuncio de subredes.',
+                'expected': 'Las rutas RIP aperecen en la tabla de enrutamiento con distancia administrativa de 120.',
+                'commands': {
+                    'cisco_iosxe': ['router rip', ' version 2', ' no auto-summary', ' network 192.168.10.0', ' passive-interface default', ' no passive-interface GigabitEthernet0/0/1'],
+                    'huawei': ['rip 1', ' version 2', ' undo summary', ' network 192.168.10.0'],
+                    'mikrotik': ['/routing rip instance add name=rip-inst', '/routing rip interface-template add instance=rip-inst interface=ether1']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'stp_config': {
+        'name': 'Configuración Spanning Tree',
+        'vendors': ['cisco_iosxe', 'juniper', 'huawei', 'datacom', 'bdcom', 'allied_telesis', 'raisecom', 'arista'],
+        'steps': {
+            'stp_config_start': {
+                'title': 'Configuración de Spanning Tree (STP / RSTP / MSTP & PortFast / BPDU Guard)',
+                'tier': 2,
+                'osi_layer': 'Capa 2 — IEEE 802.1D / 802.1w / 802.1s',
+                'network_domain': 'Switching L2 Redundante',
+                'methodology': 'Prevención de Bucles L2 y Optimización de Convergencia',
+                'body': 'Configuración de RSTP (802.1w) o MSTP (802.1s), selección explícita del Root Bridge por prioridad y protección de puertos de acceso con PortFast y BPDU Guard.',
+                'expected': 'Topología libre de bucles con convergencia rápida en caso de caída de enlace.',
+                'commands': {
+                    'cisco_iosxe': ['spanning-tree mode rapid-pvst', 'spanning-tree vlan 10,20,30 root primary', 'interface GigabitEthernet1/0/1', ' spanning-tree portfast', ' spanning-tree bpduguard enable'],
+                    'juniper': ['set protocols rstp interface ge-0/0/0.0 edge', 'set protocols rstp bridge-priority 4k'],
+                    'huawei': ['stp mode rstp', 'stp root primary', 'interface GigabitEthernet0/0/1', ' stp edged-port enable'],
+                    'datacom': ['spanning-tree mode rstp', 'spanning-tree priority 4096'],
+                    'bdcom': ['spanning-tree mode rstp'],
+                    'allied_telesis': ['spanning-tree mode rstp'],
+                    'raisecom': ['stp mode rstp'],
+                    'arista': ['spanning-tree mode mstp']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'switching_config': {
+        'name': 'Configuración Switch L2',
+        'vendors': ['cisco_iosxe', 'juniper', 'huawei', 'datacom', 'bdcom', 'allied_telesis', 'raisecom', 'arista'],
+        'steps': {
+            'switching_config_start': {
+                'title': 'Configuración de Conmutación Capa 2 (VLANs, Access, Trunk & Aggregation LACP)',
+                'tier': 1,
+                'osi_layer': 'Capa 2 — Enlace de Datos (IEEE 802.1Q / 802.3ad LACP)',
+                'network_domain': 'Switching L2 de Acceso y Distribución',
+                'methodology': 'Segmentación de Redes Virtuales y Agregación de Enlaces',
+                'body': 'Creación de VLANs, configuración de puertos de acceso para equipos finales, trunks 802.1Q para uplinks y agregación de enlaces Port-Channel / LACP.',
+                'expected': 'Aislamiento de tráfico por VLAN y ancho de banda multiplicado por agregación de enlaces.',
+                'commands': {
+                    'cisco_iosxe': ['vlan 10,20,30', 'interface GigabitEthernet1/0/1', ' switchport mode access', ' switchport access vlan 10', 'interface range GigabitEthernet1/0/47 - 48', ' channel-group 1 mode active'],
+                    'juniper': ['set vlans DATOS vlan-id 10', 'set interfaces ge-0/0/0 unit 0 family ethernet-switching interface-mode access vlan members DATOS'],
+                    'huawei': ['vlan batch 10 20 30', 'interface GigabitEthernet0/0/1', ' port link-type access', ' port default vlan 10'],
+                    'datacom': ['vlan 10,20,30', 'interface GigabitEthernet1/1', ' switchport mode access vlan 10'],
+                    'bdcom': ['vlan 10,20,30', 'interface GigaEthernet0/1', ' switchport mode access', ' switchport default vlan 10'],
+                    'allied_telesis': ['vlan database', ' vlan 10,20,30', 'interface port1.0.1', ' switchport access vlan 10'],
+                    'raisecom': ['vlan 10,20,30', 'interface port 1', ' switchport mode access vlan 10'],
+                    'arista': ['vlan 10,20,30', 'interface Ethernet1', ' switchport access vlan 10']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    },
+    'vrrp_config': {
+        'name': 'Configuración VRRP / HSRP',
+        'vendors': ['cisco_iosxe', 'juniper', 'huawei', 'fortinet', 'mikrotik', 'arista'],
+        'steps': {
+            'vrrp_config_start': {
+                'title': 'Configuración de Redundancia de Gateway (HSRP / VRRPv2 / VRRPv3)',
+                'tier': 2,
+                'osi_layer': 'Capa 3 — First Hop Redundancy Protocol (FHRP)',
+                'network_domain': 'Gateway L3 Redundante',
+                'methodology': 'Conmutación Transparente de Gateway por Dirección IP Virtual Compartida',
+                'body': 'Configuración de HSRP (Cisco) o VRRP (Estándar IEEE) asignando dirección Virtual IP, prioridad para definir el equipo Master y preemption.',
+                'expected': 'El router de mayor prioridad asume el rol de Active/Master procesando las solicitudes de los clientes.',
+                'commands': {
+                    'cisco_iosxe': ['interface GigabitEthernet0/0/1.10', ' standby 10 ip 192.168.10.1', ' standby 10 priority 110', ' standby 10 preempt'],
+                    'juniper': ['set interfaces ge-0/0/0 unit 10 family inet address 192.168.10.2/24 vrrp-group 10 virtual-address 192.168.10.1 priority 110 accept-data'],
+                    'huawei': ['interface Vlanif10', ' vrrp vrid 10 virtual-ip 192.168.10.1', ' vrrp vrid 10 priority 110', ' vrrp vrid 10 preempt-mode timer delay 20'],
+                    'fortinet': ['config system interface', '  edit "port2"', '    config vrrp', '      edit 10', '        set vrip 192.168.10.1', '        set priority 110', '      next', '    end', '  next', 'end'],
+                    'mikrotik': ['/interface vrrp add interface=ether1 vrid=10 priority=110 version=3', '/ip address add address=192.168.10.1/24 interface=vrrp10'],
+                    'arista': ['interface VLAN10', ' ip virtual-router mac-address 0000.5e00.0110', ' ip address 192.168.10.2/24', ' ip virtual-router 192.168.10.1']
+                },
+                'choices': [{'label': 'Volver al menú principal', 'next': 'back_menu'}]
+            }
+        }
+    }
+}
+
+KB.update(MISSING_31_CONFIGS)
+
+# Aliases for TECH_CONCEPTS validation
+TECH_CONCEPTS['static_routing'] = TECH_CONCEPTS.get('static', {})
+TECH_CONCEPTS['security'] = TECH_CONCEPTS.get('seguridad', {})
+TECH_CONCEPTS['evpns'] = TECH_CONCEPTS.get('evpns_config', {})
+TECH_CONCEPTS['qos'] = TECH_CONCEPTS.get('qos_config', {})
+TECH_CONCEPTS['rip'] = TECH_CONCEPTS.get('ripv2', {})
+TECH_CONCEPTS['stp'] = TECH_CONCEPTS.get('stp_config', {})
+TECH_CONCEPTS['switching'] = TECH_CONCEPTS.get('switch_l2', {})
+TECH_CONCEPTS['vrrp'] = TECH_CONCEPTS.get('vrrp_hsrp', {})
