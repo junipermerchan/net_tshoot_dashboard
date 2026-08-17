@@ -11,7 +11,7 @@ if str(PROJECT_ROOT) not in sys.path:
 def export_data():
     print("Importando base de datos en Python...")
     try:
-        from data.knowledge_base import KB, VendorMap, TECH_CONCEPTS, EQUIPMENT_MODELS
+        from data.knowledge_base import KB, VendorMap, TECH_CONCEPTS, EQUIPMENT_MODELS, VENDOR_CONCEPTS_MATRIX
         from data.packet_walkthroughs import PACKET_WALKTHROUGHS, WALKTHROUGH_ALIASES
         from data.simulated_outputs import SIMULATED_OUTPUTS
         from data.change_tickets import CHANGE_TICKETS
@@ -25,6 +25,7 @@ def export_data():
         "KB": KB,
         "VendorMap": VendorMap,
         "EQUIPMENT_MODELS": EQUIPMENT_MODELS,
+        "VENDOR_CONCEPTS_MATRIX": VENDOR_CONCEPTS_MATRIX,
         "TECH_CONCEPTS": TECH_CONCEPTS,
         "PACKET_WALKTHROUGHS": PACKET_WALKTHROUGHS,
         "WALKTHROUGH_ALIASES": WALKTHROUGH_ALIASES,

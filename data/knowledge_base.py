@@ -12759,3 +12759,83 @@ TECH_CONCEPTS['rip'] = TECH_CONCEPTS.get('ripv2', {})
 TECH_CONCEPTS['stp'] = TECH_CONCEPTS.get('stp_config', {})
 TECH_CONCEPTS['switching'] = TECH_CONCEPTS.get('switch_l2', {})
 TECH_CONCEPTS['vrrp'] = TECH_CONCEPTS.get('vrrp_hsrp', {})
+
+
+# Vendor-Specific Architectural Concept Matrix
+VENDOR_CONCEPTS_MATRIX = {
+    'cisco_iosxe': {
+        'architecture_note': '📐 **Cisco IOS-XE Architecture**: Arquitectura de SO modular basada en kernel Linux con plano de control desacoplado (IOSd) y plano de datos de alta velocidad impulsado por Cisco QuantumFlow Processor (QFP) / ASICs UADP.',
+        'cli_philosophy': '💡 **Filosofía CLI Cisco**: Sintaxis imperativa con jerarquía `configure terminal`, comandos `show` acumulativos y diferenciación entre interfaz física y subinterfaz dot1q (`Gi0/0/1.100`).',
+        'key_commands': '• `show ip interface brief` | `show running-config` | `show ip route` | `write memory`'
+    },
+    'cisco_iosxr': {
+        'architecture_note': '📐 **Cisco IOS-XR Architecture**: Sistema operativo microkernel distribuido y multi-hilo (QNX / Linux) diseñado para routers Service Provider de alta disponibilidad (ASR 9000 / NCS).',
+        'cli_philosophy': '💡 **Filosofía CLI IOS-XR**: Basada en plano de candidatos con comando obligatorio `commit` para aplicar cambios de forma atómica. No existe `write memory`.',
+        'key_commands': '• `show ipv4 interface brief` | `commit` | `show configuration commit list` | `rollback configuration`'
+    },
+    'juniper': {
+        'architecture_note': '📐 **Juniper JunOS Architecture**: Separación estricta entre Plano de Control (Routing Engine - RE) y Plano de Datos (Packet Forwarding Engine - PFE). El RE procesa enrutamiento y el PFE conmuta paquetes en ASICs.',
+        'cli_philosophy': '💡 **Filosofía JunOS**: Estructura jerárquica basada en bloques (`set` / `edit`). Comprobación de sintaxis con `commit check` y deshacer con `rollback 0`.',
+        'key_commands': '• `show interfaces terse` | `commit check` | `commit comment "..."` | `rollback 0` | `show route`'
+    },
+    'huawei': {
+        'architecture_note': '📐 **Huawei VRP Architecture**: Versatile Routing Platform (VRP) para routers NetEngine / AR / OLTs. Diseñada para alto rendimiento con plano de control redundante MPU y LPU.',
+        'cli_philosophy': '💡 **Filosofía Huawei VRP**: Modo de vista global `system-view`. Guardado explícito con `save`. Soporta comandos abbreviados nativos.',
+        'key_commands': '• `display ip interface brief` | `system-view` | `display current-configuration` | `save`'
+    },
+    'fortinet': {
+        'architecture_note': '📐 **Fortinet FortiOS Architecture**: Sistema operativo de seguridad acelerado por procesadores de hardware dedicados: NP (Network Processor para aceleración L3/L4) y CP (Content Processor para inspección UTM/IPS/SSL).',
+        'cli_philosophy': '💡 **Filosofía FortiOS CLI**: Basado en bloques `config <nodo>` / `edit <item>` / `set <parametro>` / `next` / `end`. Aislamiento en Virtual Domains (VDOMs).',
+        'key_commands': '• `get system status` | `diagnose sys sdwan service` | `config firewall policy` | `diagnose netlink neighbor list`'
+    },
+    'sophos': {
+        'architecture_note': '📐 **Sophos SFOS Architecture**: Arquitectura Xstream con plano de control unificado y Xstream Flow Processor (aceleración por hardware de inspección profunda SSL/TLS y filtrado de paquetes).',
+        'cli_philosophy': '💡 **Filosofía Sophos SFOS CLI**: Comandos estructurados `system <submodulo> <accion>`. Consola de diagnósticos y menú de opciones de consola física.',
+        'key_commands': '• `system diagnostics utilities ping` | `system firewall-rule show` | `system route show`'
+    },
+    'mikrotik': {
+        'architecture_note': '📐 **MikroTik RouterOS v7 Architecture**: Sistema operativo modular basado en Linux Kernel con subsistema de enrutamiento dinámico unificado sobre FRRouting.',
+        'cli_philosophy': '💡 **Filosofía RouterOS CLI**: Sintaxis jerárquica comenzando por la raíz del menú (`/ip route`, `/interface bridge`, `/routing ospf`). Modificaciones en tiempo real.',
+        'key_commands': '• `/ip address print` | `/ip route print` | `/interface print` | `/system resource print`'
+    },
+    'datacom': {
+        'architecture_note': '📐 **Datacom DmOS Architecture**: Sistema operativo de grado Carrier Ethernet para switches de agregación y routers de transporte DM4000/DM4300.',
+        'cli_philosophy': '💡 **Filosofía DmOS**: Sintaxis estándar estilo industria con modo `configure terminal` y copiado a memoria activa.',
+        'key_commands': '• `show interface brief` | `configure terminal` | `copy running-config startup-config`'
+    },
+    'bdcom': {
+        'architecture_note': '📐 **BDCOM GPON OLT Architecture**: Plataforma de acceso GPON de alta densidad para aprovisionar servicios triple-play sobre red óptica pasiva.',
+        'cli_philosophy': '💡 **Filosofía BDCOM CLI**: Modo `config` con soporte de comandos OMCI de GPON (`gpon onu add`, `line-profile`, `srv-profile`).',
+        'key_commands': '• `show gpon onu state` | `gpon onu add` | `write memory`'
+    },
+    'allied_telesis': {
+        'architecture_note': '📐 **Allied Telesis AW+ Architecture**: AlliedWare Plus (AW+) operating system impulsado por Linux y diseñado para resiliencia en switches corporativos y CPEs iMG/RG.',
+        'cli_philosophy': '💡 **Filosofía AW+**: Sintaxis industrial con `configure terminal`, `vlan database` y `show interface DDM`.',
+        'key_commands': '• `show interface brief` | `show interface wan0 DDM` | `write memory`'
+    },
+    'raisecom': {
+        'architecture_note': '📐 **Raisecom ISCOM Architecture**: Equipos de acceso Carrier Ethernet 802.1ad (QinQ) para anillos de transporte de fibra óptica.',
+        'cli_philosophy': '💡 **Filosofía Raisecom**: Modo `config` con guardado `write`. Sintaxis orientada a puertos lógicos e interfaces EVC.',
+        'key_commands': '• `show interface` | `show stp` | `write`'
+    },
+    'teltonika': {
+        'architecture_note': '📐 **Teltonika RutOS Architecture**: Sistema operativo basado en OpenWrt Linux diseñado para routers celulares e industriales 4G/5G con gestión remota RMS.',
+        'cli_philosophy': '💡 **Filosofía RutOS CLI**: Interfaz UCI (`uci set`, `uci commit`) y comandos de módem celular `gsmctl`. Enrutamiento avanzado gestionado con `vtysh`.',
+        'key_commands': '• `gsmctl -q` | `uci show system` | `uci commit` | `vtysh`'
+    },
+    'optone_vkom': {
+        'architecture_note': '📐 **Optone & VKOM Media Converters**: Conversores de medios electro-ópticos y CPEs de fibra. Operan convirtiendo señales de cobre UTP a pulso óptico monomodo/multimodo.',
+        'cli_philosophy': '💡 **Filosofía Optone/VKOM**: Diagnóstico híbrido por comandos de software (`display optical-module`) e indicadores LED físicos (FX LINK/ACT, TX LINK/ACT, PWR).',
+        'key_commands': '• `display interface status` | `display optical-module information`'
+    },
+    'arista': {
+        'architecture_note': '📐 **Arista EOS Architecture**: Extensible Operating System (EOS) basado en un kernel Linux sin modificaciones, con arquitectura de estado compartido alimentada por SysDB.',
+        'cli_philosophy': '💡 **Filosofía Arista EOS**: Sintaxis limpia compatible con Cisco CLI, integración eAPI JSON-RPC y comandos nativos Bash.',
+        'key_commands': '• `show ip interface brief` | `show bgp summary` | `management api http-commands`'
+    },
+    'linux': {
+        'architecture_note': '📐 **GNU/Linux Networking & FRR Architecture**: Subsistema de red del Kernel Linux (netfilter, iproute2, nftables) complementado por el suite de enrutamiento dinámico FRRouting (FRR).',
+        'cli_philosophy': '💡 **Filosofía Linux CLI**: Comandos `ip route`, `ip addr`, `ip neighbor` y shell interactivo unificado `vtysh` para OSPF/BGP/IS-IS.',
+        'key_commands': '• `ip addr show` | `ip route show` | `vtysh -c "show ip bgp summary"` | `tcpdump -nn -i eth0`'
+    }
+}

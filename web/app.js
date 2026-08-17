@@ -4096,7 +4096,18 @@ Active Alarms   : none detected
         const panel = document.getElementById('concept-panel-content');
         if (!panel) return;
         const activeTabKey = this.activeTheoryTab;
-        const text = this.getLocalizedText(conceptsObj, activeTabKey) || (this.currentLang === 'es' ? 'No definido para esta categoría.' : 'Not defined for this category.');
+        let text = this.getLocalizedText(conceptsObj, activeTabKey) || (this.currentLang === 'es' ? 'No definido para esta categoría.' : 'Not defined for this category.');
+        
+        // Append Vendor-Specific Concept Notes if available for activeVendor
+        const vMatrix = this.data.VENDOR_CONCEPTS_MATRIX || {};
+        const vConcept = vMatrix[this.activeVendor];
+        if (vConcept) {
+            text += `\n\n---\n### 🏷️ ${this.currentLang === 'es' ? 'Conceptos Específicos del Fabricante' : 'Vendor-Specific Concepts'}: ${this.data.VendorMap[this.activeVendor] || this.activeVendor}\n`;
+            if (vConcept.architecture_note) text += `\n${vConcept.architecture_note}\n`;
+            if (vConcept.cli_philosophy) text += `\n${vConcept.cli_philosophy}\n`;
+            if (vConcept.key_commands) text += `\n**${this.currentLang === 'es' ? 'Comandos Clave de Operación' : 'Key Operating Commands'}**:\n${vConcept.key_commands}\n`;
+        }
+
         panel.innerHTML = this.replaceMarkdown(text);
     }
 
