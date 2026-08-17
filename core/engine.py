@@ -249,6 +249,19 @@ class Engine:
                         self.vendor = None
                         return
                     self.vendor = sel
+                    # Optional hardware equipment model selection from inventory
+                    from data.knowledge_base import EQUIPMENT_MODELS
+                    models = EQUIPMENT_MODELS.get(sel, [])
+                    if models:
+                        print(f"\nModelos de Hardware Disponibles para {VendorMap.get(sel, sel)}:")
+                        for m_idx, model_item in enumerate(models, start=1):
+                            print(f"  [{m_idx}] {model_item}")
+                        m_val = display.prompt_choice("Seleccione modelo exacto de equipo (Enter para omitir): ").strip()
+                        if m_val.isdigit():
+                            m_i = int(m_val) - 1
+                            if 0 <= m_i < len(models):
+                                self.equipment_model = models[m_i]
+                                display.print_alert(f"Modelo seleccionado: {self.equipment_model}")
                     return
             except ValueError:
                 pass

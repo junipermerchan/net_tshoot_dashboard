@@ -458,6 +458,45 @@ class WebApp {
             btn.onclick = () => this.changeVendor(v);
             container.appendChild(btn);
         });
+
+        // Render Equipment Model Dropdown for selected vendor
+        let eqContainer = document.getElementById('equipment-model-selector-wrapper');
+        if (!eqContainer) {
+            eqContainer = document.createElement('div');
+            eqContainer.id = 'equipment-model-selector-wrapper';
+            eqContainer.style.marginTop = '12px';
+            eqContainer.style.background = 'rgba(15, 23, 42, 0.4)';
+            eqContainer.style.padding = '10px 14px';
+            eqContainer.style.borderRadius = '8px';
+            eqContainer.style.border = '1px solid rgba(255, 255, 255, 0.08)';
+            container.parentNode.appendChild(eqContainer);
+        }
+
+        const modelsMap = this.data.EQUIPMENT_MODELS || {};
+        const models = modelsMap[this.activeVendor] || [];
+
+        if (models.length > 0) {
+            let html = `<label style="font-size: 0.85rem; font-weight: 600; color: #38bdf8; display: block; margin-bottom: 4px;">📟 Modelo de Equipo Exacto Hardware:</label>`;
+            html += `<select id="equipment-model-select" onchange="app.changeActiveModel(this.value)" style="width: 100%; padding: 8px; border-radius: 6px; background: rgba(30, 41, 59, 0.8); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); font-size: 0.9rem;">`;
+            models.forEach(m => {
+                const isSel = (this.activeModel === m) ? 'selected' : '';
+                html += `<option value="${this.escapeHtml(m)}" ${isSel}>${this.escapeHtml(m)}</option>`;
+            });
+            html += `</select>`;
+            eqContainer.innerHTML = html;
+
+            if (!this.activeModel || !models.includes(this.activeModel)) {
+                this.activeModel = models[0];
+            }
+        } else {
+            eqContainer.innerHTML = `<span style="font-size: 0.85rem; color: #94a3b8;">Modelo Hardware: Genérico ${this.escapeHtml(this.data.VendorMap[this.activeVendor] || this.activeVendor)}</span>`;
+            this.activeModel = null;
+        }
+    }
+
+    changeActiveModel(modelName) {
+        this.activeModel = modelName;
+        this.renderCurrentStep();
     }
 
     changeVendor(vendorKey) {
@@ -847,7 +886,9 @@ class WebApp {
         
         // Render process terminal commands
         const terminalCodeEl = document.getElementById('terminal-commands-code');
-        document.getElementById('terminal-vendor-title').innerText = `${this.currentLang === 'es' ? 'Terminal' : 'Terminal'} — ${this.data.VendorMap[this.activeVendor] || this.activeVendor || 'Vendor'}`;
+        const vendorName = this.data.VendorMap[this.activeVendor] || this.activeVendor || 'Vendor';
+        const modelSuffix = this.activeModel ? ` — 📟 ${this.activeModel}` : ` — ${vendorName}`;
+        document.getElementById('terminal-vendor-title').innerText = `${this.currentLang === 'es' ? 'Terminal CLI' : 'CLI Terminal'}${modelSuffix}`;
         if (cmds.length === 0) {
             terminalCodeEl.innerHTML = `<span class="comment"># ${this.currentLang === 'es' ? 'No hay comandos de diagnóstico específicos de este paso para este vendor.' : 'No specific diagnostics commands for this step for this vendor.'}</span>`;
         } else {

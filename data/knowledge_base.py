@@ -50,6 +50,107 @@ VendorMap = {
 
 CommandBlock = Union[List[str], Dict[str, List[str]]]
 
+EQUIPMENT_MODELS: Dict[str, List[str]] = {
+    "cisco_iosxe": [
+        "ROUTER CISCO 881",
+        "ROUTER CISCO 1841",
+        "ROUTER CISCO 1941",
+        "ROUTER CISCO 2801",
+        "ROUTER CISCO 2811",
+        "ROUTER CISCO 2821",
+        "ROUTER CISCO 2851",
+        "ROUTER CISCO 2921",
+        "ROUTER CISCO 2951",
+        "ROUTER CISCO 3825",
+        "ROUTER CISCO 3845",
+        "ROUTER CISCO 3925",
+        "ROUTER CISCO 3945",
+        "TARJETA HWIC"
+    ],
+    "cisco_asr903": [
+        "ROUTER CISCO ASR 920",
+        "ROUTER CISCO ASR 901"
+    ],
+    "juniper": [
+        "ROUTER JUNIPER ACX 2200 AC",
+        "GATEWAY JUNIPER SRX300",
+        "GATEWAY JUNIPER SRX 340",
+        "GATEWAY JUNIPER SRX1500"
+    ],
+    "huawei": [
+        "HUAWEI-AR611W",
+        "HUAWEI-AR650"
+    ],
+    "fortinet": [
+        "FORTINET-40F",
+        "FORTINET-60F",
+        "FORTINET-80F",
+        "FORTINET-100F",
+        "FORTINET-200F"
+    ],
+    "sophos": [
+        "PLATAFORMA SOPHOS CENTRAL",
+        "SOPHOS XG 85",
+        "SOPHOS XG 86",
+        "SOPHOS XG 115",
+        "SOPHOS XG 125",
+        "SOPHOS XG 135",
+        "SOPHOS XG 210",
+        "SOPHOS XG 310",
+        "SOPHOS XG 330",
+        "SOPHOS-XGS87",
+        "SOPHOS-XGS107",
+        "SOPHOS-XGS116",
+        "SOPHOS-XGS126",
+        "SOPHOS-XGS136"
+    ],
+    "datacom": [
+        "DATACOM 4073",
+        "DATACOM-DM4170",
+        "DATACOM-DM4370",
+        "DATACOM-DM4380"
+    ],
+    "bdcom": [
+        "BDCOM 1705"
+    ],
+    "allied_telesis": [
+        "SWITCH AT 510",
+        "ALLIED TELESYS-Atx-510",
+        "ALLIED TELESYS-iMG606",
+        "ALLIED TELESYS-iMG1400",
+        "ALLIED TELESYS-iMG1500",
+        "IMG 1405",
+        "IMG 1425",
+        "IMG 1505",
+        "RG 606",
+        "RG 616W"
+    ],
+    "raisecom": [
+        "SWITCH ADMINISTRABLE RAISECOM ISCOM 2608G",
+        "RAISECOM-2608G",
+        "RAISECOM-2600G"
+    ],
+    "teltonika": [
+        "TELTONIKA-RUT300",
+        "TELTONIKA-RUX08",
+        "TELTONIKA-RUTX10",
+        "TELTONIKA-RUTX11",
+        "TELTONIKA-RUTXR1"
+    ],
+    "optone_vkom": [
+        "CONVERSOR SFP",
+        "CONVERSOR TRS OPT-1202S25",
+        "CONVERSOR TRANSCEIVER VKS-100-25 VKOM",
+        "CONVERSOR TRANSCEIVER VKDG2",
+        "CONVERSOR TRANSCEIVER 1 GIGA VKSF1100-20A",
+        "FIBRA OPTICA"
+    ],
+    "general": [
+        "NO APLICA"
+    ]
+}
+
+
 # Conceptos y definiciones por tecnología (populado dinámicamente o manualmente)
 TECH_CONCEPTS: Dict[str, Any] = {
     'mpls': {
