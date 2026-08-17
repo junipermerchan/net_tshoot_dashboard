@@ -9,7 +9,935 @@ def cmd_dict(t1=None, t2=None, t3=None, arch=None):
 def body(*lines):
     return '\n'.join(lines)
 
-CONFIG_GUIDES = {   'aaa': {   'description': 'Diagnóstico de fallas de autenticación, autorización y accounting (AAA) con TACACS+ y '
+CONFIG_GUIDES = {
+    'noc_operaciones_config': {
+        'name': '⚙️ Configuración Inicial NOC & Entrega a Cliente (Estilo CCNA / CCNP)',
+        'description': 'Guía paso a paso estilo CCNA/CCNP para aprovisionar equipos de red desde cero: inicialización (hostname, banners, usuarios, contraseñas), hardening (SSH, NTP, Syslog, SNMP, ACLs), subinterfaces CE, perfiles ONT GPON y entrega final.',
+        'vendors': ['juniper', 'cisco_iosxe', 'huawei', 'fortinet', 'datacom', 'bdcom', 'allied_telesis', 'raisecom', 'optone_vkom', 'mikrotik', 'sophos', 'teltonika', 'zte', 'adtran'],
+        'steps': {
+            'noc_config_start': {
+                'title': '1. Configuración Básica Inicial de Equipos (Estilo CCNA)',
+                'tier': 1,
+                'body': (
+                    '**Paso 1: Inicialización Estándar de Equipos (CCNA Level):**\n'
+                    'Todo equipo de telecomunicaciones en la red NOC debe iniciarse con parámetros de identificación y credenciales seguras.\n\n'
+                    '**Comandos Esenciales:**\n'
+                    '• **Nombre de Equipo (`hostname` / `sysname`):** Identificador único del nodo en el inventario NOC.\n'
+                    '• **Banners Legal (`banner motd`):** Advertencia de acceso no autorizado obligatorio por auditorías ISO 27001.\n'
+                    '• **Credenciales Seguras:** Usuarios administradores con algoritmos de cifrado fuerte (Secret / SHA-256).\n'
+                    '• **Zona Horaria & Guardado:** Ajuste de reloj local y persistencia en memoria flash.'
+                ),
+                'commands': {
+                    'cisco_iosxe': {
+                        'tier1': [
+                            'configure terminal',
+                            'hostname Router-NOC-CE1',
+                            'banner motd ^C ACCESO AUTORIZADO UNICAMENTE NOC CLIENTES ^C',
+                            'enable secret SuperPasswordNOC123!',
+                            'username admin privilege 15 secret SuperAdminNOC123!',
+                            'clock timezone COT -5',
+                            'end',
+                            'write memory'
+                        ],
+                        'tier2': ['show running-config | section hostname|username|banner'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'juniper': {
+                        'tier1': [
+                            'configure',
+                            'set system host-name Router-NOC-CE1',
+                            'set system root-authentication plain-text-password',
+                            'set system login user admin class super-user authentication plain-text-password',
+                            'set system time-zone America/Bogota',
+                            'commit'
+                        ],
+                        'tier2': ['show configuration system'],
+                        'tier3': ['show configuration'],
+                        'arch': ['show version']
+                    },
+                    'huawei': {
+                        'tier1': [
+                            'system-view',
+                            'sysname Router-NOC-CE1',
+                            'header shell information "ACCESO RESTRINGIDO - UNICAMENTE PERSONAL NOC"',
+                            'aaa',
+                            ' local-user admin password irreversible-cipher SuperAdminNOC123!',
+                            ' local-user admin service-type terminal ssh http',
+                            ' local-user admin privilege level 15',
+                            'quit',
+                            'clock timezone COT minus 05:00:00',
+                            'save'
+                        ],
+                        'tier2': ['display current-configuration | include sysname|header|aaa'],
+                        'tier3': ['display current-configuration'],
+                        'arch': ['display version']
+                    },
+                    'fortinet': {
+                        'tier1': [
+                            'config system global',
+                            '  set hostname "FGT-NOC-GW1"',
+                            '  set timezone 12',
+                            'end',
+                            'config system admin',
+                            '  edit "admin"',
+                            '    set password "SuperAdminNOC123!"',
+                            '  next',
+                            'end'
+                        ],
+                        'tier2': ['get system status'],
+                        'tier3': ['get system configuration'],
+                        'arch': ['get system status']
+                    },
+                    'datacom': {
+                        'tier1': [
+                            'configure terminal',
+                            'hostname Switch-NOC-CE1',
+                            'username admin password secret SuperAdminNOC123!',
+                            'clock timezone COT -5',
+                            'end',
+                            'copy running-config startup-config'
+                        ],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'bdcom': {
+                        'tier1': [
+                            'config',
+                            'hostname Switch-NOC-CE1',
+                            'username admin password 0 SuperAdminNOC123! privilege 15',
+                            'enable secret SuperAdminNOC123!',
+                            'write memory'
+                        ],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'allied_telesis': {
+                        'tier1': [
+                            'configure terminal',
+                            'hostname Switch-NOC-CE1',
+                            'username admin privilege 15 password SuperAdminNOC123!',
+                            'clock timezone COT -5',
+                            'write memory'
+                        ],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show boot config']
+                    },
+                    'raisecom': {
+                        'tier1': [
+                            'config terminal',
+                            'hostname Switch-NOC-CE1',
+                            'username admin password 0 SuperAdminNOC123! privilege 15',
+                            'enable secret SuperAdminNOC123!',
+                            'write memory'
+                        ],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show system-information']
+                    },
+                    'optone_vkom': {
+                        'tier1': [
+                            'show system information',
+                            'show configuration persistent'
+                        ],
+                        'tier2': ['show link-state'],
+                        'tier3': ['show oam 802.3ah status'],
+                        'arch': ['show system information']
+                    },
+                    'mikrotik': {
+                        'tier1': [
+                            '/system identity set name=Router-NOC-CE1',
+                            '/user add name=admin-noc password="SuperAdminNOC123!" group=full',
+                            '/system clock set time-zone-name=America/Bogota'
+                        ],
+                        'tier2': ['/system identity print', '/user print'],
+                        'tier3': ['/export'],
+                        'arch': ['/system routerboard print']
+                    },
+                    'sophos': {
+                        'tier1': [
+                            'system hostname set Router-NOC-CE1'
+                        ],
+                        'tier2': ['show network interfaces'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show running-config']
+                    },
+                    'teltonika': {
+                        'tier1': [
+                            "uci set system.@system[0].hostname='Router-NOC-CE1'",
+                            'uci commit system'
+                        ],
+                        'tier2': ['uci show system'],
+                        'tier3': ['cat /etc/config/system'],
+                        'arch': ['uci show']
+                    },
+                    'zte': {
+                        'tier1': [
+                            'configure terminal',
+                            'hostname OLT-NOC-01',
+                            'write memory'
+                        ],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'adtran': {
+                        'tier1': [
+                            'configure terminal',
+                            'hostname TA5000-NOC-01',
+                            'write memory'
+                        ],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    }
+                },
+                'expected': 'Nombre de equipo asignado, banners legales activos, usuario administrador configurado y credenciales guardadas en memoria persistente.',
+                'choices': [
+                    {'label': 'Hardening de Seguridad & Gestión de Acceso SSH/NTP', 'next': 'noc_config_security'},
+                    {'label': 'Servicios de Monitoreo NOC (NTP, Syslog, SNMP)', 'next': 'noc_config_monitoring'},
+                    {'label': 'Configuración Paso a Paso de Equipo CE para Cliente', 'next': 'noc_config_ce_delivery'},
+                ]
+            },
+            'noc_config_security': {
+                'title': '2. Hardening de Seguridad Básica & Gestión de Acceso (Estilo CCNA/CCNP)',
+                'tier': 2,
+                'body': (
+                    '**Hardening de Seguridad en Capa de Gestión:**\n'
+                    'Protección del plano de control y administración para evitar accesos no autorizados a la red del operador.\n\n'
+                    '**Pautas CCNP:**\n'
+                    '• **SSH v2 Obligatorio:** Desactivar Telnet y forzar SSH con llaves RSA de 2048+ bits.\n'
+                    '• **Timeouts de Inactividad:** Cerrar sesión en líneas VTY tras 5 o 10 minutos sin actividad (`exec-timeout 5 0`).\n'
+                    '• **ACL de Gestión:** Restringir acceso VTY/SSH únicamente desde la subred IP del NOC.\n'
+                    '• **Management VRF / Interface:** Aislar el tráfico de gestión en una VRF dedicada o puerto Out-of-band.'
+                ),
+                'commands': {
+                    'cisco_iosxe': {
+                        'tier1': [
+                            'configure terminal',
+                            'ip domain name noc.operador.net',
+                            'crypto key generate rsa modulus 2048',
+                            'ip ssh version 2',
+                            'line vty 0 4',
+                            ' exec-timeout 5 0',
+                            ' transport input ssh',
+                            ' login local',
+                            'end',
+                            'write memory'
+                        ],
+                        'tier2': ['show ip ssh', 'show line vty 0 4'],
+                        'tier3': ['show running-config | section line vty'],
+                        'arch': ['show running-config']
+                    },
+                    'juniper': {
+                        'tier1': [
+                            'configure',
+                            'set system services ssh protocol-version v2',
+                            'set system services ssh connection-limit 10',
+                            'set system idle-timeout 5',
+                            'commit'
+                        ],
+                        'tier2': ['show configuration system services'],
+                        'tier3': ['show configuration system'],
+                        'arch': ['show version']
+                    },
+                    'huawei': {
+                        'tier1': [
+                            'system-view',
+                            'rsa local-key-pair create',
+                            'stelnet server enable',
+                            'user-interface vty 0 4',
+                            ' authentication-mode aaa',
+                            ' protocol inbound ssh',
+                            ' idle-timeout 5 0',
+                            'quit',
+                            'save'
+                        ],
+                        'tier2': ['display ssh server status'],
+                        'tier3': ['display current-configuration | section user-interface'],
+                        'arch': ['display version']
+                    },
+                    'fortinet': {
+                        'tier1': [
+                            'config system interface',
+                            '  edit "mgmt"',
+                            '    set allowaccess ssh https ping',
+                            '  next',
+                            'end'
+                        ],
+                        'tier2': ['get system interface mgmt'],
+                        'tier3': ['get system configuration'],
+                        'arch': ['get system status']
+                    },
+                    'datacom': {
+                        'tier1': [
+                            'configure terminal',
+                            'ip ssh server enable',
+                            'ip ssh version 2',
+                            'end',
+                            'copy running-config startup-config'
+                        ],
+                        'tier2': ['show running-config | include ssh'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'bdcom': {
+                        'tier1': [
+                            'config',
+                            'ip ssh server enable',
+                            'write memory'
+                        ],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'allied_telesis': {
+                        'tier1': [
+                            'configure terminal',
+                            'ssh server enable',
+                            'write memory'
+                        ],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show boot config']
+                    },
+                    'raisecom': {
+                        'tier1': [
+                            'config terminal',
+                            'ip ssh server enable',
+                            'write memory'
+                        ],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show system-information']
+                    },
+                    'optone_vkom': {
+                        'tier1': ['show system information'],
+                        'tier2': ['show dip-switch config'],
+                        'tier3': ['show oam 802.3ah status'],
+                        'arch': ['show configuration persistent']
+                    },
+                    'mikrotik': {
+                        'tier1': [
+                            '/ip service disable telnet,ftp,www',
+                            '/ip service set ssh port=22 disabled=no'
+                        ],
+                        'tier2': ['/ip service print'],
+                        'tier3': ['/export'],
+                        'arch': ['/system routerboard print']
+                    },
+                    'sophos': {
+                        'tier1': ['show network interfaces'],
+                        'tier2': ['system diagnostics show network interfaces'],
+                        'tier3': ['cyberoam> option 4'],
+                        'arch': ['show running-config']
+                    },
+                    'teltonika': {
+                        'tier1': [
+                            "uci set dropbear.@dropbear[0].Port='22'",
+                            'uci commit dropbear'
+                        ],
+                        'tier2': ['uci show dropbear'],
+                        'tier3': ['cat /etc/config/dropbear'],
+                        'arch': ['uci show']
+                    },
+                    'zte': {
+                        'tier1': ['configure terminal', 'ip ssh server enable', 'write memory'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'adtran': {
+                        'tier1': ['configure terminal', 'ip ssh server enable', 'write memory'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    }
+                },
+                'expected': 'SSH v2 activo, Telnet deshabilitado, timeouts de inactividad configurados y accesos restringidos a la red del NOC.',
+                'choices': [
+                    {'label': 'Servicios de Monitoreo NOC (NTP, Syslog, SNMP)', 'next': 'noc_config_monitoring'},
+                    {'label': 'Configuración Paso a Paso de Equipo CE para Cliente', 'next': 'noc_config_ce_delivery'},
+                    {'label': 'Volver a Configuración Inicial', 'next': 'noc_config_start'},
+                ]
+            },
+            'noc_config_monitoring': {
+                'title': '3. Servicios de Monitoreo & Telemetría NOC (NTP, Syslog, SNMP)',
+                'tier': 2,
+                'body': (
+                    '**Servicios de Gestión & Visibilidad NOC:**\n'
+                    'Permiten el monitoreo en tiempo real, correlación de eventos y trazabilidad en el NMS (Network Management System).\n\n'
+                    '**Pautas de Implementación:**\n'
+                    '• **NTP (Network Time Protocol):** Sincronización horaria milimétrica indispensable para correlación de logs e incidentes.\n'
+                    '• **Syslog (UDP 514):** Envío centralizado de registros de eventos hacia el servidor SIEM / Syslog NOC.\n'
+                    '• **SNMP (Simple Network Management Protocol v2c/v3):** Lectura de métricas (tráfico, CPU, temperatura, potencia óptica) por el NMS.'
+                ),
+                'commands': {
+                    'cisco_iosxe': {
+                        'tier1': [
+                            'configure terminal',
+                            'ntp server 10.0.0.1 prefer',
+                            'logging host 10.0.0.50',
+                            'logging trap notifications',
+                            'snmp-server community NOC_READ RO',
+                            'snmp-server contact NOC_Telecom_Support',
+                            'end',
+                            'write memory'
+                        ],
+                        'tier2': ['show ntp status', 'show logging', 'show snmp'],
+                        'tier3': ['show ntp associations', 'show snmp community'],
+                        'arch': ['show running-config | section ntp|logging|snmp']
+                    },
+                    'juniper': {
+                        'tier1': [
+                            'configure',
+                            'set system ntp server 10.0.0.1 prefer',
+                            'set system syslog host 10.0.0.50 any notice',
+                            'set snmp community NOC_READ authorization read-only',
+                            'commit'
+                        ],
+                        'tier2': ['show ntp status', 'show snmp statistics'],
+                        'tier3': ['show ntp associations'],
+                        'arch': ['show configuration system']
+                    },
+                    'huawei': {
+                        'tier1': [
+                            'system-view',
+                            'ntp-service unicast-peer 10.0.0.1',
+                            'info-center loghost 10.0.0.50',
+                            'snmp-agent community read NOC_READ',
+                            'quit',
+                            'save'
+                        ],
+                        'tier2': ['display ntp-service status', 'display info-center'],
+                        'tier3': ['display snmp-agent community'],
+                        'arch': ['display current-configuration']
+                    },
+                    'fortinet': {
+                        'tier1': [
+                            'config system ntp',
+                            '  set ntpserver1 "10.0.0.1"',
+                            '  set type custom',
+                            'end',
+                            'config log syslogd setting',
+                            '  set status enable',
+                            '  set server "10.0.0.50"',
+                            'end'
+                        ],
+                        'tier2': ['get system ntp', 'get log syslogd setting'],
+                        'tier3': ['get system status'],
+                        'arch': ['get system configuration']
+                    },
+                    'datacom': {
+                        'tier1': [
+                            'configure terminal',
+                            'ntp server 10.0.0.1',
+                            'snmp-server community NOC_READ ro',
+                            'end',
+                            'copy running-config startup-config'
+                        ],
+                        'tier2': ['show ntp status'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'raisecom': {
+                        'tier1': [
+                            'config terminal',
+                            'ntp server 10.0.0.1',
+                            'snmp-server community NOC_READ ro',
+                            'write memory'
+                        ],
+                        'tier2': ['show ntp status'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show system-information']
+                    },
+                    'allied_telesis': {
+                        'tier1': [
+                            'configure terminal',
+                            'ntp server 10.0.0.1',
+                            'snmp-server community NOC_READ ro',
+                            'write memory'
+                        ],
+                        'tier2': ['show ntp status'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show boot config']
+                    },
+                    'bdcom': {
+                        'tier1': [
+                            'config',
+                            'snmp-server community NOC_READ ro',
+                            'write memory'
+                        ],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'optone_vkom': {
+                        'tier1': ['show system information'],
+                        'tier2': ['show configuration persistent'],
+                        'tier3': ['show oam 802.3ah status'],
+                        'arch': ['show system information']
+                    },
+                    'mikrotik': {
+                        'tier1': [
+                            '/system ntp client set enabled=yes servers=10.0.0.1',
+                            '/snmp community add name=NOC_READ addresses=10.0.0.0/24',
+                            '/snmp set enabled=yes'
+                        ],
+                        'tier2': ['/system ntp client print', '/snmp print'],
+                        'tier3': ['/export'],
+                        'arch': ['/system routerboard print']
+                    },
+                    'sophos': {
+                        'tier1': ['show network interfaces'],
+                        'tier2': ['system diagnostics utilities ping'],
+                        'tier3': ['cyberoam> option 4'],
+                        'arch': ['show running-config']
+                    },
+                    'teltonika': {
+                        'tier1': [
+                            "uci set system.ntp.server='10.0.0.1'",
+                            'uci commit system'
+                        ],
+                        'tier2': ['uci show system'],
+                        'tier3': ['cat /etc/config/system'],
+                        'arch': ['uci show']
+                    },
+                    'zte': {
+                        'tier1': ['configure terminal', 'snmp-server community NOC_READ ro', 'write memory'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'adtran': {
+                        'tier1': ['configure terminal', 'snmp-server community NOC_READ ro', 'write memory'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    }
+                },
+                'expected': 'Reloj NTP sincronizado, servidor Syslog remoto activo y SNMP habilitado para monitoreo NMS.',
+                'choices': [
+                    {'label': 'Configuración Paso a Paso de Equipo CE para Cliente', 'next': 'noc_config_ce_delivery'},
+                    {'label': 'Aprovisionamiento Paso a Paso de ONT en OLT GPON', 'next': 'noc_config_ont_provisioning'},
+                    {'label': 'Volver a Configuración Inicial', 'next': 'noc_config_start'},
+                ]
+            },
+            'noc_config_ce_delivery': {
+                'title': '4. Configuración Paso a Paso de Equipo CE (Customer Edge) para Cliente',
+                'tier': 2,
+                'body': (
+                    '**Aprovisionamiento de Servicio en Equipo CE (Customer Edge):**\n'
+                    'Configuración completa de entrega de servicio L2/L3 para cliente final corporativo.\n\n'
+                    '**Paso a Paso de Configuración:**\n'
+                    '1. **Interfaz / Subinterfaz WAN:** Asignar VLAN de servicio (ej: `Dot1q 100` o `QinQ`).\n'
+                    '2. **Direccionamiento IP:** Asignar dirección IP /30 (ej: `192.168.10.1/30`) o /31 (RFC 3021 `192.168.10.0/31`).\n'
+                    '3. **Quality of Service (QoS / Shaping):** Aplicar política de restricción de ancho de banda contratado (ej: 100 Mbps egress shaping).\n'
+                    '4. **Pruebas de Verificación:** Validar enrutamiento estático/BGP y alcanzabilidad ICMP.'
+                ),
+                'commands': {
+                    'cisco_iosxe': {
+                        'tier1': [
+                            'configure terminal',
+                            'interface GigabitEthernet0/0/0.100',
+                            ' encapsulation dot1Q 100',
+                            ' ip address 192.168.10.1 255.255.255.252',
+                            ' description ** INTERFAZ ENTREGABLE CLIENTE ABC - 100M **',
+                            ' exit',
+                            'policy-map SHAPING-100M',
+                            ' class class-default',
+                            '  shape average 100000000',
+                            ' exit',
+                            'interface GigabitEthernet0/0/0.100',
+                            ' service-policy output SHAPING-100M',
+                            'end',
+                            'write memory'
+                        ],
+                        'tier2': ['show ip interface brief', 'show policy-map interface GigabitEthernet0/0/0.100'],
+                        'tier3': ['show running-config interface GigabitEthernet0/0/0.100'],
+                        'arch': ['show running-config']
+                    },
+                    'juniper': {
+                        'tier1': [
+                            'configure',
+                            'set interfaces ge-0/0/0 vlan-tagging',
+                            'set interfaces ge-0/0/0 unit 100 vlan-id 100',
+                            'set interfaces ge-0/0/0 unit 100 family inet address 192.168.10.1/30',
+                            'set interfaces ge-0/0/0 unit 100 description "** CLIENTE ABC 100M **"',
+                            'commit'
+                        ],
+                        'tier2': ['show interfaces ge-0/0/0.100 terse'],
+                        'tier3': ['show configuration interfaces ge-0/0/0.100'],
+                        'arch': ['show configuration']
+                    },
+                    'huawei': {
+                        'tier1': [
+                            'system-view',
+                            'interface GigabitEthernet0/0/0.100',
+                            ' dot1q termination vid 100',
+                            ' ip address 192.168.10.1 255.255.255.252',
+                            ' description ** CLIENTE ABC 100M **',
+                            ' qos lr outbound 100000',
+                            'quit',
+                            'save'
+                        ],
+                        'tier2': ['display ip interface GigabitEthernet0/0/0.100'],
+                        'tier3': ['display current-configuration interface GigabitEthernet0/0/0.100'],
+                        'arch': ['display current-configuration']
+                    },
+                    'fortinet': {
+                        'tier1': [
+                            'config system interface',
+                            '  edit "port1.100"',
+                            '    set vdom "root"',
+                            '    set ip 192.168.10.1 255.255.255.252',
+                            '    set interface "port1"',
+                            '    set vlanid 100',
+                            '  next',
+                            'end'
+                        ],
+                        'tier2': ['get system interface port1.100'],
+                        'tier3': ['get system configuration'],
+                        'arch': ['get system status']
+                    },
+                    'datacom': {
+                        'tier1': [
+                            'configure terminal',
+                            'vlan 100',
+                            ' name CLIENTE-ABC',
+                            'interface ethernet 1/1',
+                            ' switchport mode trunk',
+                            ' switchport trunk allowed vlan add 100',
+                            'end',
+                            'copy running-config startup-config'
+                        ],
+                        'tier2': ['show vlan 100'],
+                        'tier3': ['show running-config interface ethernet 1/1'],
+                        'arch': ['show running-config']
+                    },
+                    'raisecom': {
+                        'tier1': [
+                            'config terminal',
+                            'vlan 100',
+                            'interface gigaethernet 1/1/1',
+                            ' switchport mode trunk',
+                            ' switchport trunk allowed vlan 100',
+                            'write memory'
+                        ],
+                        'tier2': ['show vlan 100'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show system-information']
+                    },
+                    'allied_telesis': {
+                        'tier1': [
+                            'configure terminal',
+                            'vlan database',
+                            ' vlan 100 name CLIENTE-ABC',
+                            'interface port1.0.1',
+                            ' switchport mode trunk',
+                            ' switchport trunk allowed vlan add 100',
+                            'write memory'
+                        ],
+                        'tier2': ['show vlan 100'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show boot config']
+                    },
+                    'bdcom': {
+                        'tier1': [
+                            'config',
+                            'vlan 100',
+                            'interface gigaethernet 0/1',
+                            ' switchport mode trunk',
+                            ' switchport trunk allowed vlan 100',
+                            'write memory'
+                        ],
+                        'tier2': ['show vlan 100'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'optone_vkom': {
+                        'tier1': ['show media-converter status'],
+                        'tier2': ['show dip-switch config'],
+                        'tier3': ['show interface ethernet statistics'],
+                        'arch': ['show configuration persistent']
+                    },
+                    'mikrotik': {
+                        'tier1': [
+                            '/interface vlan add name=vlan100-cliente vlan-id=100 interface=ether1',
+                            '/ip address add address=192.168.10.1/30 interface=vlan100-cliente',
+                            '/queue simple add name=CLIENTE-100M target=vlan100-cliente max-limit=100M/100M'
+                        ],
+                        'tier2': ['/interface vlan print', '/queue simple print'],
+                        'tier3': ['/export'],
+                        'arch': ['/system routerboard print']
+                    },
+                    'sophos': {
+                        'tier1': ['show network interfaces'],
+                        'tier2': ['system diagnostics utilities ping'],
+                        'tier3': ['cyberoam> option 4'],
+                        'arch': ['show running-config']
+                    },
+                    'teltonika': {
+                        'tier1': [
+                            'uci add network interface',
+                            "uci set network.@interface[-1].name='vlan100'",
+                            "uci set network.@interface[-1].proto='static'",
+                            "uci set network.@interface[-1].ipaddr='192.168.10.1'",
+                            "uci set network.@interface[-1].netmask='255.255.255.252'",
+                            'uci commit network'
+                        ],
+                        'tier2': ['uci show network'],
+                        'tier3': ['cat /etc/config/network'],
+                        'arch': ['uci show']
+                    },
+                    'zte': {
+                        'tier1': ['configure terminal', 'write memory'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'adtran': {
+                        'tier1': ['configure terminal', 'write memory'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    }
+                },
+                'expected': 'Subinterfaz L2/L3 activa, VLAN asignada, direccionamiento IP /30 o /31 respondiendo y shaping de ancho de banda configurado.',
+                'choices': [
+                    {'label': 'Aprovisionamiento Paso a Paso de ONT en OLT GPON', 'next': 'noc_config_ont_provisioning'},
+                    {'label': 'Validación Final & Respaldo de Entrega a Cliente', 'next': 'noc_config_commit'},
+                    {'label': 'Volver a Configuración Inicial', 'next': 'noc_config_start'},
+                ]
+            },
+            'noc_config_ont_provisioning': {
+                'title': '5. Aprovisionamiento Paso a Paso de ONT/ONU en OLT GPON',
+                'tier': 2,
+                'body': (
+                    '**Paso a Paso de Registro de ONT en OLT GPON (FTTH):**\n'
+                    '1. **Descubrimiento:** Identificar el Serial Number (SN) de la ONT no aprovisionada.\n'
+                    '2. **Alta de ONT:** Asociar el SN al puerto GPON de la OLT asignando un ONU-ID libre.\n'
+                    '3. **Asignación de Perfiles:** Vincular Line-Profile (DBA / T-CONT / GEM Ports) y Service-Profile (VLANs / Puertos ETH).\n'
+                    '4. **Service Ports:** Crear los Service Ports en la OLT para mapear la VLAN de usuario con la VLAN de transporte del core.'
+                ),
+                'commands': {
+                    'huawei': {
+                        'tier1': [
+                            'system-view',
+                            'interface gpon 0/1',
+                            ' ont add 1 1 sn-auth "485754431A2B3C4D" omci ont-lineprofile-id 10 ont-srvprofile-id 10 desc "CLIENTE_CORPORATIVO_01"',
+                            'quit',
+                            'service-port 100 gpon 0/1/1 ont 1 gemport 1 multi-service user-vlan 100 tag-transform translate inner-vlan 100 inbound traffic-table name 100M outbound traffic-table name 100M',
+                            'save'
+                        ],
+                        'tier2': ['display ont info 0 1 1 1', 'display service-port 100'],
+                        'tier3': ['display current-configuration section gpon'],
+                        'arch': ['display current-configuration']
+                    },
+                    'zte': {
+                        'tier1': [
+                            'configure terminal',
+                            'interface gpon-olt_1/2/1',
+                            ' onu 1 type ZTEG-F660 sn ZTEGC1A2B3D4',
+                            'exit',
+                            'interface gpon-onu_1/2/1:1',
+                            ' name CLIENTE_CORPORATIVO_01',
+                            ' tcont 1 name T-DATA dba-profile DBA-100M',
+                            ' gemport 1 name GEM-DATA tcont 1',
+                            ' service-port 1 vport 1 user-vlan 100 svlan 100',
+                            'exit',
+                            'write memory'
+                        ],
+                        'tier2': ['show gpon onu state gpon-olt_1/2/1', 'show gpon interface gpon-onu_1/2/1:1'],
+                        'tier3': ['show gpon running-config gpon-olt_1/2/1'],
+                        'arch': ['show running-config']
+                    },
+                    'bdcom': {
+                        'tier1': [
+                            'config',
+                            'interface gpon 0/1',
+                            ' gpon onu add 1 1 sn ZTEGC1A2B3D4 line-profile FTTH-LINE srv-profile FTTH-SRV',
+                            'exit',
+                            'write memory'
+                        ],
+                        'tier2': ['show gpon interface gpon 0/1:1 onu state'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'allied_telesis': {
+                        'tier1': ['show interface brief', 'write memory'],
+                        'tier2': ['show vlan'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show boot config']
+                    },
+                    'datacom': {
+                        'tier1': ['configure terminal', 'show gpon onu state'],
+                        'tier2': ['show gpon onu detail'],
+                        'tier3': ['show running-config gpon'],
+                        'arch': ['show version']
+                    },
+                    'optone_vkom': {
+                        'tier1': ['show media-converter status'],
+                        'tier2': ['show optical-power'],
+                        'tier3': ['show oam 802.3ah status'],
+                        'arch': ['show system information']
+                    },
+                    'cisco_iosxe': {
+                        'tier1': ['configure terminal', 'write memory'],
+                        'tier2': ['show ip interface brief'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'juniper': {
+                        'tier1': ['configure', 'commit'],
+                        'tier2': ['show interfaces terse'],
+                        'tier3': ['show configuration'],
+                        'arch': ['show version']
+                    },
+                    'fortinet': {
+                        'tier1': ['get system status'],
+                        'tier2': ['get system interface physical'],
+                        'tier3': ['get system configuration'],
+                        'arch': ['get system status']
+                    },
+                    'mikrotik': {
+                        'tier1': ['/interface print brief'],
+                        'tier2': ['/export'],
+                        'tier3': ['/export'],
+                        'arch': ['/system routerboard print']
+                    },
+                    'sophos': {
+                        'tier1': ['show network interfaces'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['cyberoam> option 4'],
+                        'arch': ['show running-config']
+                    },
+                    'teltonika': {
+                        'tier1': ['gsmctl -signal'],
+                        'tier2': ['uci show network'],
+                        'tier3': ['cat /etc/config/network'],
+                        'arch': ['uci show']
+                    },
+                    'adtran': {
+                        'tier1': ['configure terminal', 'write memory'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    }
+                },
+                'expected': 'ONT registrada en la OLT en estado O5 (Operation) con Service Ports y VLANs de servicio asociadas.',
+                'choices': [
+                    {'label': 'Validación Final & Respaldo de Entrega a Cliente', 'next': 'noc_config_commit'},
+                    {'label': 'Volver a Configuración Inicial', 'next': 'noc_config_start'},
+                ]
+            },
+            'noc_config_commit': {
+                'title': '6. Validación Final & Respaldo de Configuración de Entrega',
+                'tier': 1,
+                'body': (
+                    '**Cierre de Aprovisionamiento NOC:**\n'
+                    '1. Verificar que no haya advertencias ni errores en el log del sistema.\n'
+                    '2. Ejecutar guardado persistente de la configuración (`write memory` / `commit` / `save`).\n'
+                    '3. Exportar el script de configuración al repositorio de auditoría del NOC.'
+                ),
+                'commands': {
+                    'cisco_iosxe': {
+                        'tier1': ['write memory', 'copy running-config startup-config'],
+                        'tier2': ['show ip interface brief', 'show logging | include ERROR'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'juniper': {
+                        'tier1': ['commit check', 'commit comment "Aprovisionamiento Entregado a Cliente"'],
+                        'tier2': ['show system commit'],
+                        'tier3': ['show configuration'],
+                        'arch': ['show version']
+                    },
+                    'huawei': {
+                        'tier1': ['save'],
+                        'tier2': ['display current-configuration'],
+                        'tier3': ['display current-configuration'],
+                        'arch': ['display version']
+                    },
+                    'fortinet': {
+                        'tier1': ['execute backup config flash "Aprovisionamiento_NOC"'],
+                        'tier2': ['get system status'],
+                        'tier3': ['get system configuration'],
+                        'arch': ['get system status']
+                    },
+                    'datacom': {
+                        'tier1': ['copy running-config startup-config'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'raisecom': {
+                        'tier1': ['write memory'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show system-information']
+                    },
+                    'allied_telesis': {
+                        'tier1': ['write memory'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show boot config']
+                    },
+                    'bdcom': {
+                        'tier1': ['write memory'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'optone_vkom': {
+                        'tier1': ['show configuration persistent'],
+                        'tier2': ['show system information'],
+                        'tier3': ['show oam 802.3ah status'],
+                        'arch': ['show system information']
+                    },
+                    'mikrotik': {
+                        'tier1': ['/system backup save name=Aprovisionamiento_NOC'],
+                        'tier2': ['/export'],
+                        'tier3': ['/export'],
+                        'arch': ['/system routerboard print']
+                    },
+                    'sophos': {
+                        'tier1': ['system backup show'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['cyberoam> option 4'],
+                        'arch': ['show running-config']
+                    },
+                    'teltonika': {
+                        'tier1': ['uci commit network'],
+                        'tier2': ['cat /etc/config/network'],
+                        'tier3': ['uci show'],
+                        'arch': ['uci show']
+                    },
+                    'zte': {
+                        'tier1': ['write memory'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'adtran': {
+                        'tier1': ['configure terminal', 'write memory'],
+                        'tier2': ['show running-config'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    }
+                },
+                'expected': 'Configuración guardada en memoria flash. Servicio 100% listo para entrega a producción.',
+                'choices': [
+                    {'label': 'Volver al Inicio NOC Configuración', 'next': 'noc_config_start'},
+                    {'label': 'Volver al Menú Principal', 'next': 'back_menu'},
+                ]
+            }
+        }
+    },
+   'aaa': {   'description': 'Diagnóstico de fallas de autenticación, autorización y accounting (AAA) con TACACS+ y '
                               'RADIUS.',
                'name': 'Troubleshooting AAA / TACACS+ / RADIUS',
                'steps': {   'aaa_ts_acct': {   'body': '**Objetivo:** Verificar que los comandos y sesiones se '
@@ -41735,4 +42663,8 @@ CONFIG_GUIDES = {   'aaa': {   'description': 'Diagnóstico de fallas de autenti
         }
     }
 }
+
+
+
+
 

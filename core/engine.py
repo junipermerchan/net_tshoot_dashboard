@@ -3,6 +3,7 @@
 from typing import Optional, Dict, Any, List
 from pathlib import Path
 from data.knowledge_base import KB, VendorMap, TECH_CONCEPTS
+from data.config_templates import CONFIG_TEMPLATES
 from data.packet_walkthroughs import PACKET_WALKTHROUGHS, WALKTHROUGH_ALIASES
 from utils import display
 
@@ -46,6 +47,9 @@ class Engine:
                 continue
             elif choice == "diagnostico_magico":
                 self._run_magic_diagnostic()
+                continue
+            elif choice == "plantillas_templates":
+                self._run_templates_menu()
                 continue
             self.tech = choice
             concepts_result = self._concepts_menu()
@@ -100,6 +104,7 @@ class Engine:
             options.append({"key": "sci_mode", "label": f"⚙️ Configurar {mode_label}"})
             options.append({"key": "search", "label": "Búsqueda Global (Comandos y Conceptos)"})
             options.append({"key": "diagnostico_magico", "label": "🤖 Diagnóstico Mágico de Configuración y Logs (Analizador)"})
+            options.append({"key": "plantillas_templates", "label": "📚 Plantillas de Configuración & Explicación Comando por Comando"})
 
             if filtered_ts:
                 options.append({"category": True, "label": "━━ Troubleshooting ━━"})
@@ -1914,4 +1919,76 @@ class Engine:
             })
             display.print_alert("Reporte de diagnóstico registrado en la bitácora de sesión.")
             
+        display.pause()
+
+    def _run_templates_menu(self):
+        while True:
+            display.clear()
+            display.print_banner(confidence=self.session_confidence)
+            print("\n=== 📚 Plantillas de Configuración & Explicación Comando por Comando ===\n")
+            
+            tmpl_keys = list(CONFIG_TEMPLATES.keys())
+            for idx, key in enumerate(tmpl_keys, 1):
+                tmpl = CONFIG_TEMPLATES[key]
+                print(f"  [{idx}] {tmpl['title']}")
+                print(f"      {tmpl['description']}")
+            print(f"  [{len(tmpl_keys) + 1}] Volver al menú principal")
+            
+            val = display.prompt_choice("\nSeleccione plantilla: ").strip()
+            try:
+                choice_idx = int(val) - 1
+                if choice_idx == len(tmpl_keys):
+                    return
+                if 0 <= choice_idx < len(tmpl_keys):
+                    sel_tmpl = CONFIG_TEMPLATES[tmpl_keys[choice_idx]]
+                    self._view_single_template(sel_tmpl)
+            except ValueError:
+                pass
+            display.print_alert("Opción inválida.")
+
+    def _view_single_template(self, tmpl: Dict[str, Any]):
+        vendors_dict = tmpl.get('vendors', {})
+        v_keys = list(vendors_dict.keys())
+        
+        while True:
+            display.clear()
+            display.print_banner(confidence=self.session_confidence)
+            print(f"\n=== {tmpl['title']} ===\n")
+            print(f"{tmpl['description']}\n")
+            print("Seleccione Vendor para ver Configuración y Explicación Línea por Línea:")
+            
+            for idx, vk in enumerate(v_keys, 1):
+                v_name = vendors_dict[vk].get('vendor_name', vk)
+                print(f"  [{idx}] {v_name}")
+            print(f"  [{len(v_keys) + 1}] Volver a Plantillas")
+            
+            val = display.prompt_choice("\nSeleccione vendor: ").strip()
+            try:
+                choice_idx = int(val) - 1
+                if choice_idx == len(v_keys):
+                    return
+                if 0 <= choice_idx < len(v_keys):
+                    v_data = vendors_dict[v_keys[choice_idx]]
+                    self._render_template_breakdown(tmpl['title'], v_data)
+            except ValueError:
+                pass
+            display.print_alert("Opción inválida.")
+
+    def _render_template_breakdown(self, title: str, v_data: Dict[str, Any]):
+        display.clear()
+        display.print_banner(confidence=self.session_confidence)
+        print(f"\n=== {title} ===")
+        print(f"Vendor: {v_data.get('vendor_name', '')}\n")
+        
+        print("💻 CÓDIGO DE CONFIGURACIÓN COMPLETO:")
+        print("--------------------------------------------------------------------------------")
+        print(v_data.get('code', ''))
+        print("--------------------------------------------------------------------------------\n")
+        
+        print("📝 EXPLICACIÓN DETALLADA LÍNEA POR LÍNEA:")
+        print("================================================================================")
+        for item in v_data.get('breakdown', []):
+            print(f"• Comando : {item['cmd']}")
+            print(f"  Función : {item['desc']}\n")
+        print("================================================================================")
         display.pause()

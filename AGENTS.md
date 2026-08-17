@@ -3,7 +3,8 @@
 ## What this is
 A Spanish-language interactive CLI dashboard that *guides* network engineers through troubleshooting and configuration. It does **not** execute commands on devices.
 
-Scope includes: MPLS, L3VPN, L2VPN, EVPN, VXLAN, BGP, OSPF, IS-IS, STP/RSTP, QoS/TE, BFD, Multicast, MP-BGP, DHCP, NetFlow, SD-WAN, DMVPN, EIGRP, PBR, IPv6, AAA, Switch L2, VRRP/HSRP, GPON/ONT, EVC, Segment Routing, and Wireshark/tcpdump.
+Scope includes: Zona NOC (Operación, CCNA/CCNP, Potencia Óptica y Entrega a Cliente), MPLS, L3VPN, L2VPN, EVPN, VXLAN, BGP, OSPF, IS-IS, STP/RSTP, QoS/TE, BFD, Multicast, MP-BGP, DHCP, NetFlow, SD-WAN, DMVPN, EIGRP, PBR, IPv6, AAA, Switch L2, VRRP/HSRP, GPON/ONT, EVC, Segment Routing, and Wireshark/tcpdump.
+
 
 ## Entry point
 - `python main.py` — interactive terminal app. Uses `rich>=13.0.0` if installed (optional, falls back to plain text).
@@ -40,12 +41,16 @@ Los 4 niveles siguen el modelo internacional de operadores:
 - Keep step keys unique within a technology; choices reference them via `"next": "<step_key>"`.
 - Vendor command blocks may be `List[str]` (always shown) or `Dict[str, List[str]]` with keys `tier1`, `tier2`, `tier3`, `arch` (accumulated up to selected tier).
 
-## Vendor keys
-`VendorMap` in `knowledge_base.py` defines labels for: `juniper`, `cisco_iosxr`, `cisco_iosxe`, `cisco_asr903`, `mikrotik`, `fortinet`, `adtran`, `ta5k`, `zone`, `zte`, `huawei`, `zhone`, `linux`.
+## Vendor keys & Equipment Segmentation Matrix
+`VendorMap` in `knowledge_base.py` defines labels for: `juniper`, `cisco_iosxr`, `cisco_iosxe`, `cisco_asr903`, `mikrotik`, `fortinet`, `adtran`, `ta5k`, `zone`, `zte`, `huawei`, `zhone`, `linux`, `datacom`, `bdcom`, `optone_vkom`, `allied_telesis`, `raisecom`, `sophos`, `teltonika`.
 
-**Note:** All vendors used in `data/config_guides.py` are now present in `VendorMap`. If adding new vendors, update `VendorMap` or the UI will display the raw key.
+### Equipment Classification:
+1. **Segmento ONT / CPE (Capa 1/2)**: Allied Telesis iMG (iMG606, iMG1400, iMG1500, iMG1405, iMG1425, iMG1505, RG 606, RG 616W), BDCOM ONU/ONT 1705, Optone OPT-1202S25, VKOM (VKS-100-25, VKDG2), VKO VKSF1100-20A, Datacom GPON CPE.
+2. **Segmento L2 / Switch / Carrier Ethernet**: Raisecom ISCOM (2600G, 2608G), Datacom DmOS (DM4073, DM4170, DM4370, DM4380), Allied Telesis (AT-510, ATx-510), BDCOM L2 Switches.
+3. **Segmento L3 / Router & Security Gateway**: Cisco ISR (881, 1841, 1941, 2801, 2811, 2821, 2851, 2921, 2951, 3825, 3845, 3925, 3945, tarjetas HWIC) & Cisco ASR (ASR 901, ASR 920), Juniper ACX 2200 AC & SRX (300, 340, 1500), Sophos SFOS (XG 85-330, XGS 87-136, Sophos Central Platform), Teltonika RutOS (RUT300, RUX08, RUTX10, RUTX11, RUTXR1), Huawei NetEngine AR (AR611W, AR650), Fortinet FortiGate (40F-200F).
 
-Not all vendors appear in every technology (e.g. `l2vpn` omits `fortinet`; `evpn` omits `fortinet`; `adtran_ta5000` only includes `adtran`; `evc` includes `cisco_asr903` and `cisco_iosxe`).
+**Note:** All vendors used in `data/config_guides.py` are present in `VendorMap`.
+
 
 ## Important constraints
 - **No test suite, no lint/typecheck config, no CI** — this is a lightweight CLI script repo.

@@ -15,6 +15,7 @@ def export_data():
         from data.packet_walkthroughs import PACKET_WALKTHROUGHS, WALKTHROUGH_ALIASES
         from data.simulated_outputs import SIMULATED_OUTPUTS
         from data.change_tickets import CHANGE_TICKETS
+        from data.config_templates import CONFIG_TEMPLATES
     except Exception as e:
         print(f"Error al importar datos: {e}")
         sys.exit(1)
@@ -27,8 +28,10 @@ def export_data():
         "PACKET_WALKTHROUGHS": PACKET_WALKTHROUGHS,
         "WALKTHROUGH_ALIASES": WALKTHROUGH_ALIASES,
         "simulatedOutputs": SIMULATED_OUTPUTS,
-        "CHANGE_TICKETS": CHANGE_TICKETS
+        "CHANGE_TICKETS": CHANGE_TICKETS,
+        "CONFIG_TEMPLATES": CONFIG_TEMPLATES
     }
+
 
     output_dir = PROJECT_ROOT / "web"
     output_dir.mkdir(exist_ok=True)

@@ -25,20 +25,27 @@ Los comandos por vendor pueden ser:
 from typing import Dict, Any, List, Union
 
 VendorMap = {
-    "juniper": "Juniper JunOS",
-    "cisco_iosxr": "Cisco IOS-XR",
-    "cisco_iosxe": "Cisco IOS-XE / NX-OS",
-    "arista": "Arista EOS",
-    "huawei": "Huawei VRP / GPON OLT",
-    "mikrotik": "MikroTik RouterOS v7",
-    "fortinet": "Fortinet FortiOS",
-    "zone": "Vendor Genérico (ZTE/Huawei)",
-    "zte": "ZTE GPON OLT (C300/C600/XGS-PON)",
-    "zhone": "Zhone / DASAN GPON OLT (MXK/MXK-F)",
-    "adtran": "ADTRAN Total Access 5000 (AOS)",
-    "ta5k": "TA5000 / ADTRAN AOS (FTTH)",
-    "cisco_asr903": "Cisco ASR 903 / ASR 900",
-    "linux": "Linux / Generic tcpdump / Wireshark",
+    "juniper": "Juniper JunOS (MX / ACX / PTX / SRX)",
+    "cisco_iosxr": "Cisco IOS-XR (ASR 9000 / NCS / CRS)",
+    "cisco_iosxe": "Cisco IOS-XE / ISR / ASR 1000 / Catalyst 9000",
+    "cisco_asr903": "Cisco ASR 900 / 903 / 920 Series",
+    "arista": "Arista EOS (7000 Series / CloudVision)",
+    "huawei": "Huawei VRP (NetEngine / AR / OLT MA5800)",
+    "mikrotik": "MikroTik RouterOS v7 (CCR / CRS / RB)",
+    "fortinet": "Fortinet FortiOS (FortiGate 40F-3000F)",
+    "zone": "Vendor Carrier Genérico (ZTE/Huawei)",
+    "zte": "ZTE GPON OLT (ZXAN C300 / C600)",
+    "zhone": "Dasan Zhone GPON OLT (MXK / MXK-F)",
+    "adtran": "ADTRAN TA5000 OLT / NetVanta (AOS)",
+    "ta5k": "ADTRAN Total Access 5000 (AOS FTTH)",
+    "linux": "GNU/Linux Networking & FRRouting (iproute2/vtysh)",
+    "datacom": "Datacom DmOS (DM4073 / DM4170 / DM4370)",
+    "bdcom": "BDCOM GPON OLT P3600 / ONU 1705 / Switch L2",
+    "optone_vkom": "Optone OPT-1202 & VKOM Conversores / CPE",
+    "allied_telesis": "Allied Telesis AW+ & iMG CPE (x530/iMG606)",
+    "raisecom": "Raisecom ISCOM (2600G / 2608G / Carrier Eth)",
+    "sophos": "Sophos SFOS (XG / XGS Firewall & Central)",
+    "teltonika": "Teltonika RutOS (RUT / RUTX Industrial LTE)",
 }
 
 CommandBlock = Union[List[str], Dict[str, List[str]]]
@@ -478,8 +485,668 @@ TECH_CONCEPTS: Dict[str, Any] = {
     }
 }
 
+ONT_VENDORS = ['optone_vkom', 'bdcom', 'allied_telesis', 'datacom']
+L2_VENDORS = ['raisecom', 'datacom', 'allied_telesis', 'bdcom']
+L3_VENDORS = ['sophos', 'teltonika', 'datacom']
+
+TECH_VENDOR_MAP = {
+    'fiber_ont': ONT_VENDORS,
+    'fiber_ont_config': ONT_VENDORS,
+    'switch_l2': L2_VENDORS,
+    'switch_l2_config': L2_VENDORS,
+    'vlan_qinq': L2_VENDORS,
+    'evc_config': L2_VENDORS,
+    'spanning_tree': L2_VENDORS,
+    'spanning_tree_config': L2_VENDORS,
+    'l2vpn': L2_VENDORS,
+    'l2vpn_config': L2_VENDORS,
+    'loop_troubleshooting': L2_VENDORS,
+    'ccc_interface_switch': L2_VENDORS,
+    'bgp': L3_VENDORS,
+    'bgp_config': L3_VENDORS,
+    'ospf': L3_VENDORS,
+    'ospf_config': L3_VENDORS,
+    'isis': L3_VENDORS,
+    'isis_config': L3_VENDORS,
+    'l3vpn': L3_VENDORS,
+    'l3vpn_config': L3_VENDORS,
+    'mpls': L3_VENDORS,
+    'mpls_config': L3_VENDORS,
+    'sdwan': L3_VENDORS,
+    'sdwan_config': L3_VENDORS,
+    'dmvpn': L3_VENDORS,
+    'dmvpn_config': L3_VENDORS,
+    'vrrp_hsrp_config': L3_VENDORS,
+    'dhcp': L3_VENDORS,
+    'dhcp_config': L3_VENDORS,
+    'ipv6': L3_VENDORS,
+    'ipv6_config': L3_VENDORS,
+    'nat': L3_VENDORS,
+    'nat_config': L3_VENDORS,
+    'pbr': L3_VENDORS,
+    'pbr_config': L3_VENDORS,
+    'aaa': L3_VENDORS,
+    'aaa_config': L3_VENDORS,
+    'seguridad_config': L3_VENDORS,
+    'static': L3_VENDORS,
+    'static_config': L3_VENDORS,
+    'ripv2': L3_VENDORS,
+    'ripv2_config': L3_VENDORS,
+    'eigrp': L3_VENDORS,
+    'eigrp_config': L3_VENDORS,
+    'bfd': L3_VENDORS,
+    'bfd_config': L3_VENDORS,
+}
+
+VENDOR_CMDS = {
+    'optone_vkom': {
+        'tier1': ['show media-converter status', 'show link-state', 'show optical-power'],
+        'tier2': ['show transceiver detail', 'show oam 802.3ah status', 'show dip-switch config'],
+        'tier3': ['show oam loopback', 'show interface ethernet statistics', 'debug oam'],
+        'arch': ['show system information', 'show configuration persistent']
+    },
+    'bdcom': {
+        'tier1': ['show gpon onu-information', 'show gpon active-onu', 'show vlan', 'show interface brief'],
+        'tier2': ['show gpon interface gpon 0/1:1 onu state', 'show mac address-table dynamic interface gpon 0/1:1', 'show igmp snooping'],
+        'tier3': ['show gpon onu-optical-transceiver-diagnosis interface gpon 0/1', 'show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis', 'debug gpon oam'],
+        'arch': ['show running-config', 'show version']
+    },
+    'allied_telesis': {
+        'tier1': ['show interface brief', 'show vlan', 'show wan status', 'show ip interface vlan1 brief'],
+        'tier2': ['show interface transceiver', 'show epsr', 'show spanning-tree', 'show mac address-table'],
+        'tier3': ['show system log', 'show interface counters errors', 'debug switching'],
+        'arch': ['show running-config', 'show boot config']
+    },
+    'raisecom': {
+        'tier1': ['show interface', 'show vlan', 'show mac-address-table l2-address'],
+        'tier2': ['show ether-ring', 'show ether-ring detail', 'show oam peer', 'show interface transceiver'],
+        'tier3': ['show mac-address-table l2-address port 1/1/1', 'show port statistics', 'debug ether-ring'],
+        'arch': ['show running-config', 'show system information']
+    },
+    'datacom': {
+        'tier1': ['show vlan brief', 'show interface ethernet brief', 'show ip route', 'show erps brief'],
+        'tier2': ['show vlan membership detail', 'show mac-address-table', 'show l2vpn', 'show ip bgp summary', 'show ip ospf neighbor'],
+        'tier3': ['show erps detail', 'show oam 802.3ah', 'show ip bgp neighbor', 'show ip ospf database'],
+        'arch': ['show running-config vlan', 'show running-config router bgp', 'show running-config interface']
+    },
+    'sophos': {
+        'tier1': ['show network interfaces', 'show static-route', 'system route_precedence show'],
+        'tier2': ['system diagnostics utilities bandwidth-monitor', 'vtysh -c "show ip bgp summary"', 'vtysh -c "show ip ospf neighbor"', 'system ipsec status'],
+        'tier3': ['tcpdump -nei any port 179 or port 500', 'cyberoam> option 4', 'system diagnostics utilities ping'],
+        'arch': ['show running-config', 'system backup show']
+    },
+    'teltonika': {
+        'tier1': ['gsmctl -q', 'gsmctl -signal', 'ip route', 'ip addr show'],
+        'tier2': ['gsmctl -A \'AT+QENG="SERVINGCELL"\'', 'uci show network', 'vtysh -c "show ip bgp summary"', 'vtysh -c "show ip ospf neighbor"'],
+        'tier3': ['logread -f', 'nft list ruleset', 'tcpdump -i any -n'],
+        'arch': ['uci show', 'cat /etc/config/network']
+    }
+}
+
+
+def _apply_vendor_and_segment_extensions(target_dict: Dict[str, Any]) -> None:
+    for tech_key, new_v_list in TECH_VENDOR_MAP.items():
+        if tech_key in target_dict:
+            tech = target_dict[tech_key]
+            v_set = set(tech.get('vendors', []))
+            for nv in new_v_list:
+                v_set.add(nv)
+            tech['vendors'] = sorted(list(v_set))
+            
+            steps = tech.get('steps', {})
+            for step_key, step in steps.items():
+                cmds = step.setdefault('commands', {})
+                for nv in new_v_list:
+                    if nv not in cmds:
+                        cmds[nv] = VENDOR_CMDS[nv]
+
+    for tech in set(list(target_dict.keys())):
+        base = tech.replace('_config', '')
+        if base not in TECH_CONCEPTS:
+            TECH_CONCEPTS[base] = {
+                'definition': f'Principios operativos y diagnóstico de la tecnología {base}.',
+                'key_concepts': '• **Concepto 1:** Parámetros operativos.\n• **Concepto 2:** Verificación por vendor.',
+                'architecture': 'Arquitectura de referencia integrando segmentos ONT, Capa 2 y Capa 3.',
+                'control_vs_data': '• **Plano de Control:** Protocolos y señalización.\n• **Plano de Datos:** Forwarding a velocidad de línea.',
+                'troubleshooting_strategy': '1. Verificar física y enlaces.\n2. Validar adyacencias.\n3. Confirmar forwarding.',
+                'configuration_basics': '• Configurar parámetros base por vendor.'
+            }
+
+
+
+
+
 def _kb() -> Dict[str, Any]:
-    base = {'mpls': {'name': 'MPLS Core Troubleshooting',
+    base = {
+    'noc_operaciones': {
+        'name': '📊 Zona NOC — Operación, Diagnóstico & Potencia Óptica',
+        'description': 'Módulo especializado para Operadores e Ingenieros NOC: diagnóstico de capa física, medición DDM/DOM de potencia óptica (dBm) en transceivers SFP/GPON, estado de ONTs y preparación para entrega.',
+        'vendors': ['juniper', 'cisco_iosxe', 'huawei', 'fortinet', 'datacom', 'bdcom', 'allied_telesis', 'raisecom', 'optone_vkom', 'mikrotik', 'sophos', 'teltonika', 'zte', 'adtran'],
+        'steps': {
+            'noc_start': {
+                'title': '1. Tablero de Control NOC — Diagnóstico de Operaciones & Capa Física',
+                'tier': 1,
+                'body': (
+                    '**Objetivo NOC:** Supervisar la salud del equipo, validar el estado físico de enlaces SFP/CPE/ONT, '
+                    'y verificar alarmas antes de realizar intervenciones de Nivel 2/3.\n\n'
+                    '**Puntos Clave:**\n'
+                    '• **Capa Física:** Comprobar estado Link UP/DOWN, errores CRC y nivel de potencia óptica en dBm.\n'
+                    '• **Gestión:** Asegurar accesibilidad In-Band u Out-of-Band (Management VRF) y logs Syslog.\n'
+                    '• **Criterio de Aceptación:** Interfaces en estado Up/Up, potencia óptica Rx/Tx dentro del rango nominal del módulo SFP/GPON.'
+                ),
+                'commands': {
+                    'cisco_iosxe': {
+                        'tier1': ['show ip interface brief', 'show interfaces status', 'show logging | include DOWN'],
+                        'tier2': ['show interfaces transceiver', 'show environment summary', 'show platform'],
+                        'tier3': ['show interfaces transceiver detail', 'show controllers ethernet-controller phy', 'show processes cpu sorted'],
+                        'arch': ['show running-config', 'show version']
+                    },
+                    'juniper': {
+                        'tier1': ['show interfaces terse', 'show chassis alarms', 'show log messages | match DOWN'],
+                        'tier2': ['show interfaces diagnostics optics', 'show chassis environment'],
+                        'tier3': ['show interfaces diagnostics optics ge-0/0/0', 'show system processes extensive'],
+                        'arch': ['show configuration', 'show version']
+                    },
+                    'huawei': {
+                        'tier1': ['display ip interface brief', 'display interface brief', 'display alarm active'],
+                        'tier2': ['display interface transceiver', 'display device status'],
+                        'tier3': ['display interface GigabitEthernet0/0/0 transceiver verbose', 'display cpu-usage'],
+                        'arch': ['display current-configuration', 'display version']
+                    },
+                    'fortinet': {
+                        'tier1': ['get system interface physical', 'get system status'],
+                        'tier2': ['fn system transceiver show', 'get system performance status'],
+                        'tier3': ['diagnose hardware sysinfo memory', 'diagnose sys session filter'],
+                        'arch': ['get system configuration', 'get system status']
+                    },
+                    'datacom': {
+                        'tier1': ['show interface ethernet brief', 'show vlan brief', 'show system status'],
+                        'tier2': ['show interface ethernet transceiver', 'show interface ethernet 1/1 status'],
+                        'tier3': ['show interface ethernet 1/1 detail', 'show log'],
+                        'arch': ['show running-config', 'show version']
+                    },
+                    'bdcom': {
+                        'tier1': ['show interface brief', 'show gpon onu-information', 'show vlan'],
+                        'tier2': ['show gpon active-onu', 'show gpon interface gpon 0/1:1 onu state'],
+                        'tier3': ['show gpon onu-optical-transceiver-diagnosis interface gpon 0/1', 'show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis'],
+                        'arch': ['show running-config', 'show version']
+                    },
+                    'allied_telesis': {
+                        'tier1': ['show interface brief', 'show vlan', 'show system'],
+                        'tier2': ['show interface transceiver', 'show epsr'],
+                        'tier3': ['show interface port1.0.1 transceiver', 'show system log'],
+                        'arch': ['show running-config', 'show boot config']
+                    },
+                    'raisecom': {
+                        'tier1': ['show interface', 'show vlan', 'show system-information'],
+                        'tier2': ['show interface transceiver', 'show oam peer'],
+                        'tier3': ['show ether-ring detail', 'show port statistics'],
+                        'arch': ['show running-config', 'show version']
+                    },
+                    'optone_vkom': {
+                        'tier1': ['show media-converter status', 'show link-state'],
+                        'tier2': ['show optical-power', 'show transceiver detail'],
+                        'tier3': ['show oam 802.3ah status', 'show oam loopback'],
+                        'arch': ['show system information', 'show configuration persistent']
+                    },
+                    'mikrotik': {
+                        'tier1': ['/interface print brief', '/system resource print'],
+                        'tier2': ['/interface ethernet monitor sfp1 once', '/interface ethernet print detail'],
+                        'tier3': ['/log print where topics~"interface"', '/tool profile'],
+                        'arch': ['/export', '/system routerboard print']
+                    },
+                    'sophos': {
+                        'tier1': ['show network interfaces', 'system diagnostics show uptime'],
+                        'tier2': ['system diagnostics utilities bandwidth-monitor', 'system route_precedence show'],
+                        'tier3': ['tcpdump -nei any', 'cyberoam> option 4'],
+                        'arch': ['show running-config', 'system backup show']
+                    },
+                    'teltonika': {
+                        'tier1': ['gsmctl -signal', 'ip addr show'],
+                        'tier2': ['gsmctl -q', "gsmctl -A AT+QENG=SERVINGCELL"],
+                        'tier3': ['logread -f', 'nft list ruleset'],
+                        'arch': ['uci show', 'cat /etc/config/network']
+                    },
+                    'zte': {
+                        'tier1': ['show gpon onu-information', 'show card'],
+                        'tier2': ['show gpon interface gpon-olt_1/2/1 onu state'],
+                        'tier3': ['show gpon onu power gpon-onu_1/2/1:1'],
+                        'arch': ['show running-config', 'show version']
+                    },
+                    'adtran': {
+                        'tier1': ['show interface brief', 'show system'],
+                        'tier2': ['show interface transceiver'],
+                        'tier3': ['show optical-power'],
+                        'arch': ['show running-config', 'show version']
+                    }
+                },
+                'expected': 'Todas las interfaces físicas activas en Link UP. Transceivers reportando niveles de potencia óptica en dBm dentro del presupuesto del enlace.',
+                'choices': [
+                    {'label': 'Diagnóstico de Potencia Óptica & DDM/DOM en Transceivers', 'next': 'noc_transceiver_optics'},
+                    {'label': 'Gestión & Aprovisionamiento ONT / FTTH en OLT', 'next': 'noc_ont_gpon_mgmt'},
+                    {'label': 'Diagnóstico de Equipos Customer Edge (CE)', 'next': 'noc_ce_provisioning'},
+                    {'label': 'Checklist para Entrega Final a Cliente', 'next': 'noc_handover_checklist'},
+                ]
+            },
+            'noc_transceiver_optics': {
+                'title': '2. Diagnóstico Óptico & Verificación de Transceivers (Rx/Tx dBm)',
+                'tier': 1,
+                'body': (
+                    '**Medición DDM / DOM (Digital Diagnostics Monitoring):**\n'
+                    'Permite leer en tiempo real la potencia óptica transmitida (**Tx Power**) y recibida (**Rx Power**) en dBm, '
+                    'la temperatura del módulo, el voltaje y la corriente de polarización del láser (**Laser Bias Current**).\n\n'
+                    '**Valores de Referencia Típicos en Fibra Óptica:**\n'
+                    '• **Ethernet 1G/10G LX/LR (1310nm - 10km):** Tx: -9.0 a -3.0 dBm | Rx Sensibilidad: -19.0 a -3.0 dBm.\n'
+                    '• **Ethernet 10G ER/ZR (1550nm - 40/80km):** Tx: -4.0 a +4.0 dBm | Rx Sensibilidad: -24.0 a -1.0 dBm.\n'
+                    '• **GPON OLT Class B+ (1490nm Tx / 1310nm Rx):** Tx OLT: +1.5 a +5.0 dBm | Rx OLT Sensibilidad: -28.0 a -8.0 dBm.\n'
+                    '• **GPON ONT (1310nm Tx / 1490nm Rx):** Tx ONT: +0.5 a +5.0 dBm | Rx ONT Sensibilidad: -27.0 a -8.0 dBm.\n\n'
+                    '**Acción NOC:** Si Rx Power está por debajo del umbral de sensibilidad (ej: -29 dBm), existe atenuación excesiva, suciedad en conectores o fisura en la fibra.'
+                ),
+                'commands': {
+                    'cisco_iosxe': {
+                        'tier1': ['show interfaces transceiver', 'show interfaces GigabitEthernet0/0/0 transceiver'],
+                        'tier2': ['show interfaces transceiver detail', 'show controllers ethernet-controller phy'],
+                        'tier3': ['show interfaces transceiver threshold', 'show logging | include OPTICAL'],
+                        'arch': ['show platform hardware module 1 transceiver']
+                    },
+                    'juniper': {
+                        'tier1': ['show interfaces diagnostics optics', 'show interfaces diagnostics optics ge-0/0/0'],
+                        'tier2': ['show interfaces diagnostics optics | match "Optical|Power|Temperature"'],
+                        'tier3': ['show chassis pic fpc 0 pic 0'],
+                        'arch': ['show chassis hardware']
+                    },
+                    'huawei': {
+                        'tier1': ['display interface transceiver', 'display interface GigabitEthernet0/0/0 transceiver'],
+                        'tier2': ['display interface GigabitEthernet0/0/0 transceiver verbose'],
+                        'tier3': ['display interface transceiver alarm'],
+                        'arch': ['display device optical-module-information']
+                    },
+                    'fortinet': {
+                        'tier1': ['get system interface physical', 'fn system transceiver show'],
+                        'tier2': ['diagnose hardware sysinfo transceiver port1'],
+                        'tier3': ['diagnose hardware sysinfo transceiver list'],
+                        'arch': ['get system status']
+                    },
+                    'datacom': {
+                        'tier1': ['show interface ethernet transceiver'],
+                        'tier2': ['show interface ethernet 1/1 status', 'show interface ethernet transceiver detail'],
+                        'tier3': ['show interface ethernet 1/1 detail'],
+                        'arch': ['show version']
+                    },
+                    'bdcom': {
+                        'tier1': ['show gpon onu-optical-transceiver-diagnosis interface gpon 0/1'],
+                        'tier2': ['show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis'],
+                        'tier3': ['show gpon optical-power'],
+                        'arch': ['show version']
+                    },
+                    'allied_telesis': {
+                        'tier1': ['show interface transceiver'],
+                        'tier2': ['show interface port1.0.1 transceiver'],
+                        'tier3': ['show interface port1.0.1 transceiver detail'],
+                        'arch': ['show boot config']
+                    },
+                    'raisecom': {
+                        'tier1': ['show interface transceiver'],
+                        'tier2': ['show interface gigaethernet 1/1/1 transceiver'],
+                        'tier3': ['show port statistics'],
+                        'arch': ['show system-information']
+                    },
+                    'optone_vkom': {
+                        'tier1': ['show optical-power'],
+                        'tier2': ['show transceiver detail'],
+                        'tier3': ['show oam 802.3ah status'],
+                        'arch': ['show system information']
+                    },
+                    'mikrotik': {
+                        'tier1': ['/interface ethernet monitor sfp1 once'],
+                        'tier2': ['/interface ethernet print detail where name~"sfp"'],
+                        'tier3': ['/log print where topics~"sfp"'],
+                        'arch': ['/system routerboard print']
+                    },
+                    'sophos': {
+                        'tier1': ['show network interfaces'],
+                        'tier2': ['system diagnostics show network interfaces'],
+                        'tier3': ['cyberoam> option 4'],
+                        'arch': ['show running-config']
+                    },
+                    'teltonika': {
+                        'tier1': ['gsmctl -signal'],
+                        'tier2': ["gsmctl -A AT+QENG=SERVINGCELL"],
+                        'tier3': ['logread -f'],
+                        'arch': ['uci show']
+                    },
+                    'zte': {
+                        'tier1': ['show gpon onu power gpon-onu_1/2/1:1'],
+                        'tier2': ['show gpon optical-power gpon-olt_1/2/1'],
+                        'tier3': ['show gpon onu detail gpon-onu_1/2/1:1'],
+                        'arch': ['show version']
+                    },
+                    'adtran': {
+                        'tier1': ['show interface transceiver'],
+                        'tier2': ['show optical-power'],
+                        'tier3': ['show interface statistics'],
+                        'arch': ['show version']
+                    }
+                },
+                'expected': 'Niveles de potencia óptica Rx y Tx dentro del rango nominal en dBm (ej: Rx entre -12 dBm y -22 dBm). Sin alarmas de "High Alarm" o "Low Alarm".',
+                'choices': [
+                    {'label': 'Ir a Gestión de ONTs en OLT GPON', 'next': 'noc_ont_gpon_mgmt'},
+                    {'label': 'Ir a Diagnóstico de Equipos Customer Edge (CE)', 'next': 'noc_ce_provisioning'},
+                    {'label': 'Volver al Inicio NOC', 'next': 'noc_start'},
+                ]
+            },
+            'noc_ont_gpon_mgmt': {
+                'title': '3. Gestión & Aprovisionamiento ONT/ONU FTTH en OLT',
+                'tier': 1,
+                'body': (
+                    '**Ciclo de Vida de la Negociación GPON ONT (Estados de la Máquina de Estado GPON):**\n'
+                    '• **O1 (Initial State):** La ONT está encendida pero no ha detectado la señal óptica de la OLT (1490nm).\n'
+                    '• **O2 (Standby State):** La ONT recibe luz descendente y sincroniza con la trama GPON.\n'
+                    '• **O3 (Serial Number State):** La ONT envía su Serial Number (SN) / LOID a la OLT durante la ventana de descubrimiento.\n'
+                    '• **O4 (Ranging State):** La OLT mide el retardo de propagación (Ranging Time) y asigna la distancia física en metros.\n'
+                    '• **O5 (Operation State):** La ONT está 100% registrada, autenticada y en línea recibiendo tráfico.\n\n'
+                    '**Acciones NOC:**\n'
+                    '1. Buscar ONTs no aprovisionadas (`autodiscover` / `unconfigured`).\n'
+                    '2. Registrar la ONT asociando su SN al puerto PON y asignar ID de ONT.\n'
+                    '3. Asociar perfiles de Línea (T-CONT / GEM Ports) y Servicio (VLANs 802.1Q).'
+                ),
+                'commands': {
+                    'huawei': {
+                        'tier1': ['display ont autofind 0', 'display ont info 0 1 1 1'],
+                        'tier2': ['display ont state 0 1 1 1', 'display ont optical-info 0 1 1 1'],
+                        'tier3': ['display service-port port 0/1/1 ont 1', 'display ont version 0 1 1 1'],
+                        'arch': ['display current-configuration section gpon']
+                    },
+                    'zte': {
+                        'tier1': ['show gpon onu uncfg', 'show gpon onu state gpon-olt_1/2/1'],
+                        'tier2': ['show gpon onu detail gpon-onu_1/2/1:1', 'show gpon onu power gpon-onu_1/2/1:1'],
+                        'tier3': ['show gpon running-config gpon-olt_1/2/1', 'show mac address-table gpon-onu_1/2/1:1'],
+                        'arch': ['show running-config']
+                    },
+                    'bdcom': {
+                        'tier1': ['show gpon onu-information', 'show gpon active-onu'],
+                        'tier2': ['show gpon interface gpon 0/1:1 onu state', 'show gpon interface gpon 0/1:1 onu basic-info'],
+                        'tier3': ['show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis', 'show mac address-table dynamic interface gpon 0/1:1'],
+                        'arch': ['show running-config', 'show version']
+                    },
+                    'allied_telesis': {
+                        'tier1': ['show interface brief', 'show wan status'],
+                        'tier2': ['show interface transceiver', 'show vlan'],
+                        'tier3': ['show system log'],
+                        'arch': ['show running-config']
+                    },
+                    'datacom': {
+                        'tier1': ['show interface gpon brief', 'show gpon onu state'],
+                        'tier2': ['show gpon onu detail', 'show mac-address-table'],
+                        'tier3': ['show gpon oam status', 'show erps detail'],
+                        'arch': ['show running-config gpon']
+                    },
+                    'optone_vkom': {
+                        'tier1': ['show media-converter status', 'show optical-power'],
+                        'tier2': ['show transceiver detail', 'show oam 802.3ah status'],
+                        'tier3': ['show oam loopback'],
+                        'arch': ['show system information']
+                    },
+                    'cisco_iosxe': {
+                        'tier1': ['show interfaces status', 'show ip interface brief'],
+                        'tier2': ['show interfaces transceiver'],
+                        'tier3': ['show mac address-table'],
+                        'arch': ['show running-config']
+                    },
+                    'juniper': {
+                        'tier1': ['show interfaces terse'],
+                        'tier2': ['show interfaces diagnostics optics'],
+                        'tier3': ['show ethernet-switching table'],
+                        'arch': ['show configuration']
+                    },
+                    'fortinet': {
+                        'tier1': ['get system interface physical'],
+                        'tier2': ['fn system transceiver show'],
+                        'tier3': ['diagnose hardware sysinfo transceiver list'],
+                        'arch': ['get system status']
+                    },
+                    'mikrotik': {
+                        'tier1': ['/interface print brief'],
+                        'tier2': ['/interface ethernet monitor sfp1 once'],
+                        'tier3': ['/interface bridge host print'],
+                        'arch': ['/export']
+                    },
+                    'sophos': {
+                        'tier1': ['show network interfaces'],
+                        'tier2': ['system diagnostics show network interfaces'],
+                        'tier3': ['cyberoam> option 4'],
+                        'arch': ['show running-config']
+                    },
+                    'teltonika': {
+                        'tier1': ['gsmctl -signal'],
+                        'tier2': ['gsmctl -q'],
+                        'tier3': ['logread -f'],
+                        'arch': ['uci show']
+                    },
+                    'adtran': {
+                        'tier1': ['show interface brief'],
+                        'tier2': ['show optical-power'],
+                        'tier3': ['show interface statistics'],
+                        'arch': ['show running-config']
+                    }
+                },
+                'expected': 'ONT negociada en estado O5 (Operation). Service ports activos transmitiendo VLAN de cliente.',
+                'choices': [
+                    {'label': 'Diagnóstico de Equipos Customer Edge (CE)', 'next': 'noc_ce_provisioning'},
+                    {'label': 'Checklist para Entrega Final a Cliente', 'next': 'noc_handover_checklist'},
+                    {'label': 'Volver al Inicio NOC', 'next': 'noc_start'},
+                ]
+            },
+            'noc_ce_provisioning': {
+                'title': '4. Diagnóstico de Equipos Customer Edge (CE) & Demarcación L2/L3',
+                'tier': 2,
+                'body': (
+                    '**Verificación del Equipo de Demarcación Customer Edge (CE):**\n'
+                    'Los equipos CE conectan el sitio del cliente con la red de transporte del operador.\n\n'
+                    '**Puntos de Validación NOC:**\n'
+                    '• **Subinterfaces / Tagging:** Validar encapsulación `dot1q` / `QinQ` en puerto WAN.\n'
+                    '• **Direccionamiento IP:** Verificar máscaras `/30` (punto a punto tradicional) o `/31` (RFC 3021 para ahorro de espacio IP).\n'
+                    '• **Políticas de Tráfico (Rate Limiting):** Confirmar que el Shaping / Policing coincida con el ancho de banda contratado por el cliente (ej. 50M, 100M, 1G).\n'
+                    '• **Pruebas de Conectividad:** Ping con fragmentación desactivada (DF bit set) para validar MTU sin descartes.'
+                ),
+                'commands': {
+                    'cisco_iosxe': {
+                        'tier1': ['show ip interface brief', 'show interfaces status', 'show ip route'],
+                        'tier2': ['show policy-map interface GigabitEthernet0/0/0', 'show ip cef <prefix>', 'ping <client_ip> df-bit size 1472'],
+                        'tier3': ['show running-config interface GigabitEthernet0/0/0.100', 'show platform hardware qfp active feature qos interface GigabitEthernet0/0/0'],
+                        'arch': ['show running-config | section interface']
+                    },
+                    'juniper': {
+                        'tier1': ['show interfaces terse', 'show route'],
+                        'tier2': ['show interfaces ge-0/0/0.100 extensive', 'ping <client_ip> do-not-fragment size 1472'],
+                        'tier3': ['show interfaces queue ge-0/0/0', 'show firewall log'],
+                        'arch': ['show configuration interfaces ge-0/0/0']
+                    },
+                    'huawei': {
+                        'tier1': ['display ip interface brief', 'display ip routing-table'],
+                        'tier2': ['display qos policy interface GigabitEthernet0/0/0', 'ping -s 1472 -f <client_ip>'],
+                        'tier3': ['display current-configuration interface GigabitEthernet0/0/0.100'],
+                        'arch': ['display current-configuration']
+                    },
+                    'fortinet': {
+                        'tier1': ['get system interface physical', 'get router info routing-table all'],
+                        'tier2': ['execute ping-options df-bit yes', 'execute ping-options data-size 1472', 'execute ping <client_ip>'],
+                        'tier3': ['diagnose firewall iprope list', 'diagnose sys session filter dst <client_ip>'],
+                        'arch': ['get system configuration']
+                    },
+                    'datacom': {
+                        'tier1': ['show interface ethernet brief', 'show ip route'],
+                        'tier2': ['show vlan membership detail', 'show mac-address-table'],
+                        'tier3': ['show qos interface ethernet 1/1'],
+                        'arch': ['show running-config interface']
+                    },
+                    'raisecom': {
+                        'tier1': ['show interface', 'show vlan'],
+                        'tier2': ['show qinq status', 'show port statistics'],
+                        'tier3': ['show mac-address-table l2-address'],
+                        'arch': ['show running-config']
+                    },
+                    'allied_telesis': {
+                        'tier1': ['show interface brief', 'show vlan'],
+                        'tier2': ['show qos', 'show mac address-table'],
+                        'tier3': ['show interface counters errors'],
+                        'arch': ['show running-config']
+                    },
+                    'bdcom': {
+                        'tier1': ['show interface brief', 'show vlan'],
+                        'tier2': ['show mac address-table', 'show igmp snooping'],
+                        'tier3': ['show interface statistics'],
+                        'arch': ['show running-config']
+                    },
+                    'optone_vkom': {
+                        'tier1': ['show media-converter status'],
+                        'tier2': ['show dip-switch config'],
+                        'tier3': ['show interface ethernet statistics'],
+                        'arch': ['show configuration persistent']
+                    },
+                    'mikrotik': {
+                        'tier1': ['/ip address print', '/ip route print'],
+                        'tier2': ['/interface vlan print', '/queue simple print'],
+                        'tier3': ['/tool ping address=<client_ip> size=1472 do-not-fragment=yes'],
+                        'arch': ['/export']
+                    },
+                    'sophos': {
+                        'tier1': ['show network interfaces', 'show static-route'],
+                        'tier2': ['system diagnostics utilities ping'],
+                        'tier3': ['tcpdump -nei any host <client_ip>'],
+                        'arch': ['show running-config']
+                    },
+                    'teltonika': {
+                        'tier1': ['ip addr show', 'ip route'],
+                        'tier2': ['uci show network'],
+                        'tier3': ['ping -c 5 -M do -s 1472 <client_ip>'],
+                        'arch': ['cat /etc/config/network']
+                    },
+                    'zte': {
+                        'tier1': ['show interface brief'],
+                        'tier2': ['show mac address-table'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'adtran': {
+                        'tier1': ['show interface brief'],
+                        'tier2': ['show ip route'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    }
+                },
+                'expected': 'Subinterfaces L2/L3 en Up/Up. Ancho de banda y MTU validados sin pérdidas de paquetes.',
+                'choices': [
+                    {'label': 'Ir a Checklist de Entrega Final a Cliente', 'next': 'noc_handover_checklist'},
+                    {'label': 'Volver al Inicio NOC', 'next': 'noc_start'},
+                ]
+            },
+            'noc_handover_checklist': {
+                'title': '5. Checklist de Entrega Final a Cliente (Service Handover Checklist)',
+                'tier': 1,
+                'body': (
+                    '**Checklist de Validación Final de Servicio NOC antes de Entrega a Producción:**\n\n'
+                    '1. **Prueba de Capa 1:** Verificar que no haya incrementos de errores CRC, alineación ni descartes en contadores de puerto.\n'
+                    '2. **Prueba de Capa 2 / 3:** Confirmar que la dirección IP de cliente o VLAN responda pings estables (< 15ms).\n'
+                    '3. **Prueba de MTU:** Ejecutar `ping` con bit DF (Dont Fragment) en 1472 bytes (1500 MTU total) sin pérdidas.\n'
+                    '4. **Limpieza de Contadores:** Reiniciar contadores de interfaz para dejar métricas en cero antes de la ventana comercial.\n'
+                    '5. **Respaldo & Backup:** Guardar la configuración en la memoria no volátil (`write memory` / `commit` / `save`) y exportar copia al repositorio del NOC.'
+                ),
+                'commands': {
+                    'cisco_iosxe': {
+                        'tier1': ['clear counters GigabitEthernet0/0/0', 'ping <client_ip> df-bit size 1472 count 10'],
+                        'tier2': ['show interfaces GigabitEthernet0/0/0 | include errors|drops|CRC', 'copy running-config startup-config'],
+                        'tier3': ['show archive', 'write memory'],
+                        'arch': ['show running-config']
+                    },
+                    'juniper': {
+                        'tier1': ['clear interfaces statistics ge-0/0/0', 'ping <client_ip> do-not-fragment size 1472 count 10'],
+                        'tier2': ['show interfaces ge-0/0/0 | match "Errors|Drops|CRC"', 'commit check'],
+                        'tier3': ['commit comment "Configuracion de Entrega a Cliente Final"'],
+                        'arch': ['show configuration']
+                    },
+                    'huawei': {
+                        'tier1': ['reset counters interface GigabitEthernet0/0/0', 'ping -s 1472 -f -c 10 <client_ip>'],
+                        'tier2': ['display interface GigabitEthernet0/0/0 | include CRC|error'],
+                        'tier3': ['save'],
+                        'arch': ['display current-configuration']
+                    },
+                    'fortinet': {
+                        'tier1': ['diagnose hardware deviceinfo nic port1', 'execute ping-options count 10'],
+                        'tier2': ['execute ping-options df-bit yes', 'execute ping-options data-size 1472', 'execute ping <client_ip>'],
+                        'tier3': ['execute backup config flash "Handover_Cliente"'],
+                        'arch': ['get system status']
+                    },
+                    'datacom': {
+                        'tier1': ['clear counters interface ethernet 1/1'],
+                        'tier2': ['show interface ethernet 1/1 detail'],
+                        'tier3': ['copy running-config startup-config'],
+                        'arch': ['show running-config']
+                    },
+                    'raisecom': {
+                        'tier1': ['clear counters port 1/1/1'],
+                        'tier2': ['show port statistics'],
+                        'tier3': ['write memory'],
+                        'arch': ['show running-config']
+                    },
+                    'allied_telesis': {
+                        'tier1': ['clear counters port1.0.1'],
+                        'tier2': ['show interface counters errors'],
+                        'tier3': ['write memory'],
+                        'arch': ['show running-config']
+                    },
+                    'bdcom': {
+                        'tier1': ['clear counters interface brief'],
+                        'tier2': ['show interface statistics'],
+                        'tier3': ['write memory'],
+                        'arch': ['show running-config']
+                    },
+                    'optone_vkom': {
+                        'tier1': ['show interface ethernet statistics'],
+                        'tier2': ['show link-state'],
+                        'tier3': ['show configuration persistent'],
+                        'arch': ['show system information']
+                    },
+                    'mikrotik': {
+                        'tier1': ['/interface reset-counters ether1'],
+                        'tier2': ['/tool ping address=<client_ip> size=1472 do-not-fragment=yes count=10'],
+                        'tier3': ['/system backup save name=Handover_Cliente'],
+                        'arch': ['/export']
+                    },
+                    'sophos': {
+                        'tier1': ['show network interfaces'],
+                        'tier2': ['system diagnostics utilities ping'],
+                        'tier3': ['system backup show'],
+                        'arch': ['show running-config']
+                    },
+                    'teltonika': {
+                        'tier1': ['ping -c 10 -M do -s 1472 <client_ip>'],
+                        'tier2': ['uci show network'],
+                        'tier3': ['uci commit network'],
+                        'arch': ['cat /etc/config/network']
+                    },
+                    'zte': {
+                        'tier1': ['show interface brief'],
+                        'tier2': ['write memory'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    },
+                    'adtran': {
+                        'tier1': ['show interface brief'],
+                        'tier2': ['write memory'],
+                        'tier3': ['show running-config'],
+                        'arch': ['show version']
+                    }
+                },
+                'expected': 'Servicio 100% verificado, sin errores CRC, copia de seguridad guardada y listo para acta de entrega.',
+                'choices': [
+                    {'label': 'Volver al Inicio NOC', 'next': 'noc_start'},
+                    {'label': 'Volver al Menú Principal', 'next': 'back_menu'},
+                ]
+            }
+        }
+    },
+'mpls': {'name': 'MPLS Core Troubleshooting',
           'description': 'Diagnóstico del plano de control y datos MPLS. Incluye LDP, RSVP-TE, Segment Routing, '
                          'sincronización IGP, LFIB/Label Stack y problemas de MTU/MSS.',
           'vendors': ['juniper', 'cisco_iosxr', 'cisco_iosxe', 'mikrotik', 'fortinet'],
@@ -9127,7 +9794,11 @@ def _kb() -> Dict[str, Any]:
     from data.hierarchies import enrich_with_hierarchies
     enrich_with_hierarchies(base)
 
+    # Aplicar asignación por segmentos (ONT, L2, L3) y vendors nuevos
+    _apply_vendor_and_segment_extensions(base)
+
     return base
+
 
 
 KB = _kb()
@@ -11771,3 +12442,5 @@ def _add_subnet_31_config(base):
 
 
 _add_subnet_31_config(KB)
+
+

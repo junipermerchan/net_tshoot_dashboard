@@ -69,3 +69,7 @@ venv.bak/
 
 # Local logs
 *.log
+
+# Scratch scripts
+scratch/
+

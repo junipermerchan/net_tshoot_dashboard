@@ -1,17 +1,2377 @@
 // Autogenerado por export.py. No editar directamente.
 const NET_TSHOOT_DATA = {
   "KB": {
+    "noc_operaciones": {
+      "name": "📊 Zona NOC — Operación, Diagnóstico & Potencia Óptica",
+      "description": "Módulo especializado para Operadores e Ingenieros NOC: diagnóstico de capa física, medición DDM/DOM de potencia óptica (dBm) en transceivers SFP/GPON, estado de ONTs y preparación para entrega.",
+      "vendors": [
+        "juniper",
+        "cisco_iosxe",
+        "huawei",
+        "fortinet",
+        "datacom",
+        "bdcom",
+        "allied_telesis",
+        "raisecom",
+        "optone_vkom",
+        "mikrotik",
+        "sophos",
+        "teltonika",
+        "zte",
+        "adtran"
+      ],
+      "steps": {
+        "noc_start": {
+          "title": "1. Tablero de Control NOC — Diagnóstico de Operaciones & Capa Física",
+          "tier": 1,
+          "body": "**Objetivo NOC:** Supervisar la salud del equipo, validar el estado físico de enlaces SFP/CPE/ONT, y verificar alarmas antes de realizar intervenciones de Nivel 2/3.\n\n**Puntos Clave:**\n• **Capa Física:** Comprobar estado Link UP/DOWN, errores CRC y nivel de potencia óptica en dBm.\n• **Gestión:** Asegurar accesibilidad In-Band u Out-of-Band (Management VRF) y logs Syslog.\n• **Criterio de Aceptación:** Interfaces en estado Up/Up, potencia óptica Rx/Tx dentro del rango nominal del módulo SFP/GPON.",
+          "commands": {
+            "cisco_iosxe": {
+              "tier1": [
+                "show ip interface brief",
+                "show interfaces status",
+                "show logging | include DOWN"
+              ],
+              "tier2": [
+                "show interfaces transceiver",
+                "show environment summary",
+                "show platform"
+              ],
+              "tier3": [
+                "show interfaces transceiver detail",
+                "show controllers ethernet-controller phy",
+                "show processes cpu sorted"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "show interfaces terse",
+                "show chassis alarms",
+                "show log messages | match DOWN"
+              ],
+              "tier2": [
+                "show interfaces diagnostics optics",
+                "show chassis environment"
+              ],
+              "tier3": [
+                "show interfaces diagnostics optics ge-0/0/0",
+                "show system processes extensive"
+              ],
+              "arch": [
+                "show configuration",
+                "show version"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "display ip interface brief",
+                "display interface brief",
+                "display alarm active"
+              ],
+              "tier2": [
+                "display interface transceiver",
+                "display device status"
+              ],
+              "tier3": [
+                "display interface GigabitEthernet0/0/0 transceiver verbose",
+                "display cpu-usage"
+              ],
+              "arch": [
+                "display current-configuration",
+                "display version"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "get system interface physical",
+                "get system status"
+              ],
+              "tier2": [
+                "fn system transceiver show",
+                "get system performance status"
+              ],
+              "tier3": [
+                "diagnose hardware sysinfo memory",
+                "diagnose sys session filter"
+              ],
+              "arch": [
+                "get system configuration",
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show interface ethernet brief",
+                "show vlan brief",
+                "show system status"
+              ],
+              "tier2": [
+                "show interface ethernet transceiver",
+                "show interface ethernet 1/1 status"
+              ],
+              "tier3": [
+                "show interface ethernet 1/1 detail",
+                "show log"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show interface brief",
+                "show gpon onu-information",
+                "show vlan"
+              ],
+              "tier2": [
+                "show gpon active-onu",
+                "show gpon interface gpon 0/1:1 onu state"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show system"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr"
+              ],
+              "tier3": [
+                "show interface port1.0.1 transceiver",
+                "show system log"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show system-information"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show oam peer"
+              ],
+              "tier3": [
+                "show ether-ring detail",
+                "show port statistics"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state"
+              ],
+              "tier2": [
+                "show optical-power",
+                "show transceiver detail"
+              ],
+              "tier3": [
+                "show oam 802.3ah status",
+                "show oam loopback"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/interface print brief",
+                "/system resource print"
+              ],
+              "tier2": [
+                "/interface ethernet monitor sfp1 once",
+                "/interface ethernet print detail"
+              ],
+              "tier3": [
+                "/log print where topics~\"interface\"",
+                "/tool profile"
+              ],
+              "arch": [
+                "/export",
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "system diagnostics show uptime"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "system route_precedence show"
+              ],
+              "tier3": [
+                "tcpdump -nei any",
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -signal",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -q",
+                "gsmctl -A AT+QENG=SERVINGCELL"
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "show gpon onu-information",
+                "show card"
+              ],
+              "tier2": [
+                "show gpon interface gpon-olt_1/2/1 onu state"
+              ],
+              "tier3": [
+                "show gpon onu power gpon-onu_1/2/1:1"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "show interface brief",
+                "show system"
+              ],
+              "tier2": [
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show optical-power"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            }
+          },
+          "expected": "Todas las interfaces físicas activas en Link UP. Transceivers reportando niveles de potencia óptica en dBm dentro del presupuesto del enlace.",
+          "choices": [
+            {
+              "label": "Diagnóstico de Potencia Óptica & DDM/DOM en Transceivers",
+              "next": "noc_transceiver_optics"
+            },
+            {
+              "label": "Gestión & Aprovisionamiento ONT / FTTH en OLT",
+              "next": "noc_ont_gpon_mgmt"
+            },
+            {
+              "label": "Diagnóstico de Equipos Customer Edge (CE)",
+              "next": "noc_ce_provisioning"
+            },
+            {
+              "label": "Checklist para Entrega Final a Cliente",
+              "next": "noc_handover_checklist"
+            }
+          ],
+          "title_ipv6": "1. Tablero de Control NOC — Diagnóstico de Operaciones & Capa Física (IPv6)",
+          "body_ipv6": "**Objetivo NOC:** Supervisar la salud del equipo, validar el estado físico de enlaces SFP/CPE/ONT, y verificar alarmas antes de realizar intervenciones de Nivel 2/3.\n\n**Puntos Clave:**\n• **Capa Física:** Comprobar estado Link UP/DOWN, errores CRC y nivel de potencia óptica en dBm.\n• **Gestión:** Asegurar accesibilidad In-Band u Out-of-Band (Management VRF) y logs Syslog.\n• **Criterio de Aceptación:** Interfaces en estado Up/Up, potencia óptica Rx/Tx dentro del rango nominal del módulo SFP/GPON.",
+          "expected_ipv6": "Todas las interfaces físicas activas en Link UP. Transceivers reportando niveles de potencia óptica en dBm dentro del presupuesto del enlace.",
+          "commands_ipv6": {
+            "cisco_iosxe": {
+              "tier1": [
+                "show ipv6 interface brief",
+                "show interfaces status",
+                "show logging | include DOWN"
+              ],
+              "tier2": [
+                "show interfaces transceiver",
+                "show environment summary",
+                "show platform"
+              ],
+              "tier3": [
+                "show interfaces transceiver detail",
+                "show controllers ethernet-controller phy",
+                "show processes cpu sorted"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "show interfaces terse",
+                "show chassis alarms",
+                "show log messages | match DOWN"
+              ],
+              "tier2": [
+                "show interfaces diagnostics optics",
+                "show chassis environment"
+              ],
+              "tier3": [
+                "show interfaces diagnostics optics ge-0/0/0",
+                "show system processes extensive"
+              ],
+              "arch": [
+                "show configuration",
+                "show version"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "display ipv6 interface brief",
+                "display interface brief",
+                "display alarm active"
+              ],
+              "tier2": [
+                "display interface transceiver",
+                "display device status"
+              ],
+              "tier3": [
+                "display interface GigabitEthernet0/0/0 transceiver verbose",
+                "display cpu-usage"
+              ],
+              "arch": [
+                "display current-configuration",
+                "display version"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "get system interface physical",
+                "get system status"
+              ],
+              "tier2": [
+                "fn system transceiver show",
+                "get system performance status"
+              ],
+              "tier3": [
+                "diagnose hardware sysinfo memory",
+                "diagnose sys session filter"
+              ],
+              "arch": [
+                "get system configuration",
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show interface ethernet brief",
+                "show vlan brief",
+                "show system status"
+              ],
+              "tier2": [
+                "show interface ethernet transceiver",
+                "show interface ethernet 1/1 status"
+              ],
+              "tier3": [
+                "show interface ethernet 1/1 detail",
+                "show log"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show interface brief",
+                "show gpon onu-information",
+                "show vlan"
+              ],
+              "tier2": [
+                "show gpon active-onu",
+                "show gpon interface gpon 0/1:1 onu state"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show system"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr"
+              ],
+              "tier3": [
+                "show interface port1.0.1 transceiver",
+                "show system log"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show system-information"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show oam peer"
+              ],
+              "tier3": [
+                "show ether-ring detail",
+                "show port statistics"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state"
+              ],
+              "tier2": [
+                "show optical-power",
+                "show transceiver detail"
+              ],
+              "tier3": [
+                "show oam 802.3ah status",
+                "show oam loopback"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/interface print brief",
+                "/system resource print"
+              ],
+              "tier2": [
+                "/interface ethernet monitor sfp1 once",
+                "/interface ethernet print detail"
+              ],
+              "tier3": [
+                "/log print where topics~\"interface\"",
+                "/tool profile"
+              ],
+              "arch": [
+                "/export",
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "system diagnostics show uptime"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "system route_precedence show"
+              ],
+              "tier3": [
+                "tcpdump -nei any",
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -signal",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -q",
+                "gsmctl -A AT+QENG=SERVINGCELL"
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "show gpon onu-information",
+                "show card"
+              ],
+              "tier2": [
+                "show gpon interface gpon-olt_1/2/1 onu state"
+              ],
+              "tier3": [
+                "show gpon onu power gpon-onu_1/2/1:1"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "show interface brief",
+                "show system"
+              ],
+              "tier2": [
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show optical-power"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            }
+          },
+          "osi_layer": "Capa 3: Red (IP / Enrutamiento)",
+          "osi_layer_en": "Layer 3: Network (IP / Routing)",
+          "network_domain": "Core & Borde de Red",
+          "network_domain_en": "Core & Network Edge",
+          "methodology": "Aislar por Dominio y Enfoque Bottom-Up",
+          "methodology_en": "Domain Isolation and Bottom-Up Approach"
+        },
+        "noc_transceiver_optics": {
+          "title": "2. Diagnóstico Óptico & Verificación de Transceivers (Rx/Tx dBm)",
+          "tier": 1,
+          "body": "**Medición DDM / DOM (Digital Diagnostics Monitoring):**\nPermite leer en tiempo real la potencia óptica transmitida (**Tx Power**) y recibida (**Rx Power**) en dBm, la temperatura del módulo, el voltaje y la corriente de polarización del láser (**Laser Bias Current**).\n\n**Valores de Referencia Típicos en Fibra Óptica:**\n• **Ethernet 1G/10G LX/LR (1310nm - 10km):** Tx: -9.0 a -3.0 dBm | Rx Sensibilidad: -19.0 a -3.0 dBm.\n• **Ethernet 10G ER/ZR (1550nm - 40/80km):** Tx: -4.0 a +4.0 dBm | Rx Sensibilidad: -24.0 a -1.0 dBm.\n• **GPON OLT Class B+ (1490nm Tx / 1310nm Rx):** Tx OLT: +1.5 a +5.0 dBm | Rx OLT Sensibilidad: -28.0 a -8.0 dBm.\n• **GPON ONT (1310nm Tx / 1490nm Rx):** Tx ONT: +0.5 a +5.0 dBm | Rx ONT Sensibilidad: -27.0 a -8.0 dBm.\n\n**Acción NOC:** Si Rx Power está por debajo del umbral de sensibilidad (ej: -29 dBm), existe atenuación excesiva, suciedad en conectores o fisura en la fibra.",
+          "commands": {
+            "cisco_iosxe": {
+              "tier1": [
+                "show interfaces transceiver",
+                "show interfaces GigabitEthernet0/0/0 transceiver"
+              ],
+              "tier2": [
+                "show interfaces transceiver detail",
+                "show controllers ethernet-controller phy"
+              ],
+              "tier3": [
+                "show interfaces transceiver threshold",
+                "show logging | include OPTICAL"
+              ],
+              "arch": [
+                "show platform hardware module 1 transceiver"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "show interfaces diagnostics optics",
+                "show interfaces diagnostics optics ge-0/0/0"
+              ],
+              "tier2": [
+                "show interfaces diagnostics optics | match \"Optical|Power|Temperature\""
+              ],
+              "tier3": [
+                "show chassis pic fpc 0 pic 0"
+              ],
+              "arch": [
+                "show chassis hardware"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "display interface transceiver",
+                "display interface GigabitEthernet0/0/0 transceiver"
+              ],
+              "tier2": [
+                "display interface GigabitEthernet0/0/0 transceiver verbose"
+              ],
+              "tier3": [
+                "display interface transceiver alarm"
+              ],
+              "arch": [
+                "display device optical-module-information"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "get system interface physical",
+                "fn system transceiver show"
+              ],
+              "tier2": [
+                "diagnose hardware sysinfo transceiver port1"
+              ],
+              "tier3": [
+                "diagnose hardware sysinfo transceiver list"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show interface ethernet transceiver"
+              ],
+              "tier2": [
+                "show interface ethernet 1/1 status",
+                "show interface ethernet transceiver detail"
+              ],
+              "tier3": [
+                "show interface ethernet 1/1 detail"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis"
+              ],
+              "tier3": [
+                "show gpon optical-power"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface transceiver"
+              ],
+              "tier2": [
+                "show interface port1.0.1 transceiver"
+              ],
+              "tier3": [
+                "show interface port1.0.1 transceiver detail"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface transceiver"
+              ],
+              "tier2": [
+                "show interface gigaethernet 1/1/1 transceiver"
+              ],
+              "tier3": [
+                "show port statistics"
+              ],
+              "arch": [
+                "show system-information"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail"
+              ],
+              "tier3": [
+                "show oam 802.3ah status"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/interface ethernet monitor sfp1 once"
+              ],
+              "tier2": [
+                "/interface ethernet print detail where name~\"sfp\""
+              ],
+              "tier3": [
+                "/log print where topics~\"sfp\""
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "system diagnostics show network interfaces"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -signal"
+              ],
+              "tier2": [
+                "gsmctl -A AT+QENG=SERVINGCELL"
+              ],
+              "tier3": [
+                "logread -f"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "show gpon onu power gpon-onu_1/2/1:1"
+              ],
+              "tier2": [
+                "show gpon optical-power gpon-olt_1/2/1"
+              ],
+              "tier3": [
+                "show gpon onu detail gpon-onu_1/2/1:1"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "show interface transceiver"
+              ],
+              "tier2": [
+                "show optical-power"
+              ],
+              "tier3": [
+                "show interface statistics"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "expected": "Niveles de potencia óptica Rx y Tx dentro del rango nominal en dBm (ej: Rx entre -12 dBm y -22 dBm). Sin alarmas de \"High Alarm\" o \"Low Alarm\".",
+          "choices": [
+            {
+              "label": "Ir a Gestión de ONTs en OLT GPON",
+              "next": "noc_ont_gpon_mgmt"
+            },
+            {
+              "label": "Ir a Diagnóstico de Equipos Customer Edge (CE)",
+              "next": "noc_ce_provisioning"
+            },
+            {
+              "label": "Volver al Inicio NOC",
+              "next": "noc_start"
+            }
+          ],
+          "title_ipv6": "2. Diagnóstico Óptico & Verificación de Transceivers (Rx/Tx dBm) (IPv6)",
+          "body_ipv6": "**Medición DDM / DOM (Digital Diagnostics Monitoring):**\nPermite leer en tiempo real la potencia óptica transmitida (**Tx Power**) y recibida (**Rx Power**) en dBm, la temperatura del módulo, el voltaje y la corriente de polarización del láser (**Laser Bias Current**).\n\n**Valores de Referencia Típicos en Fibra Óptica:**\n• **Ethernet 1G/10G LX/LR (1310nm - 10km):** Tx: -9.0 a -3.0 dBm | Rx Sensibilidad: -19.0 a -3.0 dBm.\n• **Ethernet 10G ER/ZR (1550nm - 40/80km):** Tx: -4.0 a +4.0 dBm | Rx Sensibilidad: -24.0 a -1.0 dBm.\n• **GPON OLT Class B+ (1490nm Tx / 1310nm Rx):** Tx OLT: +1.5 a +5.0 dBm | Rx OLT Sensibilidad: -28.0 a -8.0 dBm.\n• **GPON ONT (1310nm Tx / 1490nm Rx):** Tx ONT: +0.5 a +5.0 dBm | Rx ONT Sensibilidad: -27.0 a -8.0 dBm.\n\n**Acción NOC:** Si Rx Power está por debajo del umbral de sensibilidad (ej: -29 dBm), existe atenuación excesiva, suciedad en conectores o fisura en la fibra.",
+          "expected_ipv6": "Niveles de potencia óptica Rx y Tx dentro del rango nominal en dBm (ej: Rx entre -12 dBm y -22 dBm). Sin alarmas de \"High Alarm\" o \"Low Alarm\".",
+          "commands_ipv6": {
+            "cisco_iosxe": {
+              "tier1": [
+                "show interfaces transceiver",
+                "show interfaces GigabitEthernet0/0/0 transceiver"
+              ],
+              "tier2": [
+                "show interfaces transceiver detail",
+                "show controllers ethernet-controller phy"
+              ],
+              "tier3": [
+                "show interfaces transceiver threshold",
+                "show logging | include OPTICAL"
+              ],
+              "arch": [
+                "show platform hardware module 1 transceiver"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "show interfaces diagnostics optics",
+                "show interfaces diagnostics optics ge-0/0/0"
+              ],
+              "tier2": [
+                "show interfaces diagnostics optics | match \"Optical|Power|Temperature\""
+              ],
+              "tier3": [
+                "show chassis pic fpc 0 pic 0"
+              ],
+              "arch": [
+                "show chassis hardware"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "display interface transceiver",
+                "display interface GigabitEthernet0/0/0 transceiver"
+              ],
+              "tier2": [
+                "display interface GigabitEthernet0/0/0 transceiver verbose"
+              ],
+              "tier3": [
+                "display interface transceiver alarm"
+              ],
+              "arch": [
+                "display device optical-module-information"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "get system interface physical",
+                "fn system transceiver show"
+              ],
+              "tier2": [
+                "diagnose hardware sysinfo transceiver port1"
+              ],
+              "tier3": [
+                "diagnose hardware sysinfo transceiver list"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show interface ethernet transceiver"
+              ],
+              "tier2": [
+                "show interface ethernet 1/1 status",
+                "show interface ethernet transceiver detail"
+              ],
+              "tier3": [
+                "show interface ethernet 1/1 detail"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis"
+              ],
+              "tier3": [
+                "show gpon optical-power"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface transceiver"
+              ],
+              "tier2": [
+                "show interface port1.0.1 transceiver"
+              ],
+              "tier3": [
+                "show interface port1.0.1 transceiver detail"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface transceiver"
+              ],
+              "tier2": [
+                "show interface gigaethernet 1/1/1 transceiver"
+              ],
+              "tier3": [
+                "show port statistics"
+              ],
+              "arch": [
+                "show system-information"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail"
+              ],
+              "tier3": [
+                "show oam 802.3ah status"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/interface ethernet monitor sfp1 once"
+              ],
+              "tier2": [
+                "/interface ethernet print detail where name~\"sfp\""
+              ],
+              "tier3": [
+                "/log print where topics~\"sfp\""
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "system diagnostics show network interfaces"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -signal"
+              ],
+              "tier2": [
+                "gsmctl -A AT+QENG=SERVINGCELL"
+              ],
+              "tier3": [
+                "logread -f"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "show gpon onu power gpon-onu_1/2/1:1"
+              ],
+              "tier2": [
+                "show gpon optical-power gpon-olt_1/2/1"
+              ],
+              "tier3": [
+                "show gpon onu detail gpon-onu_1/2/1:1"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "show interface transceiver"
+              ],
+              "tier2": [
+                "show optical-power"
+              ],
+              "tier3": [
+                "show interface statistics"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "osi_layer": "Capa 3: Red (IP / Enrutamiento)",
+          "osi_layer_en": "Layer 3: Network (IP / Routing)",
+          "network_domain": "Core & Borde de Red",
+          "network_domain_en": "Core & Network Edge",
+          "methodology": "Aislar por Dominio y Enfoque Bottom-Up",
+          "methodology_en": "Domain Isolation and Bottom-Up Approach"
+        },
+        "noc_ont_gpon_mgmt": {
+          "title": "3. Gestión & Aprovisionamiento ONT/ONU FTTH en OLT",
+          "tier": 1,
+          "body": "**Ciclo de Vida de la Negociación GPON ONT (Estados de la Máquina de Estado GPON):**\n• **O1 (Initial State):** La ONT está encendida pero no ha detectado la señal óptica de la OLT (1490nm).\n• **O2 (Standby State):** La ONT recibe luz descendente y sincroniza con la trama GPON.\n• **O3 (Serial Number State):** La ONT envía su Serial Number (SN) / LOID a la OLT durante la ventana de descubrimiento.\n• **O4 (Ranging State):** La OLT mide el retardo de propagación (Ranging Time) y asigna la distancia física en metros.\n• **O5 (Operation State):** La ONT está 100% registrada, autenticada y en línea recibiendo tráfico.\n\n**Acciones NOC:**\n1. Buscar ONTs no aprovisionadas (`autodiscover` / `unconfigured`).\n2. Registrar la ONT asociando su SN al puerto PON y asignar ID de ONT.\n3. Asociar perfiles de Línea (T-CONT / GEM Ports) y Servicio (VLANs 802.1Q).",
+          "commands": {
+            "huawei": {
+              "tier1": [
+                "display ont autofind 0",
+                "display ont info 0 1 1 1"
+              ],
+              "tier2": [
+                "display ont state 0 1 1 1",
+                "display ont optical-info 0 1 1 1"
+              ],
+              "tier3": [
+                "display service-port port 0/1/1 ont 1",
+                "display ont version 0 1 1 1"
+              ],
+              "arch": [
+                "display current-configuration section gpon"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "show gpon onu uncfg",
+                "show gpon onu state gpon-olt_1/2/1"
+              ],
+              "tier2": [
+                "show gpon onu detail gpon-onu_1/2/1:1",
+                "show gpon onu power gpon-onu_1/2/1:1"
+              ],
+              "tier3": [
+                "show gpon running-config gpon-olt_1/2/1",
+                "show mac address-table gpon-onu_1/2/1:1"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show gpon interface gpon 0/1:1 onu basic-info"
+              ],
+              "tier3": [
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "show mac address-table dynamic interface gpon 0/1:1"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show wan status"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show vlan"
+              ],
+              "tier3": [
+                "show system log"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show interface gpon brief",
+                "show gpon onu state"
+              ],
+              "tier2": [
+                "show gpon onu detail",
+                "show mac-address-table"
+              ],
+              "tier3": [
+                "show gpon oam status",
+                "show erps detail"
+              ],
+              "arch": [
+                "show running-config gpon"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status"
+              ],
+              "tier3": [
+                "show oam loopback"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "cisco_iosxe": {
+              "tier1": [
+                "show interfaces status",
+                "show ip interface brief"
+              ],
+              "tier2": [
+                "show interfaces transceiver"
+              ],
+              "tier3": [
+                "show mac address-table"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "show interfaces terse"
+              ],
+              "tier2": [
+                "show interfaces diagnostics optics"
+              ],
+              "tier3": [
+                "show ethernet-switching table"
+              ],
+              "arch": [
+                "show configuration"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "get system interface physical"
+              ],
+              "tier2": [
+                "fn system transceiver show"
+              ],
+              "tier3": [
+                "diagnose hardware sysinfo transceiver list"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/interface print brief"
+              ],
+              "tier2": [
+                "/interface ethernet monitor sfp1 once"
+              ],
+              "tier3": [
+                "/interface bridge host print"
+              ],
+              "arch": [
+                "/export"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "system diagnostics show network interfaces"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -signal"
+              ],
+              "tier2": [
+                "gsmctl -q"
+              ],
+              "tier3": [
+                "logread -f"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "show interface brief"
+              ],
+              "tier2": [
+                "show optical-power"
+              ],
+              "tier3": [
+                "show interface statistics"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            }
+          },
+          "expected": "ONT negociada en estado O5 (Operation). Service ports activos transmitiendo VLAN de cliente.",
+          "choices": [
+            {
+              "label": "Diagnóstico de Equipos Customer Edge (CE)",
+              "next": "noc_ce_provisioning"
+            },
+            {
+              "label": "Checklist para Entrega Final a Cliente",
+              "next": "noc_handover_checklist"
+            },
+            {
+              "label": "Volver al Inicio NOC",
+              "next": "noc_start"
+            }
+          ],
+          "title_ipv6": "3. Gestión & Aprovisionamiento ONT/ONU FTTH en OLT (IPv6)",
+          "body_ipv6": "**Ciclo de Vida de la Negociación GPON ONT (Estados de la Máquina de Estado GPON):**\n• **O1 (Initial State):** La ONT está encendida pero no ha detectado la señal óptica de la OLT (1490nm).\n• **O2 (Standby State):** La ONT recibe luz descendente y sincroniza con la trama GPON.\n• **O3 (Serial Number State):** La ONT envía su Serial Number (SN) / LOID a la OLT durante la ventana de descubrimiento.\n• **O4 (Ranging State):** La OLT mide el retardo de propagación (Ranging Time) y asigna la distancia física en metros.\n• **O5 (Operation State):** La ONT está 100% registrada, autenticada y en línea recibiendo tráfico.\n\n**Acciones NOC:**\n1. Buscar ONTs no aprovisionadas (`autodiscover` / `unconfigured`).\n2. Registrar la ONT asociando su SN al puerto PON y asignar ID de ONT.\n3. Asociar perfiles de Línea (T-CONT / GEM Ports) y Servicio (VLANs 802.1Q).",
+          "expected_ipv6": "ONT negociada en estado O5 (Operation). Service ports activos transmitiendo VLAN de cliente.",
+          "commands_ipv6": {
+            "huawei": {
+              "tier1": [
+                "display ont autofind 0",
+                "display ont info 0 1 1 1"
+              ],
+              "tier2": [
+                "display ont state 0 1 1 1",
+                "display ont optical-info 0 1 1 1"
+              ],
+              "tier3": [
+                "display service-port port 0/1/1 ont 1",
+                "display ont version 0 1 1 1"
+              ],
+              "arch": [
+                "display current-configuration section gpon"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "show gpon onu uncfg",
+                "show gpon onu state gpon-olt_1/2/1"
+              ],
+              "tier2": [
+                "show gpon onu detail gpon-onu_1/2/1:1",
+                "show gpon onu power gpon-onu_1/2/1:1"
+              ],
+              "tier3": [
+                "show gpon running-config gpon-olt_1/2/1",
+                "show mac address-table gpon-onu_1/2/1:1"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show gpon interface gpon 0/1:1 onu basic-info"
+              ],
+              "tier3": [
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "show mac address-table dynamic interface gpon 0/1:1"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show wan status"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show vlan"
+              ],
+              "tier3": [
+                "show system log"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show interface gpon brief",
+                "show gpon onu state"
+              ],
+              "tier2": [
+                "show gpon onu detail",
+                "show mac-address-table"
+              ],
+              "tier3": [
+                "show gpon oam status",
+                "show erps detail"
+              ],
+              "arch": [
+                "show running-config gpon"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status"
+              ],
+              "tier3": [
+                "show oam loopback"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "cisco_iosxe": {
+              "tier1": [
+                "show interfaces status",
+                "show ipv6 interface brief"
+              ],
+              "tier2": [
+                "show interfaces transceiver"
+              ],
+              "tier3": [
+                "show mac address-table"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "show interfaces terse"
+              ],
+              "tier2": [
+                "show interfaces diagnostics optics"
+              ],
+              "tier3": [
+                "show ethernet-switching table"
+              ],
+              "arch": [
+                "show configuration"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "get system interface physical"
+              ],
+              "tier2": [
+                "fn system transceiver show"
+              ],
+              "tier3": [
+                "diagnose hardware sysinfo transceiver list"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/interface print brief"
+              ],
+              "tier2": [
+                "/interface ethernet monitor sfp1 once"
+              ],
+              "tier3": [
+                "/interface bridge host print"
+              ],
+              "arch": [
+                "/export"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "system diagnostics show network interfaces"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -signal"
+              ],
+              "tier2": [
+                "gsmctl -q"
+              ],
+              "tier3": [
+                "logread -f"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "show interface brief"
+              ],
+              "tier2": [
+                "show optical-power"
+              ],
+              "tier3": [
+                "show interface statistics"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            }
+          },
+          "osi_layer": "Capa 3: Red (IP / Enrutamiento)",
+          "osi_layer_en": "Layer 3: Network (IP / Routing)",
+          "network_domain": "Core & Borde de Red",
+          "network_domain_en": "Core & Network Edge",
+          "methodology": "Aislar por Dominio y Enfoque Bottom-Up",
+          "methodology_en": "Domain Isolation and Bottom-Up Approach"
+        },
+        "noc_ce_provisioning": {
+          "title": "4. Diagnóstico de Equipos Customer Edge (CE) & Demarcación L2/L3",
+          "tier": 2,
+          "body": "**Verificación del Equipo de Demarcación Customer Edge (CE):**\nLos equipos CE conectan el sitio del cliente con la red de transporte del operador.\n\n**Puntos de Validación NOC:**\n• **Subinterfaces / Tagging:** Validar encapsulación `dot1q` / `QinQ` en puerto WAN.\n• **Direccionamiento IP:** Verificar máscaras `/30` (punto a punto tradicional) o `/31` (RFC 3021 para ahorro de espacio IP).\n• **Políticas de Tráfico (Rate Limiting):** Confirmar que el Shaping / Policing coincida con el ancho de banda contratado por el cliente (ej. 50M, 100M, 1G).\n• **Pruebas de Conectividad:** Ping con fragmentación desactivada (DF bit set) para validar MTU sin descartes.",
+          "commands": {
+            "cisco_iosxe": {
+              "tier1": [
+                "show ip interface brief",
+                "show interfaces status",
+                "show ip route"
+              ],
+              "tier2": [
+                "show policy-map interface GigabitEthernet0/0/0",
+                "show ip cef <prefix>",
+                "ping <client_ip> df-bit size 1472"
+              ],
+              "tier3": [
+                "show running-config interface GigabitEthernet0/0/0.100",
+                "show platform hardware qfp active feature qos interface GigabitEthernet0/0/0"
+              ],
+              "arch": [
+                "show running-config | section interface"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "show interfaces terse",
+                "show route"
+              ],
+              "tier2": [
+                "show interfaces ge-0/0/0.100 extensive",
+                "ping <client_ip> do-not-fragment size 1472"
+              ],
+              "tier3": [
+                "show interfaces queue ge-0/0/0",
+                "show firewall log"
+              ],
+              "arch": [
+                "show configuration interfaces ge-0/0/0"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "display ip interface brief",
+                "display ip routing-table"
+              ],
+              "tier2": [
+                "display qos policy interface GigabitEthernet0/0/0",
+                "ping -s 1472 -f <client_ip>"
+              ],
+              "tier3": [
+                "display current-configuration interface GigabitEthernet0/0/0.100"
+              ],
+              "arch": [
+                "display current-configuration"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "get system interface physical",
+                "get router info routing-table all"
+              ],
+              "tier2": [
+                "execute ping-options df-bit yes",
+                "execute ping-options data-size 1472",
+                "execute ping <client_ip>"
+              ],
+              "tier3": [
+                "diagnose firewall iprope list",
+                "diagnose sys session filter dst <client_ip>"
+              ],
+              "arch": [
+                "get system configuration"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show interface ethernet brief",
+                "show ip route"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table"
+              ],
+              "tier3": [
+                "show qos interface ethernet 1/1"
+              ],
+              "arch": [
+                "show running-config interface"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan"
+              ],
+              "tier2": [
+                "show qinq status",
+                "show port statistics"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan"
+              ],
+              "tier2": [
+                "show qos",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show interface counters errors"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show interface brief",
+                "show vlan"
+              ],
+              "tier2": [
+                "show mac address-table",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show interface statistics"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status"
+              ],
+              "tier2": [
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show interface ethernet statistics"
+              ],
+              "arch": [
+                "show configuration persistent"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/ip address print",
+                "/ip route print"
+              ],
+              "tier2": [
+                "/interface vlan print",
+                "/queue simple print"
+              ],
+              "tier3": [
+                "/tool ping address=<client_ip> size=1472 do-not-fragment=yes"
+              ],
+              "arch": [
+                "/export"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route"
+              ],
+              "tier2": [
+                "system diagnostics utilities ping"
+              ],
+              "tier3": [
+                "tcpdump -nei any host <client_ip>"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "ip addr show",
+                "ip route"
+              ],
+              "tier2": [
+                "uci show network"
+              ],
+              "tier3": [
+                "ping -c 5 -M do -s 1472 <client_ip>"
+              ],
+              "arch": [
+                "cat /etc/config/network"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "show interface brief"
+              ],
+              "tier2": [
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "show interface brief"
+              ],
+              "tier2": [
+                "show ip route"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "expected": "Subinterfaces L2/L3 en Up/Up. Ancho de banda y MTU validados sin pérdidas de paquetes.",
+          "choices": [
+            {
+              "label": "Ir a Checklist de Entrega Final a Cliente",
+              "next": "noc_handover_checklist"
+            },
+            {
+              "label": "Volver al Inicio NOC",
+              "next": "noc_start"
+            }
+          ],
+          "title_ipv6": "4. Diagnóstico de Equipos Customer Edge (CE) & Demarcación L2/L3 (IPv6)",
+          "body_ipv6": "**Verificación del Equipo de Demarcación Customer Edge (CE):**\nLos equipos CE conectan el sitio del cliente con la red de transporte del operador.\n\n**Puntos de Validación NOC:**\n• **Subinterfaces / Tagging:** Validar encapsulación `dot1q` / `QinQ` en puerto WAN.\n• **Direccionamiento IP:** Verificar máscaras `/30` (punto a punto tradicional) o `/31` (RFC 3021 para ahorro de espacio IP).\n• **Políticas de Tráfico (Rate Limiting):** Confirmar que el Shaping / Policing coincida con el ancho de banda contratado por el cliente (ej. 50M, 100M, 1G).\n• **Pruebas de Conectividad:** Ping con fragmentación desactivada (DF bit set) para validar MTU sin descartes.",
+          "expected_ipv6": "Subinterfaces L2/L3 en Up/Up. Ancho de banda y MTU validados sin pérdidas de paquetes.",
+          "commands_ipv6": {
+            "cisco_iosxe": {
+              "tier1": [
+                "show ipv6 interface brief",
+                "show interfaces status",
+                "show ipv6 route"
+              ],
+              "tier2": [
+                "show policy-map interface GigabitEthernet0/0/0",
+                "show ip cef <prefix>",
+                "ping ipv6 <client_ip> df-bit size 1472"
+              ],
+              "tier3": [
+                "show running-config interface GigabitEthernet0/0/0.100",
+                "show platform hardware qfp active feature qos interface GigabitEthernet0/0/0"
+              ],
+              "arch": [
+                "show running-config | section interface"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "show interfaces terse",
+                "show route"
+              ],
+              "tier2": [
+                "show interfaces ge-0/0/0.100 extensive",
+                "ping <client_ip> do-not-fragment size 1472"
+              ],
+              "tier3": [
+                "show interfaces queue ge-0/0/0",
+                "show firewall log"
+              ],
+              "arch": [
+                "show configuration interfaces ge-0/0/0"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "display ipv6 interface brief",
+                "display ipv6 routing-table"
+              ],
+              "tier2": [
+                "display qos policy interface GigabitEthernet0/0/0",
+                "ping ipv6 -s 1472 -f <client_ip>"
+              ],
+              "tier3": [
+                "display current-configuration interface GigabitEthernet0/0/0.100"
+              ],
+              "arch": [
+                "display current-configuration"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "get system interface physical",
+                "get router info6 routing-table all"
+              ],
+              "tier2": [
+                "execute execute ping6-options df-bit yes",
+                "execute execute ping6-options data-size 1472",
+                "execute execute ping6 <client_ip>"
+              ],
+              "tier3": [
+                "diagnose firewall iprope list",
+                "diagnose sys session filter dst <client_ip>"
+              ],
+              "arch": [
+                "get system configuration"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show interface ethernet brief",
+                "show ip route"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table"
+              ],
+              "tier3": [
+                "show qos interface ethernet 1/1"
+              ],
+              "arch": [
+                "show running-config interface"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan"
+              ],
+              "tier2": [
+                "show qinq status",
+                "show port statistics"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan"
+              ],
+              "tier2": [
+                "show qos",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show interface counters errors"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show interface brief",
+                "show vlan"
+              ],
+              "tier2": [
+                "show mac address-table",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show interface statistics"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status"
+              ],
+              "tier2": [
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show interface ethernet statistics"
+              ],
+              "arch": [
+                "show configuration persistent"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/ipv6 address print",
+                "/ipv6 route print"
+              ],
+              "tier2": [
+                "/interface vlan print",
+                "/queue simple print"
+              ],
+              "tier3": [
+                "/tool ping address=<client_ip> size=1472 do-not-fragment=yes"
+              ],
+              "arch": [
+                "/export"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route"
+              ],
+              "tier2": [
+                "system diagnostics utilities ping"
+              ],
+              "tier3": [
+                "tcpdump -nei any host <client_ip>"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "ip addr show",
+                "ip route"
+              ],
+              "tier2": [
+                "uci show network"
+              ],
+              "tier3": [
+                "ping -c 5 -M do -s 1472 <client_ip>"
+              ],
+              "arch": [
+                "cat /etc/config/network"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "show interface brief"
+              ],
+              "tier2": [
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "show interface brief"
+              ],
+              "tier2": [
+                "show ip route"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "osi_layer": "Capa 3: Red (IP / Enrutamiento)",
+          "osi_layer_en": "Layer 3: Network (IP / Routing)",
+          "network_domain": "Core & Borde de Red",
+          "network_domain_en": "Core & Network Edge",
+          "methodology": "Aislar por Dominio y Enfoque Bottom-Up",
+          "methodology_en": "Domain Isolation and Bottom-Up Approach"
+        },
+        "noc_handover_checklist": {
+          "title": "5. Checklist de Entrega Final a Cliente (Service Handover Checklist)",
+          "tier": 1,
+          "body": "**Checklist de Validación Final de Servicio NOC antes de Entrega a Producción:**\n\n1. **Prueba de Capa 1:** Verificar que no haya incrementos de errores CRC, alineación ni descartes en contadores de puerto.\n2. **Prueba de Capa 2 / 3:** Confirmar que la dirección IP de cliente o VLAN responda pings estables (< 15ms).\n3. **Prueba de MTU:** Ejecutar `ping` con bit DF (Dont Fragment) en 1472 bytes (1500 MTU total) sin pérdidas.\n4. **Limpieza de Contadores:** Reiniciar contadores de interfaz para dejar métricas en cero antes de la ventana comercial.\n5. **Respaldo & Backup:** Guardar la configuración en la memoria no volátil (`write memory` / `commit` / `save`) y exportar copia al repositorio del NOC.",
+          "commands": {
+            "cisco_iosxe": {
+              "tier1": [
+                "clear counters GigabitEthernet0/0/0",
+                "ping <client_ip> df-bit size 1472 count 10"
+              ],
+              "tier2": [
+                "show interfaces GigabitEthernet0/0/0 | include errors|drops|CRC",
+                "copy running-config startup-config"
+              ],
+              "tier3": [
+                "show archive",
+                "write memory"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "clear interfaces statistics ge-0/0/0",
+                "ping <client_ip> do-not-fragment size 1472 count 10"
+              ],
+              "tier2": [
+                "show interfaces ge-0/0/0 | match \"Errors|Drops|CRC\"",
+                "commit check"
+              ],
+              "tier3": [
+                "commit comment \"Configuracion de Entrega a Cliente Final\""
+              ],
+              "arch": [
+                "show configuration"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "reset counters interface GigabitEthernet0/0/0",
+                "ping -s 1472 -f -c 10 <client_ip>"
+              ],
+              "tier2": [
+                "display interface GigabitEthernet0/0/0 | include CRC|error"
+              ],
+              "tier3": [
+                "save"
+              ],
+              "arch": [
+                "display current-configuration"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "diagnose hardware deviceinfo nic port1",
+                "execute ping-options count 10"
+              ],
+              "tier2": [
+                "execute ping-options df-bit yes",
+                "execute ping-options data-size 1472",
+                "execute ping <client_ip>"
+              ],
+              "tier3": [
+                "execute backup config flash \"Handover_Cliente\""
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "clear counters interface ethernet 1/1"
+              ],
+              "tier2": [
+                "show interface ethernet 1/1 detail"
+              ],
+              "tier3": [
+                "copy running-config startup-config"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "clear counters port 1/1/1"
+              ],
+              "tier2": [
+                "show port statistics"
+              ],
+              "tier3": [
+                "write memory"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "clear counters port1.0.1"
+              ],
+              "tier2": [
+                "show interface counters errors"
+              ],
+              "tier3": [
+                "write memory"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "clear counters interface brief"
+              ],
+              "tier2": [
+                "show interface statistics"
+              ],
+              "tier3": [
+                "write memory"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show interface ethernet statistics"
+              ],
+              "tier2": [
+                "show link-state"
+              ],
+              "tier3": [
+                "show configuration persistent"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/interface reset-counters ether1"
+              ],
+              "tier2": [
+                "/tool ping address=<client_ip> size=1472 do-not-fragment=yes count=10"
+              ],
+              "tier3": [
+                "/system backup save name=Handover_Cliente"
+              ],
+              "arch": [
+                "/export"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "system diagnostics utilities ping"
+              ],
+              "tier3": [
+                "system backup show"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "ping -c 10 -M do -s 1472 <client_ip>"
+              ],
+              "tier2": [
+                "uci show network"
+              ],
+              "tier3": [
+                "uci commit network"
+              ],
+              "arch": [
+                "cat /etc/config/network"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "show interface brief"
+              ],
+              "tier2": [
+                "write memory"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "show interface brief"
+              ],
+              "tier2": [
+                "write memory"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "expected": "Servicio 100% verificado, sin errores CRC, copia de seguridad guardada y listo para acta de entrega.",
+          "choices": [
+            {
+              "label": "Volver al Inicio NOC",
+              "next": "noc_start"
+            },
+            {
+              "label": "Volver al Menú Principal",
+              "next": "back_menu"
+            }
+          ],
+          "title_ipv6": "5. Checklist de Entrega Final a Cliente (Service Handover Checklist) (IPv6)",
+          "body_ipv6": "**Checklist de Validación Final de Servicio NOC antes de Entrega a Producción:**\n\n1. **Prueba de Capa 1:** Verificar que no haya incrementos de errores CRC, alineación ni descartes en contadores de puerto.\n2. **Prueba de Capa 2 / 3:** Confirmar que la dirección IP de cliente o VLAN responda pings estables (< 15ms).\n3. **Prueba de MTU:** Ejecutar `ping` con bit DF (Dont Fragment) en 1472 bytes (1500 MTU total) sin pérdidas.\n4. **Limpieza de Contadores:** Reiniciar contadores de interfaz para dejar métricas en cero antes de la ventana comercial.\n5. **Respaldo & Backup:** Guardar la configuración en la memoria no volátil (`write memory` / `commit` / `save`) y exportar copia al repositorio del NOC.",
+          "expected_ipv6": "Servicio 100% verificado, sin errores CRC, copia de seguridad guardada y listo para acta de entrega.",
+          "commands_ipv6": {
+            "cisco_iosxe": {
+              "tier1": [
+                "clear counters GigabitEthernet0/0/0",
+                "ping ipv6 <client_ip> df-bit size 1472 count 10"
+              ],
+              "tier2": [
+                "show interfaces GigabitEthernet0/0/0 | include errors|drops|CRC",
+                "copy running-config startup-config"
+              ],
+              "tier3": [
+                "show archive",
+                "write memory"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "clear interfaces statistics ge-0/0/0",
+                "ping <client_ip> do-not-fragment size 1472 count 10"
+              ],
+              "tier2": [
+                "show interfaces ge-0/0/0 | match \"Errors|Drops|CRC\"",
+                "commit check"
+              ],
+              "tier3": [
+                "commit comment \"Configuracion de Entrega a Cliente Final\""
+              ],
+              "arch": [
+                "show configuration"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "reset counters interface GigabitEthernet0/0/0",
+                "ping ipv6 -s 1472 -f -c 10 <client_ip>"
+              ],
+              "tier2": [
+                "display interface GigabitEthernet0/0/0 | include CRC|error"
+              ],
+              "tier3": [
+                "save"
+              ],
+              "arch": [
+                "display current-configuration"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "diagnose hardware deviceinfo nic port1",
+                "execute execute ping6-options count 10"
+              ],
+              "tier2": [
+                "execute execute ping6-options df-bit yes",
+                "execute execute ping6-options data-size 1472",
+                "execute execute ping6 <client_ip>"
+              ],
+              "tier3": [
+                "execute backup config flash \"Handover_Cliente\""
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "clear counters interface ethernet 1/1"
+              ],
+              "tier2": [
+                "show interface ethernet 1/1 detail"
+              ],
+              "tier3": [
+                "copy running-config startup-config"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "clear counters port 1/1/1"
+              ],
+              "tier2": [
+                "show port statistics"
+              ],
+              "tier3": [
+                "write memory"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "clear counters port1.0.1"
+              ],
+              "tier2": [
+                "show interface counters errors"
+              ],
+              "tier3": [
+                "write memory"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "clear counters interface brief"
+              ],
+              "tier2": [
+                "show interface statistics"
+              ],
+              "tier3": [
+                "write memory"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show interface ethernet statistics"
+              ],
+              "tier2": [
+                "show link-state"
+              ],
+              "tier3": [
+                "show configuration persistent"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/interface reset-counters ether1"
+              ],
+              "tier2": [
+                "/tool ping address=<client_ip> size=1472 do-not-fragment=yes count=10"
+              ],
+              "tier3": [
+                "/system backup save name=Handover_Cliente"
+              ],
+              "arch": [
+                "/export"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "system diagnostics utilities ping"
+              ],
+              "tier3": [
+                "system backup show"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "ping -c 10 -M do -s 1472 <client_ip>"
+              ],
+              "tier2": [
+                "uci show network"
+              ],
+              "tier3": [
+                "uci commit network"
+              ],
+              "arch": [
+                "cat /etc/config/network"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "show interface brief"
+              ],
+              "tier2": [
+                "write memory"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "show interface brief"
+              ],
+              "tier2": [
+                "write memory"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "osi_layer": "Capa 3: Red (IP / Enrutamiento)",
+          "osi_layer_en": "Layer 3: Network (IP / Routing)",
+          "network_domain": "Core & Borde de Red",
+          "network_domain_en": "Core & Network Edge",
+          "methodology": "Aislar por Dominio y Enfoque Bottom-Up",
+          "methodology_en": "Domain Isolation and Bottom-Up Approach"
+        }
+      }
+    },
     "mpls": {
       "name": "MPLS Core Troubleshooting",
       "description": "Diagnóstico del plano de control y datos MPLS. Incluye LDP, RSVP-TE, Segment Routing, sincronización IGP, LFIB/Label Stack y problemas de MTU/MSS.",
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "teltonika"
       ],
       "steps": {
         "mpls_start": {
@@ -116,6 +2476,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router mpls",
                 "show router ldp"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -393,6 +2824,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router mpls"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Interfaces MPLS en state Up/Up. Vecinos LDP/RSVP Established/Operational. MPLS forwarding table poblada con labels locales y remotas. Sin discrepancias de MTU.",
@@ -624,6 +3126,77 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show router ldp"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -907,6 +3480,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router access-list",
                 "show router ldp"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -1195,6 +3839,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router route-map"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Bindings presentes para todas las FECs relevantes. Sin filtros agresivos de import/export de labels. La FEC existe en la tabla IGP (inet.0 / global).",
@@ -1469,6 +4184,77 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show router access-list"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -1754,6 +4540,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router ospf | match metric",
                 "show router ospf"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -2042,6 +4899,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show system settings"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Entradas LFIB/LFEB con acciones Pop/Swap/Push correctas. MTU >= 1508 para un label (1516+ para stack VPN+Transport). Nexthop resuelto en capa 2 bajo el túnel.",
@@ -2309,6 +5237,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show system interface <x>"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Ping con DF-bit y payload >= 1500 bytes debe pasar sin fragmentación end-to-end. MTU >= 1508 para LDP simple, >= 1516 para L3VPN doble-label, >= 1524 para stacks mayores.",
@@ -2562,6 +5561,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show firewall policy"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Nexthop resuelto (ARP/ND completo). Sin contadores de descarte creciendo en ACLs/QoS. ECMP hashing entrega flujos consistentemente. Labels programadas en hardware (LFIB = CEF).",
@@ -2802,6 +5872,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router mpls"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "LSPs en estado UP/Established. Bandwidth reservable disponible en todos los enlaces del path. Constraints (affinity, bandwidth) cumplidos. Sin preemption no deseado.",
@@ -2965,13 +6106,16 @@ const NET_TSHOOT_DATA = {
       "name": "L3VPN Troubleshooting",
       "description": "Diagnóstico de VPNs de Capa 3 (RFC 4364). Incluye MP-BGP VPNv4/v6, RD/RT, VRF, CE-PE routing (estático/OSPF/BGP/IS-IS), y doble stack.",
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "teltonika"
       ],
       "steps": {
         "l3vpn_start": {
@@ -3072,6 +6216,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show system vrf",
                 "show router bgp"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -3318,6 +6533,77 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show router bgp"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -3607,6 +6893,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show system interface <ce-face>"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Subinterface Up/Up. Encapsulación coincidente (dot1q/QinQ/untagged). VLAN ID y TPID correctos en ambos extremos.",
@@ -3830,6 +7187,77 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show system interface <ce-face>"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -4105,6 +7533,77 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show router bgp"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -4392,6 +7891,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router extcommunity-list"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Extended communities RT coinciden en export e import. Sin SOO conflictivo. Route-maps permiten prefijos esperados.",
@@ -4676,6 +8246,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router bgp"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Peers UP en AF VPNv4. Capacidades AFI/SAFI 1/128 (IPv4) o 2/128 (IPv6) negociadas. Rutas recibidas/advertisadas > 0.",
@@ -4954,6 +8595,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router bgp"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Estado Established. Address-family vpnv4 activo en ambos extremos. Ruta IGP válida hacia el update-source. TCP 179 libre.",
@@ -5224,6 +8936,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router bgp"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Rutas recibidas/advertisadas contadas > 0. Sin prefix-limit exceeded. Next-hop alcanzable con label stack. Sin RIB-failure.",
@@ -5455,6 +9238,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show system vrf"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "CEF/FIB con next-hop válido. MAC/ND resuelto en VRF. Label stack presente para PE-P si aplica. Sin contadores de descarte creciendo.",
@@ -5642,14 +9496,18 @@ const NET_TSHOOT_DATA = {
       "name": "L2VPN Troubleshooting (VPWS / VPLS / PW)",
       "description": "Diagnóstico de Pseudowires, VPLS y VPWS. Señalización LDP/BGP, ACs, MTU de servicio, encapsulación dot1q/QinQ/802.1ad, y estado de conexión.",
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
         "adtran",
+        "allied_telesis",
         "arista",
+        "bdcom",
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
         "huawei",
-        "fortinet"
+        "juniper",
+        "mikrotik",
+        "raisecom"
       ],
       "steps": {
         "l2vpn_start": {
@@ -5752,6 +9610,99 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show running-config | section xconnect",
                 "show running-config | section interface"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -6045,6 +9996,99 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show running-config interface <ac> | match encapsulation"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Interface UP, sin errores de capa física. Encapsulamiento coincide con CE. MTU del AC >= MTU del PW más overhead.",
@@ -6279,6 +10323,99 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show running-config | section xconnect | match encapsulation",
                 "show running-config interface <ac> | match encapsulation"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -6526,6 +10663,99 @@ const NET_TSHOOT_DATA = {
                 "show running-config | section xconnect | match vcid",
                 "show running-config | section ldp"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Bindings para VCID presentes en ambos PEs. PW status local y remoto 0x00000000. Vecino LDP alcanzable y Operational.",
@@ -6765,6 +10995,99 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show running-config | section xconnect | match vcid"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "VCID idéntico en ambos extremos. PW-type idéntico. MTU >= valor esperado en ambos lados (incluyendo overhead de tags).",
@@ -6995,6 +11318,99 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show running-config | section xconnect | match status"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Status 0x00000000 en ambos extremos. Si no, mapear bits a causa raíz según RFC 4447 (AC fault, PW not forwarding, etc.).",
@@ -7223,6 +11639,99 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show running-config | section l2vpn | match oam"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -11295,13 +15804,16 @@ const NET_TSHOOT_DATA = {
       "name": "OSPF Troubleshooting",
       "description": "Diagnóstico profundo de OSPF v2/v3. Vecindades, LSA database (Types 1-7/9-11), SPF tree, redistribución, stub/NSSA, virtual-links, autenticación, BFD, GR/NSF, database overflow, y forwarding.",
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "teltonika"
       ],
       "steps": {
         "ospf_start": {
@@ -11409,6 +15921,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router ospf",
                 "show router ospf | match area"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -11689,6 +16272,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router ospf"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Timers coinciden. MTU igual en ambos lados. Router-ID único. Auth coincide. Network type compatible.",
@@ -11935,6 +16589,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router ospf"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Auth type y key coinciden. MTU idéntica. Hello/Dead timers iguales. Network type compatible (broadcast vs p2p).",
@@ -12164,6 +16889,77 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show router ospf"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -12412,6 +17208,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router ospf"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "ABR conectado a area 0. NSSA translator election correcto. Virtual-link UP si aplica. Stub flag consistente.",
@@ -12643,6 +17510,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router ospf"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Rutas externas (O E1/E2) presentes. Sin loops. Metric-type correcta. Forwarding-address válido. Tag aplicado si aplica.",
@@ -12867,6 +17805,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router ospf"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "SPF ejecutado pocas veces. CPU estable. Database size dentro de límites. Sin LSA flapping.",
@@ -13083,6 +18092,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show router ospf"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "BFD sesiones UP, timers negociados. GR/NSF capaz en ambos extremos. OSPF reacciona a BFD DOWN. Sin flapping.",
@@ -13217,13 +18297,16 @@ const NET_TSHOOT_DATA = {
       "name": "IS-IS Troubleshooting",
       "description": "Diagnóstico de Intermediate System to Intermediate System. Levels, adjacencies, LSP database, wide-metrics, TLVs, y multi-topology.",
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "teltonika"
       ],
       "steps": {
         "isis_start": {
@@ -13326,6 +18409,77 @@ const NET_TSHOOT_DATA = {
                 "show router access-list",
                 "show router prefix-list",
                 "show router static"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -13579,6 +18733,77 @@ const NET_TSHOOT_DATA = {
                 "show router prefix-list",
                 "show router static"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "State Up. Holdtime decrece. System-ID único. Subnets y levels coinciden. Auth y MTU iguales.",
@@ -13827,6 +19052,77 @@ const NET_TSHOOT_DATA = {
                 "show router access-list",
                 "show router prefix-list",
                 "show router static"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -14081,6 +19377,77 @@ const NET_TSHOOT_DATA = {
                 "show router prefix-list",
                 "show router static"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Wide-metrics activas uniformemente. Overload bit solo en mantenimiento. Attached-bit correcto en L1/L2 routers.",
@@ -14226,13 +19593,16 @@ const NET_TSHOOT_DATA = {
       "name": "BGP Troubleshooting",
       "description": "Diagnóstico de Border Gateway Protocol (eBGP/iBGP). Peers, path selection, route reflectors, confederations, policies, communities, y next-hop.",
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "teltonika"
       ],
       "steps": {
         "bgp_start": {
@@ -14345,6 +19715,77 @@ const NET_TSHOOT_DATA = {
                 "show router access-list",
                 "show router community-list",
                 "show router aspath-list"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -14615,6 +20056,77 @@ const NET_TSHOOT_DATA = {
                 "show router bgp",
                 "show router route-map",
                 "show router prefix-list"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -14889,6 +20401,77 @@ const NET_TSHOOT_DATA = {
                 "show router access-list",
                 "show router aspath-list"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Rutas recibidas/advertisadas > 0. Sin prefix-limit exceeded. Policies permiten prefijos esperados. Next-hop resoluble.",
@@ -15151,6 +20734,77 @@ const NET_TSHOOT_DATA = {
                 "show router access-list",
                 "show router aspath-list"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Bestpath tiene el atributo ganador según el algoritmo. MED comparado solo si mismo AS-path first. Origin IGP > EGP > Incomplete.",
@@ -15409,6 +21063,77 @@ const NET_TSHOOT_DATA = {
                 "show router prefix-list",
                 "show router access-list",
                 "show router aspath-list"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -15678,6 +21403,77 @@ const NET_TSHOOT_DATA = {
                 "show router community-list",
                 "show router extcommunity-list"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Policies permiten prefijos esperados. Communities aplicadas correctamente. AS-path regex no bloquea rutas legítimas.",
@@ -15840,12 +21636,16 @@ const NET_TSHOOT_DATA = {
       "name": "Spanning Tree Troubleshooting",
       "description": "Diagnóstico de STP, RSTP, MSTP. Root election, BPDUs, port states, TCN, loops, broadcast storms, y compatibility entre vendors.",
       "vendors": [
-        "juniper",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
+        "allied_telesis",
         "arista",
-        "huawei"
+        "bdcom",
+        "cisco_iosxe",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "raisecom"
       ],
       "steps": {
         "st_start": {
@@ -15920,6 +21720,99 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show switch stp"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -16159,6 +22052,99 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show switch stp"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Root ID estable. Path cost mínimo hacia root. Sin root flapping. Root en ubicación deseada de la topología.",
@@ -16347,6 +22333,99 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show switch stp"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -16547,6 +22626,99 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show switch stp"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Storm-control dentro de límites. Sin MAC flapping continuo. Loop eliminado. Un solo path activo por segmento.",
@@ -16744,6 +22916,99 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show switch stp"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -18368,13 +24633,16 @@ const NET_TSHOOT_DATA = {
       "name": "BFD Troubleshooting",
       "description": "Diagnóstico de Bidirectional Forwarding Detection. Detección de fallos sub-segundo para BGP, IS-IS, OSPF, LDP, y static routes.",
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "teltonika"
       ],
       "steps": {
         "bfd_start": {
@@ -18469,6 +24737,77 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show system settings"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -18747,6 +25086,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show system settings"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Reachability al peer. BFD enabled en ambos lados. Timers negociados. UDP port libre.",
@@ -18986,6 +25396,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show system settings"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Flap count bajo. Sin errores de interfaz. CPU estable. Timers razonables (ej. 3x300ms o más en links congestionados).",
@@ -19222,6 +25703,77 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show system settings"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -22185,13 +28737,16 @@ const NET_TSHOOT_DATA = {
       "name": "DHCP / DHCPv6 Troubleshooting",
       "description": "Diagnóstico de DHCP/DHCPv6 en redes ISP. Relay, server, option 82, lease allocation, y troubleshooting de acceso broadband.",
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "teltonika"
       ],
       "steps": {
         "dhcp_start": {
@@ -22290,6 +28845,77 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show system dhcp server"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -22507,6 +29133,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show system dhcp server"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Relay forwarda DISCOVER al server. Server responde con OFFER. Sin ACLs bloqueando UDP 67/68. Pool con IPs libres.",
@@ -22719,6 +29416,77 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show system dhcp server"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -22936,6 +29704,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show system dhcp server"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Option 82 insertado. Circuit-ID y remote-ID correctos. Server acepta Option 82. Leases asignados por subscriber.",
@@ -23142,6 +29981,77 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "show system dhcp server"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -25682,7 +32592,11 @@ const NET_TSHOOT_DATA = {
       "name": "CCC / Interface Switching Troubleshooting",
       "description": "Diagnóstico de conexiones CCC (Circuit Cross Connect) en Juniper MX. Incluye interface-switching, remote-interface-switching, y LSP-switching con sus estados, interfaces locales/remotas, y verificación de dataplane.",
       "vendors": [
-        "juniper"
+        "allied_telesis",
+        "bdcom",
+        "datacom",
+        "juniper",
+        "raisecom"
       ],
       "steps": {
         "ccc_start": {
@@ -25708,6 +32622,99 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show configuration protocols connections | display set",
                 "show configuration protocols connections | display set | match interface-switch"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -25821,6 +32828,99 @@ const NET_TSHOOT_DATA = {
                 "show configuration protocols connections | display set",
                 "show configuration protocols connections | display set | match <name>"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Conexión en estado Up. Si UN: falta configuración. Si Dn: verificar AC y encapsulación.",
@@ -25889,6 +32989,99 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show configuration interfaces <ac-interface> | display set",
                 "show configuration interfaces <ac-interface> | display set | match encapsulation"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -25959,6 +33152,99 @@ const NET_TSHOOT_DATA = {
                 "show configuration interfaces <ac-interface> | display set",
                 "show configuration protocols connections | display set | match <name>"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Encapsulación coincidente entre interfaz y CCC. Si CE usa dot1q → vlan-ccc. Si CE sin tag → ethernet-ccc.",
@@ -26026,6 +33312,99 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "show configuration protocols mpls | display set | match <lsp-name>",
                 "show configuration protocols rsvp | display set"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -26095,6 +33474,99 @@ const NET_TSHOOT_DATA = {
                 "show configuration protocols connections | display set",
                 "show configuration interfaces | display set | match <ac-interface>"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Configuración presente y sintácticamente válida. Interfaces referenciadas existen y tienen encapsulación CCC.",
@@ -26140,14 +33612,17 @@ const NET_TSHOOT_DATA = {
       "name": "Troubleshooting NAT",
       "description": "Diagnóstico y resolución de fallas de NAT: tablas de sesión, agotamiento de puertos (Port Exhaustion) y debugging de flujos.",
       "vendors": [
-        "juniper",
-        "cisco_iosxe",
-        "fortinet",
-        "mikrotik",
-        "zone",
-        "linux",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "linux",
+        "mikrotik",
+        "sophos",
+        "teltonika",
+        "zone"
       ],
       "steps": {
         "nat_tshoot_start": {
@@ -26267,6 +33742,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "conntrack -L --output extended",
                 "ss -tanp | grep ESTABLISHED | wc -l"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -26554,6 +34100,77 @@ const NET_TSHOOT_DATA = {
                 "cat /proc/net/nf_conntrack | wc -l",
                 "sysctl -w net.netfilter.nf_conntrack_max=131072"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "El uso del pool de NAT o puertos debe ser inferior al 80%. No deben existir registros de descartes de puertos ni errores de \"Port Exhaustion\" en el buffer de logs.",
@@ -26812,6 +34429,77 @@ const NET_TSHOOT_DATA = {
                 "iptables -t raw -D OUTPUT -d <ip-privada> -j TRACE",
                 "iptables -t nat -L -n -v --line-numbers"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "El log/debug de flujo debe revelar la línea donde ocurre la traducción: \"NAT translation applied\" o \"source NAT to IP:port\". Si hay descarte, indicará el motivo específico (ej. \"firewall policy deny\", \"route lookup failed\").",
@@ -26968,15 +34656,18 @@ const NET_TSHOOT_DATA = {
       "name": "Troubleshooting Enrutamiento Estático",
       "description": "Diagnóstico de presencia de rutas en RIB/FIB, inalcanzabilidad del siguiente salto, fallas en resolución recursiva, precedencia de métricas flotantes y asimetría ECMP.",
       "vendors": [
-        "juniper",
+        "arista",
         "cisco_iosxe",
         "cisco_iosxr",
-        "mikrotik",
+        "datacom",
         "fortinet",
-        "zone",
+        "huawei",
+        "juniper",
         "linux",
-        "arista",
-        "huawei"
+        "mikrotik",
+        "sophos",
+        "teltonika",
+        "zone"
       ],
       "steps": {
         "static_start": {
@@ -27092,6 +34783,77 @@ const NET_TSHOOT_DATA = {
                 "ss -s",
                 "ip route show cache",
                 "ip -s link show"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -27319,6 +35081,77 @@ const NET_TSHOOT_DATA = {
                 "traceroute -n <peer>",
                 "ip neigh show | grep <peer>"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "El siguiente salto debe ser resuelto recursivamente hacia una IP de tránsito directamente conectada y una interfaz física en estado UP.",
@@ -27475,6 +35308,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "ip route show metric | grep <peer>",
                 "ip monitor route"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -27633,6 +35537,77 @@ const NET_TSHOOT_DATA = {
                 "ip route show table all | grep <peer>",
                 "ss -s"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "La tabla de reenvío (FIB) debe reflejar múltiples entradas de salida activas para el prefijo de destino. El tráfico debe repartirse consistentemente según la tupla de 5 campos (IPs y puertos).",
@@ -27734,15 +35709,18 @@ const NET_TSHOOT_DATA = {
       "name": "Configuración de Enrutamiento Estático",
       "description": "Configuración de rutas estáticas, rutas flotantes para redundancia, balanceo ECMP y trackeo de SLAs/BFD en entornos de red multi-vendor.",
       "vendors": [
-        "juniper",
+        "arista",
         "cisco_iosxe",
         "cisco_iosxr",
-        "mikrotik",
+        "datacom",
         "fortinet",
-        "zone",
+        "huawei",
+        "juniper",
         "linux",
-        "arista",
-        "huawei"
+        "mikrotik",
+        "sophos",
+        "teltonika",
+        "zone"
       ],
       "steps": {
         "static_config_start": {
@@ -27832,6 +35810,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "ip route save > /tmp/routes.txt",
                 "sysctl net.ipv4.ip_forward"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -28031,6 +36080,77 @@ const NET_TSHOOT_DATA = {
                 "ip route add 192.168.100.0/24 via 10.20.20.2 metric 200",
                 "ip route show | grep 192.168.100"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "La ruta flotante figura en la base de datos de enrutamiento pero permanece inactiva (inactiva en RIB/FIB) mientras la ruta principal esté activa.",
@@ -28188,6 +36308,77 @@ const NET_TSHOOT_DATA = {
               "tier1": [
                 "ip route add 192.168.100.0/24 nexthop via 10.10.12.2 weight 1 nexthop via 10.20.20.2 weight 1",
                 "ip route show | grep 192.168.100"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -28354,6 +36545,77 @@ const NET_TSHOOT_DATA = {
                 "ip monitor route &",
                 "ping -c 3 -W 1 10.10.12.2 || ip route del 192.168.100.0/24 via 10.10.12.2"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Al caer la sesión BFD o fallar el ping IP SLA, la ruta estática es retirada de inmediato de la tabla de enrutamiento (RIB) y se activa la ruta flotante.",
@@ -28464,11 +36726,14 @@ const NET_TSHOOT_DATA = {
       "name": "RIPv2 Troubleshooting",
       "description": "Diagnóstico profundo de Routing Information Protocol (RIPv2). Timers, base de datos de rutas, métrica 16, split horizon, y autenticación MD5.",
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
         "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "juniper",
         "mikrotik",
-        "fortinet"
+        "sophos",
+        "teltonika"
       ],
       "steps": {
         "rip_start": {
@@ -28564,6 +36829,77 @@ const NET_TSHOOT_DATA = {
               ],
               "arch": [
                 "/routing rip export"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -28739,6 +37075,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "/routing rip export"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "title_ipv6": "2. Diagnóstico de Vecinos y Tránsito RIPng",
@@ -28912,6 +37319,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "/routing rip export"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "title_ipv6": "3. Diagnóstico de Rutas y Métrica 16 en RIPng",
@@ -29081,6 +37559,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "/routing rip export"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "title_ipv6": "4. Ajuste de Timers y Sincronización RIPng",
@@ -29164,6 +37713,3026 @@ const NET_TSHOOT_DATA = {
           "network_domain_en": "Access & Aggregation",
           "methodology": "Comparar con Línea Base (Métricas por saltos y temporizadores)",
           "methodology_en": "Baseline Comparison (Hop metrics and timers)"
+        }
+      }
+    },
+    "noc_operaciones_config": {
+      "name": "⚙️ Configuración Inicial NOC & Entrega a Cliente (Estilo CCNA / CCNP)",
+      "description": "Guía paso a paso estilo CCNA/CCNP para aprovisionar equipos de red desde cero: inicialización (hostname, banners, usuarios, contraseñas), hardening (SSH, NTP, Syslog, SNMP, ACLs), subinterfaces CE, perfiles ONT GPON y entrega final.",
+      "vendors": [
+        "juniper",
+        "cisco_iosxe",
+        "huawei",
+        "fortinet",
+        "datacom",
+        "bdcom",
+        "allied_telesis",
+        "raisecom",
+        "optone_vkom",
+        "mikrotik",
+        "sophos",
+        "teltonika",
+        "zte",
+        "adtran"
+      ],
+      "steps": {
+        "noc_config_start": {
+          "title": "1. Configuración Básica Inicial de Equipos (Estilo CCNA)",
+          "tier": 1,
+          "body": "**Paso 1: Inicialización Estándar de Equipos (CCNA Level):**\nTodo equipo de telecomunicaciones en la red NOC debe iniciarse con parámetros de identificación y credenciales seguras.\n\n**Comandos Esenciales:**\n• **Nombre de Equipo (`hostname` / `sysname`):** Identificador único del nodo en el inventario NOC.\n• **Banners Legal (`banner motd`):** Advertencia de acceso no autorizado obligatorio por auditorías ISO 27001.\n• **Credenciales Seguras:** Usuarios administradores con algoritmos de cifrado fuerte (Secret / SHA-256).\n• **Zona Horaria & Guardado:** Ajuste de reloj local y persistencia en memoria flash.",
+          "commands": {
+            "cisco_iosxe": {
+              "tier1": [
+                "configure terminal",
+                "hostname Router-NOC-CE1",
+                "banner motd ^C ACCESO AUTORIZADO UNICAMENTE NOC CLIENTES ^C",
+                "enable secret SuperPasswordNOC123!",
+                "username admin privilege 15 secret SuperAdminNOC123!",
+                "clock timezone COT -5",
+                "end",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config | section hostname|username|banner"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "configure",
+                "set system host-name Router-NOC-CE1",
+                "set system root-authentication plain-text-password",
+                "set system login user admin class super-user authentication plain-text-password",
+                "set system time-zone America/Bogota",
+                "commit"
+              ],
+              "tier2": [
+                "show configuration system"
+              ],
+              "tier3": [
+                "show configuration"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "system-view",
+                "sysname Router-NOC-CE1",
+                "header shell information \"ACCESO RESTRINGIDO - UNICAMENTE PERSONAL NOC\"",
+                "aaa",
+                " local-user admin password irreversible-cipher SuperAdminNOC123!",
+                " local-user admin service-type terminal ssh http",
+                " local-user admin privilege level 15",
+                "quit",
+                "clock timezone COT minus 05:00:00",
+                "save"
+              ],
+              "tier2": [
+                "display current-configuration | include sysname|header|aaa"
+              ],
+              "tier3": [
+                "display current-configuration"
+              ],
+              "arch": [
+                "display version"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "config system global",
+                "  set hostname \"FGT-NOC-GW1\"",
+                "  set timezone 12",
+                "end",
+                "config system admin",
+                "  edit \"admin\"",
+                "    set password \"SuperAdminNOC123!\"",
+                "  next",
+                "end"
+              ],
+              "tier2": [
+                "get system status"
+              ],
+              "tier3": [
+                "get system configuration"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "configure terminal",
+                "hostname Switch-NOC-CE1",
+                "username admin password secret SuperAdminNOC123!",
+                "clock timezone COT -5",
+                "end",
+                "copy running-config startup-config"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "config",
+                "hostname Switch-NOC-CE1",
+                "username admin password 0 SuperAdminNOC123! privilege 15",
+                "enable secret SuperAdminNOC123!",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "configure terminal",
+                "hostname Switch-NOC-CE1",
+                "username admin privilege 15 password SuperAdminNOC123!",
+                "clock timezone COT -5",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "config terminal",
+                "hostname Switch-NOC-CE1",
+                "username admin password 0 SuperAdminNOC123! privilege 15",
+                "enable secret SuperAdminNOC123!",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show system-information"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show system information",
+                "show configuration persistent"
+              ],
+              "tier2": [
+                "show link-state"
+              ],
+              "tier3": [
+                "show oam 802.3ah status"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/system identity set name=Router-NOC-CE1",
+                "/user add name=admin-noc password=\"SuperAdminNOC123!\" group=full",
+                "/system clock set time-zone-name=America/Bogota"
+              ],
+              "tier2": [
+                "/system identity print",
+                "/user print"
+              ],
+              "tier3": [
+                "/export"
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "system hostname set Router-NOC-CE1"
+              ],
+              "tier2": [
+                "show network interfaces"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "uci set system.@system[0].hostname='Router-NOC-CE1'",
+                "uci commit system"
+              ],
+              "tier2": [
+                "uci show system"
+              ],
+              "tier3": [
+                "cat /etc/config/system"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "configure terminal",
+                "hostname OLT-NOC-01",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "configure terminal",
+                "hostname TA5000-NOC-01",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "expected": "Nombre de equipo asignado, banners legales activos, usuario administrador configurado y credenciales guardadas en memoria persistente.",
+          "choices": [
+            {
+              "label": "Hardening de Seguridad & Gestión de Acceso SSH/NTP",
+              "next": "noc_config_security"
+            },
+            {
+              "label": "Servicios de Monitoreo NOC (NTP, Syslog, SNMP)",
+              "next": "noc_config_monitoring"
+            },
+            {
+              "label": "Configuración Paso a Paso de Equipo CE para Cliente",
+              "next": "noc_config_ce_delivery"
+            }
+          ],
+          "title_ipv6": "1. Configuración Básica Inicial de Equipos (Estilo CCNA) (IPv6)",
+          "body_ipv6": "**Paso 1: Inicialización Estándar de Equipos (CCNA Level):**\nTodo equipo de telecomunicaciones en la red NOC debe iniciarse con parámetros de identificación y credenciales seguras.\n\n**Comandos Esenciales:**\n• **Nombre de Equipo (`hostname` / `sysname`):** Identificador único del nodo en el inventario NOC.\n• **Banners Legal (`banner motd`):** Advertencia de acceso no autorizado obligatorio por auditorías ISO 27001.\n• **Credenciales Seguras:** Usuarios administradores con algoritmos de cifrado fuerte (Secret / SHA-256).\n• **Zona Horaria & Guardado:** Ajuste de reloj local y persistencia en memoria flash.",
+          "expected_ipv6": "Nombre de equipo asignado, banners legales activos, usuario administrador configurado y credenciales guardadas en memoria persistente.",
+          "commands_ipv6": {
+            "cisco_iosxe": {
+              "tier1": [
+                "configure terminal",
+                "hostname Router-NOC-CE1",
+                "banner motd ^C ACCESO AUTORIZADO UNICAMENTE NOC CLIENTES ^C",
+                "enable secret SuperPasswordNOC123!",
+                "username admin privilege 15 secret SuperAdminNOC123!",
+                "clock timezone COT -5",
+                "end",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config | section hostname|username|banner"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "configure",
+                "set system host-name Router-NOC-CE1",
+                "set system root-authentication plain-text-password",
+                "set system login user admin class super-user authentication plain-text-password",
+                "set system time-zone America/Bogota",
+                "commit"
+              ],
+              "tier2": [
+                "show configuration system"
+              ],
+              "tier3": [
+                "show configuration"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "system-view",
+                "sysname Router-NOC-CE1",
+                "header shell information \"ACCESO RESTRINGIDO - UNICAMENTE PERSONAL NOC\"",
+                "aaa",
+                " local-user admin password irreversible-cipher SuperAdminNOC123!",
+                " local-user admin service-type terminal ssh http",
+                " local-user admin privilege level 15",
+                "quit",
+                "clock timezone COT minus 05:00:00",
+                "save"
+              ],
+              "tier2": [
+                "display current-configuration | include sysname|header|aaa"
+              ],
+              "tier3": [
+                "display current-configuration"
+              ],
+              "arch": [
+                "display version"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "config system global",
+                "  set hostname \"FGT-NOC-GW1\"",
+                "  set timezone 12",
+                "end",
+                "config system admin",
+                "  edit \"admin\"",
+                "    set password \"SuperAdminNOC123!\"",
+                "  next",
+                "end"
+              ],
+              "tier2": [
+                "get system status"
+              ],
+              "tier3": [
+                "get system configuration"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "configure terminal",
+                "hostname Switch-NOC-CE1",
+                "username admin password secret SuperAdminNOC123!",
+                "clock timezone COT -5",
+                "end",
+                "copy running-config startup-config"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "config",
+                "hostname Switch-NOC-CE1",
+                "username admin password 0 SuperAdminNOC123! privilege 15",
+                "enable secret SuperAdminNOC123!",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "configure terminal",
+                "hostname Switch-NOC-CE1",
+                "username admin privilege 15 password SuperAdminNOC123!",
+                "clock timezone COT -5",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "config terminal",
+                "hostname Switch-NOC-CE1",
+                "username admin password 0 SuperAdminNOC123! privilege 15",
+                "enable secret SuperAdminNOC123!",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show system-information"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show system information",
+                "show configuration persistent"
+              ],
+              "tier2": [
+                "show link-state"
+              ],
+              "tier3": [
+                "show oam 802.3ah status"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/system identity set name=Router-NOC-CE1",
+                "/user add name=admin-noc password=\"SuperAdminNOC123!\" group=full",
+                "/system clock set time-zone-name=America/Bogota"
+              ],
+              "tier2": [
+                "/system identity print",
+                "/user print"
+              ],
+              "tier3": [
+                "/export"
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "system hostname set Router-NOC-CE1"
+              ],
+              "tier2": [
+                "show network interfaces"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "uci set system.@system[0].hostname='Router-NOC-CE1'",
+                "uci commit system"
+              ],
+              "tier2": [
+                "uci show system"
+              ],
+              "tier3": [
+                "cat /etc/config/system"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "configure terminal",
+                "hostname OLT-NOC-01",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "configure terminal",
+                "hostname TA5000-NOC-01",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "osi_layer": "Capa 3: Red (IP / Enrutamiento)",
+          "osi_layer_en": "Layer 3: Network (IP / Routing)",
+          "network_domain": "Core & Borde de Red",
+          "network_domain_en": "Core & Network Edge",
+          "methodology": "Aislar por Dominio y Enfoque Bottom-Up",
+          "methodology_en": "Domain Isolation and Bottom-Up Approach"
+        },
+        "noc_config_security": {
+          "title": "2. Hardening de Seguridad Básica & Gestión de Acceso (Estilo CCNA/CCNP)",
+          "tier": 2,
+          "body": "**Hardening de Seguridad en Capa de Gestión:**\nProtección del plano de control y administración para evitar accesos no autorizados a la red del operador.\n\n**Pautas CCNP:**\n• **SSH v2 Obligatorio:** Desactivar Telnet y forzar SSH con llaves RSA de 2048+ bits.\n• **Timeouts de Inactividad:** Cerrar sesión en líneas VTY tras 5 o 10 minutos sin actividad (`exec-timeout 5 0`).\n• **ACL de Gestión:** Restringir acceso VTY/SSH únicamente desde la subred IP del NOC.\n• **Management VRF / Interface:** Aislar el tráfico de gestión en una VRF dedicada o puerto Out-of-band.",
+          "commands": {
+            "cisco_iosxe": {
+              "tier1": [
+                "configure terminal",
+                "ip domain name noc.operador.net",
+                "crypto key generate rsa modulus 2048",
+                "ip ssh version 2",
+                "line vty 0 4",
+                " exec-timeout 5 0",
+                " transport input ssh",
+                " login local",
+                "end",
+                "write memory"
+              ],
+              "tier2": [
+                "show ip ssh",
+                "show line vty 0 4"
+              ],
+              "tier3": [
+                "show running-config | section line vty"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "configure",
+                "set system services ssh protocol-version v2",
+                "set system services ssh connection-limit 10",
+                "set system idle-timeout 5",
+                "commit"
+              ],
+              "tier2": [
+                "show configuration system services"
+              ],
+              "tier3": [
+                "show configuration system"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "system-view",
+                "rsa local-key-pair create",
+                "stelnet server enable",
+                "user-interface vty 0 4",
+                " authentication-mode aaa",
+                " protocol inbound ssh",
+                " idle-timeout 5 0",
+                "quit",
+                "save"
+              ],
+              "tier2": [
+                "display ssh server status"
+              ],
+              "tier3": [
+                "display current-configuration | section user-interface"
+              ],
+              "arch": [
+                "display version"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "config system interface",
+                "  edit \"mgmt\"",
+                "    set allowaccess ssh https ping",
+                "  next",
+                "end"
+              ],
+              "tier2": [
+                "get system interface mgmt"
+              ],
+              "tier3": [
+                "get system configuration"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "configure terminal",
+                "ip ssh server enable",
+                "ip ssh version 2",
+                "end",
+                "copy running-config startup-config"
+              ],
+              "tier2": [
+                "show running-config | include ssh"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "config",
+                "ip ssh server enable",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "configure terminal",
+                "ssh server enable",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "config terminal",
+                "ip ssh server enable",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show system-information"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show system information"
+              ],
+              "tier2": [
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam 802.3ah status"
+              ],
+              "arch": [
+                "show configuration persistent"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/ip service disable telnet,ftp,www",
+                "/ip service set ssh port=22 disabled=no"
+              ],
+              "tier2": [
+                "/ip service print"
+              ],
+              "tier3": [
+                "/export"
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "system diagnostics show network interfaces"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "uci set dropbear.@dropbear[0].Port='22'",
+                "uci commit dropbear"
+              ],
+              "tier2": [
+                "uci show dropbear"
+              ],
+              "tier3": [
+                "cat /etc/config/dropbear"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "configure terminal",
+                "ip ssh server enable",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "configure terminal",
+                "ip ssh server enable",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "expected": "SSH v2 activo, Telnet deshabilitado, timeouts de inactividad configurados y accesos restringidos a la red del NOC.",
+          "choices": [
+            {
+              "label": "Servicios de Monitoreo NOC (NTP, Syslog, SNMP)",
+              "next": "noc_config_monitoring"
+            },
+            {
+              "label": "Configuración Paso a Paso de Equipo CE para Cliente",
+              "next": "noc_config_ce_delivery"
+            },
+            {
+              "label": "Volver a Configuración Inicial",
+              "next": "noc_config_start"
+            }
+          ],
+          "title_ipv6": "2. Hardening de Seguridad Básica & Gestión de Acceso (Estilo CCNA/CCNP) (IPv6)",
+          "body_ipv6": "**Hardening de Seguridad en Capa de Gestión:**\nProtección del plano de control y administración para evitar accesos no autorizados a la red del operador.\n\n**Pautas CCNP:**\n• **SSH v2 Obligatorio:** Desactivar Telnet y forzar SSH con llaves RSA de 2048+ bits.\n• **Timeouts de Inactividad:** Cerrar sesión en líneas VTY tras 5 o 10 minutos sin actividad (`exec-timeout 5 0`).\n• **ACL de Gestión:** Restringir acceso VTY/SSH únicamente desde la subred IP del NOC.\n• **Management VRF / Interface:** Aislar el tráfico de gestión en una VRF dedicada o puerto Out-of-band.",
+          "expected_ipv6": "SSH v2 activo, Telnet deshabilitado, timeouts de inactividad configurados y accesos restringidos a la red del NOC.",
+          "commands_ipv6": {
+            "cisco_iosxe": {
+              "tier1": [
+                "configure terminal",
+                "ip domain name noc.operador.net",
+                "crypto key generate rsa modulus 2048",
+                "ip ssh version 2",
+                "line vty 0 4",
+                " exec-timeout 5 0",
+                " transport input ssh",
+                " login local",
+                "end",
+                "write memory"
+              ],
+              "tier2": [
+                "show ip ssh",
+                "show line vty 0 4"
+              ],
+              "tier3": [
+                "show running-config | section line vty"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "configure",
+                "set system services ssh protocol-version v2",
+                "set system services ssh connection-limit 10",
+                "set system idle-timeout 5",
+                "commit"
+              ],
+              "tier2": [
+                "show configuration system services"
+              ],
+              "tier3": [
+                "show configuration system"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "system-view",
+                "rsa local-key-pair create",
+                "stelnet server enable",
+                "user-interface vty 0 4",
+                " authentication-mode aaa",
+                " protocol inbound ssh",
+                " idle-timeout 5 0",
+                "quit",
+                "save"
+              ],
+              "tier2": [
+                "display ssh server status"
+              ],
+              "tier3": [
+                "display current-configuration | section user-interface"
+              ],
+              "arch": [
+                "display version"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "config system interface",
+                "  edit \"mgmt\"",
+                "    set allowaccess ssh https execute ping6",
+                "  next",
+                "end"
+              ],
+              "tier2": [
+                "get system interface mgmt"
+              ],
+              "tier3": [
+                "get system configuration"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "configure terminal",
+                "ip ssh server enable",
+                "ip ssh version 2",
+                "end",
+                "copy running-config startup-config"
+              ],
+              "tier2": [
+                "show running-config | include ssh"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "config",
+                "ip ssh server enable",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "configure terminal",
+                "ssh server enable",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "config terminal",
+                "ip ssh server enable",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show system-information"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show system information"
+              ],
+              "tier2": [
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam 802.3ah status"
+              ],
+              "arch": [
+                "show configuration persistent"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/ip service disable telnet,ftp,www",
+                "/ip service set ssh port=22 disabled=no"
+              ],
+              "tier2": [
+                "/ip service print"
+              ],
+              "tier3": [
+                "/export"
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "system diagnostics show network interfaces"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "uci set dropbear.@dropbear[0].Port='22'",
+                "uci commit dropbear"
+              ],
+              "tier2": [
+                "uci show dropbear"
+              ],
+              "tier3": [
+                "cat /etc/config/dropbear"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "configure terminal",
+                "ip ssh server enable",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "configure terminal",
+                "ip ssh server enable",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "osi_layer": "Capa 3: Red (IP / Enrutamiento)",
+          "osi_layer_en": "Layer 3: Network (IP / Routing)",
+          "network_domain": "Core & Borde de Red",
+          "network_domain_en": "Core & Network Edge",
+          "methodology": "Aislar por Dominio y Enfoque Bottom-Up",
+          "methodology_en": "Domain Isolation and Bottom-Up Approach"
+        },
+        "noc_config_monitoring": {
+          "title": "3. Servicios de Monitoreo & Telemetría NOC (NTP, Syslog, SNMP)",
+          "tier": 2,
+          "body": "**Servicios de Gestión & Visibilidad NOC:**\nPermiten el monitoreo en tiempo real, correlación de eventos y trazabilidad en el NMS (Network Management System).\n\n**Pautas de Implementación:**\n• **NTP (Network Time Protocol):** Sincronización horaria milimétrica indispensable para correlación de logs e incidentes.\n• **Syslog (UDP 514):** Envío centralizado de registros de eventos hacia el servidor SIEM / Syslog NOC.\n• **SNMP (Simple Network Management Protocol v2c/v3):** Lectura de métricas (tráfico, CPU, temperatura, potencia óptica) por el NMS.",
+          "commands": {
+            "cisco_iosxe": {
+              "tier1": [
+                "configure terminal",
+                "ntp server 10.0.0.1 prefer",
+                "logging host 10.0.0.50",
+                "logging trap notifications",
+                "snmp-server community NOC_READ RO",
+                "snmp-server contact NOC_Telecom_Support",
+                "end",
+                "write memory"
+              ],
+              "tier2": [
+                "show ntp status",
+                "show logging",
+                "show snmp"
+              ],
+              "tier3": [
+                "show ntp associations",
+                "show snmp community"
+              ],
+              "arch": [
+                "show running-config | section ntp|logging|snmp"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "configure",
+                "set system ntp server 10.0.0.1 prefer",
+                "set system syslog host 10.0.0.50 any notice",
+                "set snmp community NOC_READ authorization read-only",
+                "commit"
+              ],
+              "tier2": [
+                "show ntp status",
+                "show snmp statistics"
+              ],
+              "tier3": [
+                "show ntp associations"
+              ],
+              "arch": [
+                "show configuration system"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "system-view",
+                "ntp-service unicast-peer 10.0.0.1",
+                "info-center loghost 10.0.0.50",
+                "snmp-agent community read NOC_READ",
+                "quit",
+                "save"
+              ],
+              "tier2": [
+                "display ntp-service status",
+                "display info-center"
+              ],
+              "tier3": [
+                "display snmp-agent community"
+              ],
+              "arch": [
+                "display current-configuration"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "config system ntp",
+                "  set ntpserver1 \"10.0.0.1\"",
+                "  set type custom",
+                "end",
+                "config log syslogd setting",
+                "  set status enable",
+                "  set server \"10.0.0.50\"",
+                "end"
+              ],
+              "tier2": [
+                "get system ntp",
+                "get log syslogd setting"
+              ],
+              "tier3": [
+                "get system status"
+              ],
+              "arch": [
+                "get system configuration"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "configure terminal",
+                "ntp server 10.0.0.1",
+                "snmp-server community NOC_READ ro",
+                "end",
+                "copy running-config startup-config"
+              ],
+              "tier2": [
+                "show ntp status"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "config terminal",
+                "ntp server 10.0.0.1",
+                "snmp-server community NOC_READ ro",
+                "write memory"
+              ],
+              "tier2": [
+                "show ntp status"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show system-information"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "configure terminal",
+                "ntp server 10.0.0.1",
+                "snmp-server community NOC_READ ro",
+                "write memory"
+              ],
+              "tier2": [
+                "show ntp status"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "config",
+                "snmp-server community NOC_READ ro",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show system information"
+              ],
+              "tier2": [
+                "show configuration persistent"
+              ],
+              "tier3": [
+                "show oam 802.3ah status"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/system ntp client set enabled=yes servers=10.0.0.1",
+                "/snmp community add name=NOC_READ addresses=10.0.0.0/24",
+                "/snmp set enabled=yes"
+              ],
+              "tier2": [
+                "/system ntp client print",
+                "/snmp print"
+              ],
+              "tier3": [
+                "/export"
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "system diagnostics utilities ping"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "uci set system.ntp.server='10.0.0.1'",
+                "uci commit system"
+              ],
+              "tier2": [
+                "uci show system"
+              ],
+              "tier3": [
+                "cat /etc/config/system"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "configure terminal",
+                "snmp-server community NOC_READ ro",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "configure terminal",
+                "snmp-server community NOC_READ ro",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "expected": "Reloj NTP sincronizado, servidor Syslog remoto activo y SNMP habilitado para monitoreo NMS.",
+          "choices": [
+            {
+              "label": "Configuración Paso a Paso de Equipo CE para Cliente",
+              "next": "noc_config_ce_delivery"
+            },
+            {
+              "label": "Aprovisionamiento Paso a Paso de ONT en OLT GPON",
+              "next": "noc_config_ont_provisioning"
+            },
+            {
+              "label": "Volver a Configuración Inicial",
+              "next": "noc_config_start"
+            }
+          ],
+          "title_ipv6": "3. Servicios de Monitoreo & Telemetría NOC (NTP, Syslog, SNMP) (IPv6)",
+          "body_ipv6": "**Servicios de Gestión & Visibilidad NOC:**\nPermiten el monitoreo en tiempo real, correlación de eventos y trazabilidad en el NMS (Network Management System).\n\n**Pautas de Implementación:**\n• **NTP (Network Time Protocol):** Sincronización horaria milimétrica indispensable para correlación de logs e incidentes.\n• **Syslog (UDP 514):** Envío centralizado de registros de eventos hacia el servidor SIEM / Syslog NOC.\n• **SNMP (Simple Network Management Protocol v2c/v3):** Lectura de métricas (tráfico, CPU, temperatura, potencia óptica) por el NMS.",
+          "expected_ipv6": "Reloj NTP sincronizado, servidor Syslog remoto activo y SNMP habilitado para monitoreo NMS.",
+          "commands_ipv6": {
+            "cisco_iosxe": {
+              "tier1": [
+                "configure terminal",
+                "ntp server 10.0.0.1 prefer",
+                "logging host 10.0.0.50",
+                "logging trap notifications",
+                "snmp-server community NOC_READ RO",
+                "snmp-server contact NOC_Telecom_Support",
+                "end",
+                "write memory"
+              ],
+              "tier2": [
+                "show ntp status",
+                "show logging",
+                "show snmp"
+              ],
+              "tier3": [
+                "show ntp associations",
+                "show snmp community"
+              ],
+              "arch": [
+                "show running-config | section ntp|logging|snmp"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "configure",
+                "set system ntp server 10.0.0.1 prefer",
+                "set system syslog host 10.0.0.50 any notice",
+                "set snmp community NOC_READ authorization read-only",
+                "commit"
+              ],
+              "tier2": [
+                "show ntp status",
+                "show snmp statistics"
+              ],
+              "tier3": [
+                "show ntp associations"
+              ],
+              "arch": [
+                "show configuration system"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "system-view",
+                "ntp-service unicast-peer 10.0.0.1",
+                "info-center loghost 10.0.0.50",
+                "snmp-agent community read NOC_READ",
+                "quit",
+                "save"
+              ],
+              "tier2": [
+                "display ntp-service status",
+                "display info-center"
+              ],
+              "tier3": [
+                "display snmp-agent community"
+              ],
+              "arch": [
+                "display current-configuration"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "config system ntp",
+                "  set ntpserver1 \"10.0.0.1\"",
+                "  set type custom",
+                "end",
+                "config log syslogd setting",
+                "  set status enable",
+                "  set server \"10.0.0.50\"",
+                "end"
+              ],
+              "tier2": [
+                "get system ntp",
+                "get log syslogd setting"
+              ],
+              "tier3": [
+                "get system status"
+              ],
+              "arch": [
+                "get system configuration"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "configure terminal",
+                "ntp server 10.0.0.1",
+                "snmp-server community NOC_READ ro",
+                "end",
+                "copy running-config startup-config"
+              ],
+              "tier2": [
+                "show ntp status"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "config terminal",
+                "ntp server 10.0.0.1",
+                "snmp-server community NOC_READ ro",
+                "write memory"
+              ],
+              "tier2": [
+                "show ntp status"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show system-information"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "configure terminal",
+                "ntp server 10.0.0.1",
+                "snmp-server community NOC_READ ro",
+                "write memory"
+              ],
+              "tier2": [
+                "show ntp status"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "config",
+                "snmp-server community NOC_READ ro",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show system information"
+              ],
+              "tier2": [
+                "show configuration persistent"
+              ],
+              "tier3": [
+                "show oam 802.3ah status"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/system ntp client set enabled=yes servers=10.0.0.1",
+                "/snmp community add name=NOC_READ addresses=10.0.0.0/24",
+                "/snmp set enabled=yes"
+              ],
+              "tier2": [
+                "/system ntp client print",
+                "/snmp print"
+              ],
+              "tier3": [
+                "/export"
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "system diagnostics utilities ping"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "uci set system.ntp.server='10.0.0.1'",
+                "uci commit system"
+              ],
+              "tier2": [
+                "uci show system"
+              ],
+              "tier3": [
+                "cat /etc/config/system"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "configure terminal",
+                "snmp-server community NOC_READ ro",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "configure terminal",
+                "snmp-server community NOC_READ ro",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "osi_layer": "Capa 3: Red (IP / Enrutamiento)",
+          "osi_layer_en": "Layer 3: Network (IP / Routing)",
+          "network_domain": "Core & Borde de Red",
+          "network_domain_en": "Core & Network Edge",
+          "methodology": "Aislar por Dominio y Enfoque Bottom-Up",
+          "methodology_en": "Domain Isolation and Bottom-Up Approach"
+        },
+        "noc_config_ce_delivery": {
+          "title": "4. Configuración Paso a Paso de Equipo CE (Customer Edge) para Cliente",
+          "tier": 2,
+          "body": "**Aprovisionamiento de Servicio en Equipo CE (Customer Edge):**\nConfiguración completa de entrega de servicio L2/L3 para cliente final corporativo.\n\n**Paso a Paso de Configuración:**\n1. **Interfaz / Subinterfaz WAN:** Asignar VLAN de servicio (ej: `Dot1q 100` o `QinQ`).\n2. **Direccionamiento IP:** Asignar dirección IP /30 (ej: `192.168.10.1/30`) o /31 (RFC 3021 `192.168.10.0/31`).\n3. **Quality of Service (QoS / Shaping):** Aplicar política de restricción de ancho de banda contratado (ej: 100 Mbps egress shaping).\n4. **Pruebas de Verificación:** Validar enrutamiento estático/BGP y alcanzabilidad ICMP.",
+          "commands": {
+            "cisco_iosxe": {
+              "tier1": [
+                "configure terminal",
+                "interface GigabitEthernet0/0/0.100",
+                " encapsulation dot1Q 100",
+                " ip address 192.168.10.1 255.255.255.252",
+                " description ** INTERFAZ ENTREGABLE CLIENTE ABC - 100M **",
+                " exit",
+                "policy-map SHAPING-100M",
+                " class class-default",
+                "  shape average 100000000",
+                " exit",
+                "interface GigabitEthernet0/0/0.100",
+                " service-policy output SHAPING-100M",
+                "end",
+                "write memory"
+              ],
+              "tier2": [
+                "show ip interface brief",
+                "show policy-map interface GigabitEthernet0/0/0.100"
+              ],
+              "tier3": [
+                "show running-config interface GigabitEthernet0/0/0.100"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "configure",
+                "set interfaces ge-0/0/0 vlan-tagging",
+                "set interfaces ge-0/0/0 unit 100 vlan-id 100",
+                "set interfaces ge-0/0/0 unit 100 family inet address 192.168.10.1/30",
+                "set interfaces ge-0/0/0 unit 100 description \"** CLIENTE ABC 100M **\"",
+                "commit"
+              ],
+              "tier2": [
+                "show interfaces ge-0/0/0.100 terse"
+              ],
+              "tier3": [
+                "show configuration interfaces ge-0/0/0.100"
+              ],
+              "arch": [
+                "show configuration"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "system-view",
+                "interface GigabitEthernet0/0/0.100",
+                " dot1q termination vid 100",
+                " ip address 192.168.10.1 255.255.255.252",
+                " description ** CLIENTE ABC 100M **",
+                " qos lr outbound 100000",
+                "quit",
+                "save"
+              ],
+              "tier2": [
+                "display ip interface GigabitEthernet0/0/0.100"
+              ],
+              "tier3": [
+                "display current-configuration interface GigabitEthernet0/0/0.100"
+              ],
+              "arch": [
+                "display current-configuration"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "config system interface",
+                "  edit \"port1.100\"",
+                "    set vdom \"root\"",
+                "    set ip 192.168.10.1 255.255.255.252",
+                "    set interface \"port1\"",
+                "    set vlanid 100",
+                "  next",
+                "end"
+              ],
+              "tier2": [
+                "get system interface port1.100"
+              ],
+              "tier3": [
+                "get system configuration"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "configure terminal",
+                "vlan 100",
+                " name CLIENTE-ABC",
+                "interface ethernet 1/1",
+                " switchport mode trunk",
+                " switchport trunk allowed vlan add 100",
+                "end",
+                "copy running-config startup-config"
+              ],
+              "tier2": [
+                "show vlan 100"
+              ],
+              "tier3": [
+                "show running-config interface ethernet 1/1"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "config terminal",
+                "vlan 100",
+                "interface gigaethernet 1/1/1",
+                " switchport mode trunk",
+                " switchport trunk allowed vlan 100",
+                "write memory"
+              ],
+              "tier2": [
+                "show vlan 100"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show system-information"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "configure terminal",
+                "vlan database",
+                " vlan 100 name CLIENTE-ABC",
+                "interface port1.0.1",
+                " switchport mode trunk",
+                " switchport trunk allowed vlan add 100",
+                "write memory"
+              ],
+              "tier2": [
+                "show vlan 100"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "config",
+                "vlan 100",
+                "interface gigaethernet 0/1",
+                " switchport mode trunk",
+                " switchport trunk allowed vlan 100",
+                "write memory"
+              ],
+              "tier2": [
+                "show vlan 100"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status"
+              ],
+              "tier2": [
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show interface ethernet statistics"
+              ],
+              "arch": [
+                "show configuration persistent"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/interface vlan add name=vlan100-cliente vlan-id=100 interface=ether1",
+                "/ip address add address=192.168.10.1/30 interface=vlan100-cliente",
+                "/queue simple add name=CLIENTE-100M target=vlan100-cliente max-limit=100M/100M"
+              ],
+              "tier2": [
+                "/interface vlan print",
+                "/queue simple print"
+              ],
+              "tier3": [
+                "/export"
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "system diagnostics utilities ping"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "uci add network interface",
+                "uci set network.@interface[-1].name='vlan100'",
+                "uci set network.@interface[-1].proto='static'",
+                "uci set network.@interface[-1].ipaddr='192.168.10.1'",
+                "uci set network.@interface[-1].netmask='255.255.255.252'",
+                "uci commit network"
+              ],
+              "tier2": [
+                "uci show network"
+              ],
+              "tier3": [
+                "cat /etc/config/network"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "configure terminal",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "configure terminal",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "expected": "Subinterfaz L2/L3 activa, VLAN asignada, direccionamiento IP /30 o /31 respondiendo y shaping de ancho de banda configurado.",
+          "choices": [
+            {
+              "label": "Aprovisionamiento Paso a Paso de ONT en OLT GPON",
+              "next": "noc_config_ont_provisioning"
+            },
+            {
+              "label": "Validación Final & Respaldo de Entrega a Cliente",
+              "next": "noc_config_commit"
+            },
+            {
+              "label": "Volver a Configuración Inicial",
+              "next": "noc_config_start"
+            }
+          ],
+          "title_ipv6": "4. Configuración Paso a Paso de Equipo CE (Customer Edge) para Cliente (IPv6)",
+          "body_ipv6": "**Aprovisionamiento de Servicio en Equipo CE (Customer Edge):**\nConfiguración completa de entrega de servicio L2/L3 para cliente final corporativo.\n\n**Paso a Paso de Configuración:**\n1. **Interfaz / Subinterfaz WAN:** Asignar VLAN de servicio (ej: `Dot1q 100` o `QinQ`).\n2. **Direccionamiento IP:** Asignar dirección IP /30 (ej: `192.168.10.1/30`) o /31 (RFC 3021 `192.168.10.0/31`).\n3. **Quality of Service (QoS / Shaping):** Aplicar política de restricción de ancho de banda contratado (ej: 100 Mbps egress shaping).\n4. **Pruebas de Verificación:** Validar enrutamiento estático/MP-BGP y alcanzabilidad ICMP.",
+          "expected_ipv6": "Subinterfaz L2/L3 activa, VLAN asignada, direccionamiento IP /30 o /31 respondiendo y shaping de ancho de banda configurado.",
+          "commands_ipv6": {
+            "cisco_iosxe": {
+              "tier1": [
+                "configure terminal",
+                "interface GigabitEthernet0/0/0.100",
+                " encapsulation dot1Q 100",
+                " ip address 192.168.10.1 255.255.255.252",
+                " description ** INTERFAZ ENTREGABLE CLIENTE ABC - 100M **",
+                " exit",
+                "policy-map SHAPING-100M",
+                " class class-default",
+                "  shape average 100000000",
+                " exit",
+                "interface GigabitEthernet0/0/0.100",
+                " service-policy output SHAPING-100M",
+                "end",
+                "write memory"
+              ],
+              "tier2": [
+                "show ipv6 interface brief",
+                "show policy-map interface GigabitEthernet0/0/0.100"
+              ],
+              "tier3": [
+                "show running-config interface GigabitEthernet0/0/0.100"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "configure",
+                "set interfaces ge-0/0/0 vlan-tagging",
+                "set interfaces ge-0/0/0 unit 100 vlan-id 100",
+                "set interfaces ge-0/0/0 unit 100 family inet address 192.168.10.1/30",
+                "set interfaces ge-0/0/0 unit 100 description \"** CLIENTE ABC 100M **\"",
+                "commit"
+              ],
+              "tier2": [
+                "show interfaces ge-0/0/0.100 terse"
+              ],
+              "tier3": [
+                "show configuration interfaces ge-0/0/0.100"
+              ],
+              "arch": [
+                "show configuration"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "system-view",
+                "interface GigabitEthernet0/0/0.100",
+                " dot1q termination vid 100",
+                " ip address 192.168.10.1 255.255.255.252",
+                " description ** CLIENTE ABC 100M **",
+                " qos lr outbound 100000",
+                "quit",
+                "save"
+              ],
+              "tier2": [
+                "display ip interface GigabitEthernet0/0/0.100"
+              ],
+              "tier3": [
+                "display current-configuration interface GigabitEthernet0/0/0.100"
+              ],
+              "arch": [
+                "display current-configuration"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "config system interface",
+                "  edit \"port1.100\"",
+                "    set vdom \"root\"",
+                "    set ip 192.168.10.1 255.255.255.252",
+                "    set interface \"port1\"",
+                "    set vlanid 100",
+                "  next",
+                "end"
+              ],
+              "tier2": [
+                "get system interface port1.100"
+              ],
+              "tier3": [
+                "get system configuration"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "configure terminal",
+                "vlan 100",
+                " name CLIENTE-ABC",
+                "interface ethernet 1/1",
+                " switchport mode trunk",
+                " switchport trunk allowed vlan add 100",
+                "end",
+                "copy running-config startup-config"
+              ],
+              "tier2": [
+                "show vlan 100"
+              ],
+              "tier3": [
+                "show running-config interface ethernet 1/1"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "config terminal",
+                "vlan 100",
+                "interface gigaethernet 1/1/1",
+                " switchport mode trunk",
+                " switchport trunk allowed vlan 100",
+                "write memory"
+              ],
+              "tier2": [
+                "show vlan 100"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show system-information"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "configure terminal",
+                "vlan database",
+                " vlan 100 name CLIENTE-ABC",
+                "interface port1.0.1",
+                " switchport mode trunk",
+                " switchport trunk allowed vlan add 100",
+                "write memory"
+              ],
+              "tier2": [
+                "show vlan 100"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "config",
+                "vlan 100",
+                "interface gigaethernet 0/1",
+                " switchport mode trunk",
+                " switchport trunk allowed vlan 100",
+                "write memory"
+              ],
+              "tier2": [
+                "show vlan 100"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status"
+              ],
+              "tier2": [
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show interface ethernet statistics"
+              ],
+              "arch": [
+                "show configuration persistent"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/interface vlan add name=vlan100-cliente vlan-id=100 interface=ether1",
+                "/ipv6 address add address=192.168.10.1/30 interface=vlan100-cliente",
+                "/queue simple add name=CLIENTE-100M target=vlan100-cliente max-limit=100M/100M"
+              ],
+              "tier2": [
+                "/interface vlan print",
+                "/queue simple print"
+              ],
+              "tier3": [
+                "/export"
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "system diagnostics utilities ping"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "uci add network interface",
+                "uci set network.@interface[-1].name='vlan100'",
+                "uci set network.@interface[-1].proto='static'",
+                "uci set network.@interface[-1].ipaddr='192.168.10.1'",
+                "uci set network.@interface[-1].netmask='255.255.255.252'",
+                "uci commit network"
+              ],
+              "tier2": [
+                "uci show network"
+              ],
+              "tier3": [
+                "cat /etc/config/network"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "configure terminal",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "configure terminal",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "osi_layer": "Capa 3: Red (IP / Enrutamiento)",
+          "osi_layer_en": "Layer 3: Network (IP / Routing)",
+          "network_domain": "Core & Borde de Red",
+          "network_domain_en": "Core & Network Edge",
+          "methodology": "Aislar por Dominio y Enfoque Bottom-Up",
+          "methodology_en": "Domain Isolation and Bottom-Up Approach"
+        },
+        "noc_config_ont_provisioning": {
+          "title": "5. Aprovisionamiento Paso a Paso de ONT/ONU en OLT GPON",
+          "tier": 2,
+          "body": "**Paso a Paso de Registro de ONT en OLT GPON (FTTH):**\n1. **Descubrimiento:** Identificar el Serial Number (SN) de la ONT no aprovisionada.\n2. **Alta de ONT:** Asociar el SN al puerto GPON de la OLT asignando un ONU-ID libre.\n3. **Asignación de Perfiles:** Vincular Line-Profile (DBA / T-CONT / GEM Ports) y Service-Profile (VLANs / Puertos ETH).\n4. **Service Ports:** Crear los Service Ports en la OLT para mapear la VLAN de usuario con la VLAN de transporte del core.",
+          "commands": {
+            "huawei": {
+              "tier1": [
+                "system-view",
+                "interface gpon 0/1",
+                " ont add 1 1 sn-auth \"485754431A2B3C4D\" omci ont-lineprofile-id 10 ont-srvprofile-id 10 desc \"CLIENTE_CORPORATIVO_01\"",
+                "quit",
+                "service-port 100 gpon 0/1/1 ont 1 gemport 1 multi-service user-vlan 100 tag-transform translate inner-vlan 100 inbound traffic-table name 100M outbound traffic-table name 100M",
+                "save"
+              ],
+              "tier2": [
+                "display ont info 0 1 1 1",
+                "display service-port 100"
+              ],
+              "tier3": [
+                "display current-configuration section gpon"
+              ],
+              "arch": [
+                "display current-configuration"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "configure terminal",
+                "interface gpon-olt_1/2/1",
+                " onu 1 type ZTEG-F660 sn ZTEGC1A2B3D4",
+                "exit",
+                "interface gpon-onu_1/2/1:1",
+                " name CLIENTE_CORPORATIVO_01",
+                " tcont 1 name T-DATA dba-profile DBA-100M",
+                " gemport 1 name GEM-DATA tcont 1",
+                " service-port 1 vport 1 user-vlan 100 svlan 100",
+                "exit",
+                "write memory"
+              ],
+              "tier2": [
+                "show gpon onu state gpon-olt_1/2/1",
+                "show gpon interface gpon-onu_1/2/1:1"
+              ],
+              "tier3": [
+                "show gpon running-config gpon-olt_1/2/1"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "config",
+                "interface gpon 0/1",
+                " gpon onu add 1 1 sn ZTEGC1A2B3D4 line-profile FTTH-LINE srv-profile FTTH-SRV",
+                "exit",
+                "write memory"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "write memory"
+              ],
+              "tier2": [
+                "show vlan"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "configure terminal",
+                "show gpon onu state"
+              ],
+              "tier2": [
+                "show gpon onu detail"
+              ],
+              "tier3": [
+                "show running-config gpon"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status"
+              ],
+              "tier2": [
+                "show optical-power"
+              ],
+              "tier3": [
+                "show oam 802.3ah status"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "cisco_iosxe": {
+              "tier1": [
+                "configure terminal",
+                "write memory"
+              ],
+              "tier2": [
+                "show ip interface brief"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "configure",
+                "commit"
+              ],
+              "tier2": [
+                "show interfaces terse"
+              ],
+              "tier3": [
+                "show configuration"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "get system status"
+              ],
+              "tier2": [
+                "get system interface physical"
+              ],
+              "tier3": [
+                "get system configuration"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/interface print brief"
+              ],
+              "tier2": [
+                "/export"
+              ],
+              "tier3": [
+                "/export"
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -signal"
+              ],
+              "tier2": [
+                "uci show network"
+              ],
+              "tier3": [
+                "cat /etc/config/network"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "configure terminal",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "expected": "ONT registrada en la OLT en estado O5 (Operation) con Service Ports y VLANs de servicio asociadas.",
+          "choices": [
+            {
+              "label": "Validación Final & Respaldo de Entrega a Cliente",
+              "next": "noc_config_commit"
+            },
+            {
+              "label": "Volver a Configuración Inicial",
+              "next": "noc_config_start"
+            }
+          ],
+          "title_ipv6": "5. Aprovisionamiento Paso a Paso de ONT/ONU en OLT GPON (IPv6)",
+          "body_ipv6": "**Paso a Paso de Registro de ONT en OLT GPON (FTTH):**\n1. **Descubrimiento:** Identificar el Serial Number (SN) de la ONT no aprovisionada.\n2. **Alta de ONT:** Asociar el SN al puerto GPON de la OLT asignando un ONU-ID libre.\n3. **Asignación de Perfiles:** Vincular Line-Profile (DBA / T-CONT / GEM Ports) y Service-Profile (VLANs / Puertos ETH).\n4. **Service Ports:** Crear los Service Ports en la OLT para mapear la VLAN de usuario con la VLAN de transporte del core.",
+          "expected_ipv6": "ONT registrada en la OLT en estado O5 (Operation) con Service Ports y VLANs de servicio asociadas.",
+          "commands_ipv6": {
+            "huawei": {
+              "tier1": [
+                "system-view",
+                "interface gpon 0/1",
+                " ont add 1 1 sn-auth \"485754431A2B3C4D\" omci ont-lineprofile-id 10 ont-srvprofile-id 10 desc \"CLIENTE_CORPORATIVO_01\"",
+                "quit",
+                "service-port 100 gpon 0/1/1 ont 1 gemport 1 multi-service user-vlan 100 tag-transform translate inner-vlan 100 inbound traffic-table name 100M outbound traffic-table name 100M",
+                "save"
+              ],
+              "tier2": [
+                "display ont info 0 1 1 1",
+                "display service-port 100"
+              ],
+              "tier3": [
+                "display current-configuration section gpon"
+              ],
+              "arch": [
+                "display current-configuration"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "configure terminal",
+                "interface gpon-olt_1/2/1",
+                " onu 1 type ZTEG-F660 sn ZTEGC1A2B3D4",
+                "exit",
+                "interface gpon-onu_1/2/1:1",
+                " name CLIENTE_CORPORATIVO_01",
+                " tcont 1 name T-DATA dba-profile DBA-100M",
+                " gemport 1 name GEM-DATA tcont 1",
+                " service-port 1 vport 1 user-vlan 100 svlan 100",
+                "exit",
+                "write memory"
+              ],
+              "tier2": [
+                "show gpon onu state gpon-olt_1/2/1",
+                "show gpon interface gpon-onu_1/2/1:1"
+              ],
+              "tier3": [
+                "show gpon running-config gpon-olt_1/2/1"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "config",
+                "interface gpon 0/1",
+                " gpon onu add 1 1 sn ZTEGC1A2B3D4 line-profile FTTH-LINE srv-profile FTTH-SRV",
+                "exit",
+                "write memory"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "write memory"
+              ],
+              "tier2": [
+                "show vlan"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "configure terminal",
+                "show gpon onu state"
+              ],
+              "tier2": [
+                "show gpon onu detail"
+              ],
+              "tier3": [
+                "show running-config gpon"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status"
+              ],
+              "tier2": [
+                "show optical-power"
+              ],
+              "tier3": [
+                "show oam 802.3ah status"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "cisco_iosxe": {
+              "tier1": [
+                "configure terminal",
+                "write memory"
+              ],
+              "tier2": [
+                "show ipv6 interface brief"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "configure",
+                "commit"
+              ],
+              "tier2": [
+                "show interfaces terse"
+              ],
+              "tier3": [
+                "show configuration"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "get system status"
+              ],
+              "tier2": [
+                "get system interface physical"
+              ],
+              "tier3": [
+                "get system configuration"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/interface print brief"
+              ],
+              "tier2": [
+                "/export"
+              ],
+              "tier3": [
+                "/export"
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -signal"
+              ],
+              "tier2": [
+                "uci show network"
+              ],
+              "tier3": [
+                "cat /etc/config/network"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "configure terminal",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "osi_layer": "Capa 3: Red (IP / Enrutamiento)",
+          "osi_layer_en": "Layer 3: Network (IP / Routing)",
+          "network_domain": "Core & Borde de Red",
+          "network_domain_en": "Core & Network Edge",
+          "methodology": "Aislar por Dominio y Enfoque Bottom-Up",
+          "methodology_en": "Domain Isolation and Bottom-Up Approach"
+        },
+        "noc_config_commit": {
+          "title": "6. Validación Final & Respaldo de Configuración de Entrega",
+          "tier": 1,
+          "body": "**Cierre de Aprovisionamiento NOC:**\n1. Verificar que no haya advertencias ni errores en el log del sistema.\n2. Ejecutar guardado persistente de la configuración (`write memory` / `commit` / `save`).\n3. Exportar el script de configuración al repositorio de auditoría del NOC.",
+          "commands": {
+            "cisco_iosxe": {
+              "tier1": [
+                "write memory",
+                "copy running-config startup-config"
+              ],
+              "tier2": [
+                "show ip interface brief",
+                "show logging | include ERROR"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "commit check",
+                "commit comment \"Aprovisionamiento Entregado a Cliente\""
+              ],
+              "tier2": [
+                "show system commit"
+              ],
+              "tier3": [
+                "show configuration"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "save"
+              ],
+              "tier2": [
+                "display current-configuration"
+              ],
+              "tier3": [
+                "display current-configuration"
+              ],
+              "arch": [
+                "display version"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "execute backup config flash \"Aprovisionamiento_NOC\""
+              ],
+              "tier2": [
+                "get system status"
+              ],
+              "tier3": [
+                "get system configuration"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "copy running-config startup-config"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show system-information"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show configuration persistent"
+              ],
+              "tier2": [
+                "show system information"
+              ],
+              "tier3": [
+                "show oam 802.3ah status"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/system backup save name=Aprovisionamiento_NOC"
+              ],
+              "tier2": [
+                "/export"
+              ],
+              "tier3": [
+                "/export"
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "system backup show"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "uci commit network"
+              ],
+              "tier2": [
+                "cat /etc/config/network"
+              ],
+              "tier3": [
+                "uci show"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "configure terminal",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "expected": "Configuración guardada en memoria flash. Servicio 100% listo para entrega a producción.",
+          "choices": [
+            {
+              "label": "Volver al Inicio NOC Configuración",
+              "next": "noc_config_start"
+            },
+            {
+              "label": "Volver al Menú Principal",
+              "next": "back_menu"
+            }
+          ],
+          "title_ipv6": "6. Validación Final & Respaldo de Configuración de Entrega (IPv6)",
+          "body_ipv6": "**Cierre de Aprovisionamiento NOC:**\n1. Verificar que no haya advertencias ni errores en el log del sistema.\n2. Ejecutar guardado persistente de la configuración (`write memory` / `commit` / `save`).\n3. Exportar el script de configuración al repositorio de auditoría del NOC.",
+          "expected_ipv6": "Configuración guardada en memoria flash. Servicio 100% listo para entrega a producción.",
+          "commands_ipv6": {
+            "cisco_iosxe": {
+              "tier1": [
+                "write memory",
+                "copy running-config startup-config"
+              ],
+              "tier2": [
+                "show ipv6 interface brief",
+                "show logging | include ERROR"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "juniper": {
+              "tier1": [
+                "commit check",
+                "commit comment \"Aprovisionamiento Entregado a Cliente\""
+              ],
+              "tier2": [
+                "show system commit"
+              ],
+              "tier3": [
+                "show configuration"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "huawei": {
+              "tier1": [
+                "save"
+              ],
+              "tier2": [
+                "display current-configuration"
+              ],
+              "tier3": [
+                "display current-configuration"
+              ],
+              "arch": [
+                "display version"
+              ]
+            },
+            "fortinet": {
+              "tier1": [
+                "execute backup config flash \"Aprovisionamiento_NOC\""
+              ],
+              "tier2": [
+                "get system status"
+              ],
+              "tier3": [
+                "get system configuration"
+              ],
+              "arch": [
+                "get system status"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "copy running-config startup-config"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show system-information"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show configuration persistent"
+              ],
+              "tier2": [
+                "show system information"
+              ],
+              "tier3": [
+                "show oam 802.3ah status"
+              ],
+              "arch": [
+                "show system information"
+              ]
+            },
+            "mikrotik": {
+              "tier1": [
+                "/system backup save name=Aprovisionamiento_NOC"
+              ],
+              "tier2": [
+                "/export"
+              ],
+              "tier3": [
+                "/export"
+              ],
+              "arch": [
+                "/system routerboard print"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "system backup show"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "cyberoam> option 4"
+              ],
+              "arch": [
+                "show running-config"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "uci commit network"
+              ],
+              "tier2": [
+                "cat /etc/config/network"
+              ],
+              "tier3": [
+                "uci show"
+              ],
+              "arch": [
+                "uci show"
+              ]
+            },
+            "zte": {
+              "tier1": [
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            },
+            "adtran": {
+              "tier1": [
+                "configure terminal",
+                "write memory"
+              ],
+              "tier2": [
+                "show running-config"
+              ],
+              "tier3": [
+                "show running-config"
+              ],
+              "arch": [
+                "show version"
+              ]
+            }
+          },
+          "osi_layer": "Capa 3: Red (IP / Enrutamiento)",
+          "osi_layer_en": "Layer 3: Network (IP / Routing)",
+          "network_domain": "Core & Borde de Red",
+          "network_domain_en": "Core & Network Edge",
+          "methodology": "Aislar por Dominio y Enfoque Bottom-Up",
+          "methodology_en": "Domain Isolation and Bottom-Up Approach"
         }
       }
     },
@@ -29314,6 +40883,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug aaa accounting",
                 "display aaa accounting detail"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -29658,6 +41298,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug aaa authentication",
                 "debug aaa authorization"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -30011,6 +41722,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display process cpu",
                 "display memory"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -30382,6 +42164,77 @@ const NET_TSHOOT_DATA = {
                 "debug tacacs",
                 "debug radius"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Servidores AAA alcanzables. Sesiones activas. Sin timeouts.",
@@ -30636,16 +42489,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "aaa_config": {
@@ -30834,6 +42690,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include AAA",
                 "debug aaa authorization"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -31210,6 +43137,77 @@ const NET_TSHOOT_DATA = {
                 "display aaa accounting-scheme",
                 "display logbuffer | include AAA"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Persistido.",
@@ -31579,6 +43577,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include RADIUS",
                 "debug radius"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -31993,6 +44062,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include TACACS",
                 "debug aaa authentication"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Login exitoso vía TACACS+. Servidor alcanzable. Local como fallback.",
@@ -32261,16 +44401,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "bfd_config": {
@@ -32430,6 +44573,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include bfd_config",
                 "debug bfd_config"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -32799,6 +45013,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include bfd_config",
                 "debug bfd_config"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -33204,6 +45489,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include bfd_config",
                 "debug bfd_config"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Sesiones BFD UP. Intervals consistentes en ambos extremos.",
@@ -33413,16 +45769,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "bgp_config": {
@@ -33647,6 +46006,77 @@ const NET_TSHOOT_DATA = {
                 "display bgp vpnv4 all peer 10.1.1.2 verbose",
                 "display logbuffer | include BGP",
                 "display bgp peer 10.1.1.2 | include negotiated"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -34033,6 +46463,77 @@ const NET_TSHOOT_DATA = {
                 "display bgp routing-table | include med",
                 "display logbuffer | include BGP"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Local-pref 200 aplicado. MED 50 visible en rutas anunciadas. AS-Path prepend funciona. Communities presentes.",
@@ -34389,6 +46890,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include BFD",
                 "display bgp peer 10.1.1.2 verbose"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "BFD session UP. BGP detecta caída en <1s. Sesión BGP se restablece automáticamente.",
@@ -34676,6 +47248,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "reboot",
                 "display bgp peer after reboot"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -35005,6 +47648,77 @@ const NET_TSHOOT_DATA = {
                 "display bgp peer 10.2.2.2 verbose",
                 "display logbuffer | include BGP",
                 "display bgp routing-table | include 65002"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -35370,6 +48084,77 @@ const NET_TSHOOT_DATA = {
                 "display bgp peer 10.1.1.2 verbose",
                 "display logbuffer | include BGP",
                 "display bgp routing-table additional-path"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -35748,6 +48533,77 @@ const NET_TSHOOT_DATA = {
                 "display bgp peer 2.2.2.2 verbose",
                 "display logbuffer | include BGP",
                 "display bgp peer 2.2.2.2 | include reflect"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -36200,6 +49056,77 @@ const NET_TSHOOT_DATA = {
                 "display bgp peer 10.1.1.2 | include route-policy",
                 "display bgp routing-table | include 65001"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Rutas anunciadas llevan community esperada. Prefix-limit protege contra overflow. Prefix-lists filtran correctamente.",
@@ -36612,6 +49539,77 @@ const NET_TSHOOT_DATA = {
                 "display bgp peer 10.1.1.2 verbose",
                 "display ip routing-table 10.1.1.2",
                 "display logbuffer | include BGP"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -37039,6 +50037,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "# Exclusivo de IPv6 / IPv6 Exclusive"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "osi_layer": "Capa 3: Red (Enrutamiento) & Capa 4: Transporte (TCP 179)",
@@ -37282,6 +50351,77 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "# Exclusivo de IPv6 / IPv6 Exclusive"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "osi_layer": "Capa 3: Red (Enrutamiento) & Capa 4: Transporte (TCP 179)",
@@ -37293,16 +50433,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "dhcp_config": {
@@ -37446,6 +50589,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include dhcp_config",
                 "debug dhcp_config"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -37740,6 +50954,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include dhcp_config",
                 "debug dhcp_config"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Option 82 presente en discover/request. Servidor remoto puede filtrar/autorizar por Remote ID.",
@@ -38024,6 +51309,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include dhcp_config",
                 "debug dhcp_config"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -38323,6 +51679,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include dhcp_config",
                 "debug dhcp_config"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Clientes obtienen IP, gateway y DNS. `show dhcp server binding` / `/ip dhcp-server lease print` muestra leases.",
@@ -38491,16 +51918,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
+        "arista",
+        "cisco_iosxe",
         "cisco_iosxr",
+        "datacom",
+        "fortinet",
         "huawei",
-        "arista"
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "dmvpn": {
@@ -38640,6 +52070,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display process cpu",
                 "display memory"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -38959,6 +52460,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug crypto isakmp",
                 "debug crypto ipsec"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -39292,6 +52864,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug eigrp",
                 "debug ospf hello"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -39638,6 +53281,77 @@ const NET_TSHOOT_DATA = {
                 "debug nhrp",
                 "debug nhrp packet"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Túnel UP. NHRP registration successful. Peers DMVPN visibles.",
@@ -39860,15 +53574,18 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "dmvpn_config": {
@@ -39989,6 +53706,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display dmvpn detail",
                 "display logbuffer | include NHRP"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -40310,6 +54098,77 @@ const NET_TSHOOT_DATA = {
                 "display crypto gdoi detail",
                 "display logbuffer | include GDOI",
                 "debug crypto gdoi"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -40726,6 +54585,77 @@ const NET_TSHOOT_DATA = {
                 "display ipsec sa detail",
                 "display ikev2 sa detail",
                 "display logbuffer | include IPSEC"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -41153,6 +55083,77 @@ const NET_TSHOOT_DATA = {
                 "debug nhrp",
                 "ping -a 10.0.0.2 10.0.0.1"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Spoke registrado en hub. NHRP map completo. Ping hub-to-spoke exitoso.",
@@ -41546,6 +55547,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include NHRP",
                 "debug nhrp"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Hub DMVPN activo. NHRP registrando spokes. Tunnel UP.",
@@ -41798,16 +55870,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "eigrp": {
@@ -41947,6 +56022,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display process cpu",
                 "display memory"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -42224,6 +56370,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug eigrp sia",
                 "debug eigrp fsm"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -42513,6 +56730,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug eigrp",
                 "debug eigrp neighbor"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -42819,6 +57107,77 @@ const NET_TSHOOT_DATA = {
                 "debug eigrp fsm",
                 "debug eigrp route"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Rutas EIGRP en topology y RIB. Métricas coherentes. Sin distribute-lists bloqueando.",
@@ -42935,16 +57294,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
         "huawei",
-        "juniper"
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "eigrp_config": {
@@ -43029,6 +57391,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "show eigrp neighbors detail",
                 "show logging | include EIGRP"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -43252,6 +57685,77 @@ const NET_TSHOOT_DATA = {
                 "show eigrp traffic",
                 "show logging | include EIGRP"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Rutas redistribuidas con métrica EIGRP. External routes en tabla. Sin loops.",
@@ -43470,6 +57974,77 @@ const NET_TSHOOT_DATA = {
                 "show eigrp neighbors detail",
                 "show eigrp topology all-links",
                 "show logging | include EIGRP"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -43734,6 +58309,77 @@ const NET_TSHOOT_DATA = {
                 "show eigrp topology all-links",
                 "show logging | include EIGRP"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Stub configurado. Summary routes instaladas. Queries limitadas.",
@@ -43856,14 +58502,17 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "cisco_iosxe",
-        "mikrotik",
         "adtran",
-        "ta5k",
         "arista",
-        "huawei",
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
         "fortinet",
-        "cisco_iosxr"
+        "huawei",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika"
       ]
     },
     "evc_config": {
@@ -43927,6 +58576,99 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug l2vpn xconnect event",
                 "show platform hardware qfp active bridge-domain 100 mac-table"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -44110,6 +58852,99 @@ const NET_TSHOOT_DATA = {
                 "debug ethernet cfm packets",
                 "ethernet cfm ping PROVIDER CLIENTE_A 1 target-mac <mac>"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "MEP activo en EFP 100. CCMs transmitidos cada 1s. Sin errores de conectividad.",
@@ -44281,6 +59116,99 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "show logging | include %SYS-5-CONFIG_I"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Configuración guardada en NVRAM. Startup-config coincide con running-config.",
@@ -44447,6 +59375,99 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug ethernet service instance",
                 "show platform hardware qfp active interface GigabitEthernet0/0/0 stats"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -44646,6 +59667,99 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug policy-map",
                 "show platform hardware qfp active interface GigabitEthernet0/0/0 drops"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -44858,6 +59972,99 @@ const NET_TSHOOT_DATA = {
                 "debug ethernet interface",
                 "show logging | include %LINK-3-UPDOWN"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Interfaz NNI Up/Up. MTU configurada correctamente. Sin errores físicos.",
@@ -45016,12 +60223,16 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
+        "allied_telesis",
+        "arista",
+        "bdcom",
         "cisco_asr903",
         "cisco_iosxe",
-        "arista",
+        "datacom",
+        "fortinet",
         "huawei",
         "mikrotik",
-        "fortinet"
+        "raisecom"
       ]
     },
     "evpn_config": {
@@ -45969,10 +61180,14 @@ const NET_TSHOOT_DATA = {
       "description": "Diagnóstico desde la OLT (core) de problemas GPON/FTTH: ODN óptico, ranging, registro ONT, VLAN/QinQ, PPPoE, VoIP, WiFi.",
       "name": "Troubleshooting GPON OLT (Core) - ONT / FTTH",
       "vendors": [
-        "zte",
+        "adtran",
+        "allied_telesis",
+        "bdcom",
+        "datacom",
         "huawei",
+        "optone_vkom",
         "zhone",
-        "adtran"
+        "zte"
       ],
       "steps": {
         "fiber_ont_ts_doc": {
@@ -46042,6 +61257,98 @@ const NET_TSHOOT_DATA = {
                 "show process cpu",
                 "show memory",
                 "show device manuinfo"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             },
             "adtran": {
@@ -46216,6 +61523,98 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "show gpon onu gemport-statistics gpon-onu_1/2/1:1 gemport 1"
               ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Service-port/bridge de datos activo. MAC de ONT aprendida. Tráfico PPPoE fluyendo entre ONT y BNG.",
@@ -46379,6 +61778,98 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug gpon ranging gpon-olt_1/2/1",
                 "show gpon internal onu gpon-olt_1/2/1 1"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -46567,6 +62058,98 @@ const NET_TSHOOT_DATA = {
                 "show gpon onu base-info gpon-onu_1/2/1:1",
                 "debug gpon onu all",
                 "show gpon onu lan-statistics gpon-onu_1/2/1:1"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -46787,6 +62370,98 @@ const NET_TSHOOT_DATA = {
                 "debug voice sip messages",
                 "debug voice sip register"
               ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Service-port/bridge de voz activo. ONT registrada en softswitch (SIP 200 OK). Tono de marcado presente. Llamada de prueba exitosa.",
@@ -46930,6 +62605,98 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug gpon remote-onu wifi gpon-onu_1/2/1:1"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             },
             "adtran": {
@@ -47078,6 +62845,98 @@ const NET_TSHOOT_DATA = {
                 "display current-configuration | include gpon",
                 "display current-configuration | include ont"
               ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Bridges UP con SLAN/VLAN correctos. MAC del CPE aprendida en la VLAN de servicio. Sin contadores de error creciendo.",
@@ -47214,6 +63073,98 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "display current-configuration | include gpon",
                 "display current-configuration | include ont"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -47355,6 +63306,98 @@ const NET_TSHOOT_DATA = {
               "arch": [
                 "display current-configuration | include gpon",
                 "display current-configuration | include ont"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -47514,6 +63557,98 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "show gpon onu optical-info gpon-olt_1/2/1 1",
                 "show gpon onu lan-ip gpon-onu_1/2/1:1"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -47693,6 +63828,98 @@ const NET_TSHOOT_DATA = {
                 "debug gpon onu all"
               ]
             },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
             "adtran": {
               "tier1": [
                 "show remote-devices-discovered",
@@ -47870,6 +64097,98 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug nat session",
                 "debug acl 3000"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             },
             "adtran": {
@@ -48059,6 +64378,98 @@ const NET_TSHOOT_DATA = {
                 "show gpon onu gemport-statistics gpon-onu_1/2/1:1 gemport 1"
               ]
             },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
             "adtran": {
               "tier1": [
                 "gpon-olt 1",
@@ -48237,6 +64648,98 @@ const NET_TSHOOT_DATA = {
                 "debug gpon loid"
               ]
             },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
             "adtran": {
               "tier1": [
                 "gpon-olt 1",
@@ -48399,6 +64902,98 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug gpon omci gpon-onu_1/2/1:1",
                 "show gpon omci history gpon-onu_1/2/1:1"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             },
             "adtran": {
@@ -48569,6 +65164,98 @@ const NET_TSHOOT_DATA = {
                 "debug voice sip register"
               ]
             },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
             "adtran": {
               "tier1": [
                 "interface gpon-onu 1/1 pots 1 sip-user \"1001\" password \"pass123\" registrar 10.1.1.1"
@@ -48729,6 +65416,98 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "debug service-port 1"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             },
             "adtran": {
@@ -48895,6 +65674,98 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "show gpon onu vlan gpon-onu_1/2/1:1",
                 "debug vlan-smart-qinq"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             },
             "adtran": {
@@ -49098,6 +65969,98 @@ const NET_TSHOOT_DATA = {
                 "show logging | include gpon",
                 "debug gpon onu all"
               ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "ONT en estado Active/Online. Niveles ópticos dentro de rango (-8 a -28 dBm en OLT). Ranging completado sin errores.",
@@ -49282,6 +66245,98 @@ const NET_TSHOOT_DATA = {
                 "debug service-port 1"
               ]
             },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
             "adtran": {
               "tier1": [
                 "bridge-group 100",
@@ -49446,6 +66501,98 @@ const NET_TSHOOT_DATA = {
                 "debug gpon remote-onu wifi gpon-onu_1/2/1:1"
               ]
             },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
             "adtran": {
               "tier1": [
                 "interface gpon-onu 1/1 wifi 1 ssid \"HOME-WIFI\" password \"SecretPass123\" security wpa2-psk"
@@ -49564,6 +66711,98 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "gponolt show bw <slot/pom>"
               ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Bridges PPPoE UP. CPE RG WAN con credenciales. LAN 192.168.x.1 configurada. Servicio navegando.",
@@ -49630,6 +66869,98 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "bridge show onu tls slan <slan>"
               ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Bridge TLS creado en estado UP. Uplink eth y ONU gpononu conectados al mismo SLAN.",
@@ -49689,6 +67020,98 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "onu show <slot/pom/ont>"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -49760,6 +67183,98 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "gpononu resync <slot/pom/ont>"
               ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "ONU registrada en estado Active/Online. Sysinfo configurado. Traps habilitados.",
@@ -49823,6 +67338,98 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "onu show <slot/pom/ont>"
+              ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -49890,6 +67497,98 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "port show <slot-pom-ont>/gpononu"
               ]
+            },
+            "optone_vkom": {
+              "tier1": [
+                "show media-converter status",
+                "show link-state",
+                "show optical-power"
+              ],
+              "tier2": [
+                "show transceiver detail",
+                "show oam 802.3ah status",
+                "show dip-switch config"
+              ],
+              "tier3": [
+                "show oam loopback",
+                "show interface ethernet statistics",
+                "debug oam"
+              ],
+              "arch": [
+                "show system information",
+                "show configuration persistent"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Bridge de voz UP. Líneas SIP registradas (200 OK). Tono de marcado presente.",
@@ -49925,10 +67624,14 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "zte",
+        "adtran",
+        "allied_telesis",
+        "bdcom",
+        "datacom",
         "huawei",
+        "optone_vkom",
         "zhone",
-        "adtran"
+        "zte"
       ]
     },
     "ipv6": {
@@ -50096,6 +67799,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug ipv6 nd",
                 "debug ipv6 dhcp"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -50449,6 +68223,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display process cpu",
                 "display memory"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -50807,6 +68652,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug ipv6 routing",
                 "debug ipv6 ospf hello"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -51189,6 +69105,77 @@ const NET_TSHOOT_DATA = {
                 "debug ipv6 nd",
                 "debug ipv6 icmp"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Interfaz con IPv6 global/link-local. Vecinos en ND cache. Ping exitoso.",
@@ -51428,16 +69415,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "ipv6_config": {
@@ -51642,6 +69632,77 @@ const NET_TSHOOT_DATA = {
                 "display bgp ipv6 peer 2001:db8:2:2::2 verbose",
                 "display logbuffer | include BGP",
                 "display bgp ipv6 routing-table"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -52040,6 +70101,77 @@ const NET_TSHOOT_DATA = {
                 "display ipv6 interface GigabitEthernet1/0/1 verbose",
                 "display logbuffer | include IPV6"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Persistido.",
@@ -52431,6 +70563,77 @@ const NET_TSHOOT_DATA = {
                 "display ospfv3 peer verbose",
                 "display ospfv3 lsdb",
                 "display logbuffer | include OSPFV3"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -52878,6 +71081,77 @@ const NET_TSHOOT_DATA = {
                 "display ipv6 interface GigabitEthernet1/0/1 verbose",
                 "display logbuffer | include IPV6",
                 "debug ipv6 nd"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -53331,6 +71605,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include TUNNEL",
                 "debug tunnel"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Túnel UP. IPv6 sobre GRE funcionando. Ping IPv6 a través del túnel exitoso.",
@@ -53511,16 +71856,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
         "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone",
         "zte"
       ]
     },
@@ -53663,6 +72011,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include isis_config",
                 "debug isis_config"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -53954,6 +72373,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include isis_config",
                 "debug isis_config"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -54279,6 +72769,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include isis_config",
                 "debug isis_config"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "TLVs de TE presentes en LSPs. RSVP-TE puede computar CSPF usando IS-IS.",
@@ -54410,16 +72971,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
         "adtran",
-        "ta5k",
-        "zone",
-        "huawei",
         "arista",
-        "fortinet"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "l2vpn_config": {
@@ -54623,6 +73187,99 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include l2vpn_config",
                 "debug l2vpn_config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -55019,6 +73676,99 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include l2vpn_config",
                 "debug l2vpn_config"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "PW en estado UP tras reload. Configuración persistente. LDP/BGP sessions restablecidas.",
@@ -55414,6 +74164,99 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include l2vpn_config",
                 "debug l2vpn_config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -55872,6 +74715,99 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include l2vpn_config",
                 "debug l2vpn_config"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Pseudowire UP. VC ID 100 coincide en ambos extremos. MTU consistente (>= 1500). LDP neighbor establecido.",
@@ -56309,6 +75245,99 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include l2vpn_config",
                 "debug l2vpn_config"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "PW estado UP. MTU consistente. Sin MAC flapping. AC operativo. LDP/BGP sessions establecidas.",
@@ -56739,6 +75768,99 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include l2vpn_config",
                 "debug l2vpn_config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -57194,6 +76316,99 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include l2vpn_config",
                 "debug l2vpn_config"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "BGP-AD NLRI tipo 1 enviado/recibido. VPLS VSI formado automáticamente. PW establecidos vía LDP hacia PEs descubiertos.",
@@ -57443,16 +76658,20 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
+        "allied_telesis",
         "arista",
-        "huawei"
+        "bdcom",
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "raisecom",
+        "ta5k",
+        "zone"
       ]
     },
     "l3vpn_config": {
@@ -57647,6 +76866,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include l3vpn_config",
                 "debug l3vpn_config"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -58041,6 +77331,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include l3vpn_config",
                 "debug l3vpn_config"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Ping exitoso entre CEs. Configuración persistente.",
@@ -58421,6 +77782,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include l3vpn_config",
                 "debug l3vpn_config"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -58845,6 +78277,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include l3vpn_config",
                 "debug l3vpn_config"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "VRF creada con RD/RT consistentes. Interfaces asignadas.",
@@ -59056,16 +78559,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "mpbgp_config": {
@@ -60392,6 +79898,77 @@ const NET_TSHOOT_DATA = {
                 "reboot",
                 "display mpls interface after reboot"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Configuración persistente. No hay errores de commit.",
@@ -60751,6 +80328,77 @@ const NET_TSHOOT_DATA = {
                 "display mpls ldp session verbose",
                 "display mpls ldp peer verbose",
                 "display logbuffer | include LDP"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -61153,6 +80801,77 @@ const NET_TSHOOT_DATA = {
                 "display mpls traffic-eng tunnel verbose",
                 "display logbuffer | include RSVP",
                 "display mpls traffic-eng topology verbose"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -61557,6 +81276,77 @@ const NET_TSHOOT_DATA = {
                 "display mpls lsp verbose",
                 "display logbuffer | include LDP"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Interfaces listadas en `show mpls interfaces` / `/mpls ldp interface print`.",
@@ -61823,16 +81613,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
         "huawei",
-        "fortinet"
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "multicast_config": {
@@ -65230,6 +85023,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include ospf_config",
                 "debug ospf_config"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Rutas externas filtradas (Stub) o convertidas a type-7 (NSSA). Default-route inyectada por ABR.",
@@ -65543,6 +85407,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include ospf_config",
                 "debug ospf_config"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Adyacencias OSPF con auth OK. Sin mensajes de mismatch de autenticación.",
@@ -65836,6 +85771,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include ospf_config",
                 "debug ospf_config"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -66187,6 +86193,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include ospf_config",
                 "debug ospf_config"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Vecinos OSPF en FULL. Rutas intra/inter-area en tabla.",
@@ -66355,16 +86432,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "pbr": {
@@ -66522,6 +86602,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display process cpu",
                 "display memory"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -66865,6 +87016,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "debug ip policy",
                 "display ip cef"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -67223,6 +87445,77 @@ const NET_TSHOOT_DATA = {
                 "debug ip policy",
                 "display ip cef"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Route-map aplicado en interfaz. Matches correctos. Next-hop alcanzable.",
@@ -67458,16 +87751,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "pbr_config": {
@@ -67602,6 +87898,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display policy-based-route detail",
                 "display logbuffer | include PBR"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -67946,6 +88313,77 @@ const NET_TSHOOT_DATA = {
                 "display policy-based-route detail",
                 "display logbuffer | include PBR"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "PBR aplicado. Tráfico 192.168.10.0/24 steerado por 10.1.1.2.",
@@ -68211,16 +88649,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "qos_traffic_eng_config": {
@@ -69974,6 +90415,77 @@ const NET_TSHOOT_DATA = {
                 "display rip 1 database detail",
                 "display logbuffer | include RIP"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Autenticación MD5 activa. Timers ajustados. Rutas autenticadas.",
@@ -70127,6 +90639,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display rip 1 database detail",
                 "display logbuffer | include RIP"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -70314,6 +90897,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include RIP",
                 "debug rip 1"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "RIPv2 vecinos visibles. Rutas en tabla. Sin auto-summary.",
@@ -70422,14 +91076,17 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "cisco_iosxe",
-        "mikrotik",
         "adtran",
-        "ta5k",
-        "zone",
+        "cisco_iosxe",
         "cisco_iosxr",
+        "datacom",
+        "fortinet",
         "juniper",
-        "fortinet"
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "sdwan": {
@@ -70513,6 +91170,77 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "/routing sdwan session print extensive"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -70715,6 +91443,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "/routing sdwan lsa print detail",
                 "/log print where topics~\"sdwan\""
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -70945,6 +91744,77 @@ const NET_TSHOOT_DATA = {
                 "/routing sdwan neighbor print detail",
                 "/log print where topics~\"sdwan\""
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Estado verificado. Problema identificado.",
@@ -71115,13 +91985,16 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "mikrotik",
-        "juniper",
-        "fortinet",
+        "arista",
         "cisco_iosxe",
         "cisco_iosxr",
-        "arista",
-        "huawei"
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "teltonika"
       ]
     },
     "sdwan_config": {
@@ -71245,6 +92118,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include sdwan_config",
                 "debug sdwan_config"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -71547,6 +92491,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include sdwan_config",
                 "debug sdwan_config"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -71895,6 +92910,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include sdwan_config",
                 "debug sdwan_config"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -72252,6 +93338,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include sdwan_config",
                 "debug sdwan_config"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Miembros de SD-WAN activos. TLOCs registrados. OMP peers establecidos.",
@@ -72492,14 +93649,17 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "segment_routing_config": {
@@ -74896,6 +96056,77 @@ const NET_TSHOOT_DATA = {
                 "display dot1x interface GigabitEthernet1/0/1 verbose",
                 "display logbuffer | include DOT1X"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "802.1X activo. Puerto authorized.",
@@ -75259,6 +96490,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include ACL",
                 "debug acl 3000"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "ACL aplicada. Tráfico permitido/denegado correctamente.",
@@ -75595,6 +96897,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include SECURITY"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Persistido.",
@@ -75910,6 +97283,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display macsec connections detail",
                 "display logbuffer | include MACSEC"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -76289,6 +97733,77 @@ const NET_TSHOOT_DATA = {
                 "display ipsec sa detail",
                 "display logbuffer | include IPSEC"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "IPSec SA establecida. Tráfico cifrado.",
@@ -76563,16 +98078,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "spanning_tree_config": {
@@ -76757,6 +98275,99 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include spanning_tree_config",
                 "debug spanning_tree_config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -77131,6 +98742,99 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include spanning_tree_config",
                 "debug spanning_tree_config"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Topología sin loops. Root bridge correcto. Puertos edge con portfast.",
@@ -77501,6 +99205,99 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include spanning_tree_config",
                 "debug spanning_tree_config"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Root bridge electo. Puertos en designated/forwarding o blocking. Sin loops.",
@@ -77761,16 +99558,20 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxr",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
+        "allied_telesis",
         "arista",
-        "huawei"
+        "bdcom",
+        "cisco_iosxe",
+        "cisco_iosxr",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "raisecom",
+        "ta5k",
+        "zone"
       ]
     },
     "switch_l2": {
@@ -77854,6 +99655,99 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "/routing switch_l2 session print extensive"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -78056,6 +99950,99 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "/routing switch_l2 lsa print detail",
                 "/log print where topics~\"switch_l2\""
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -78286,6 +100273,99 @@ const NET_TSHOOT_DATA = {
                 "/routing switch_l2 neighbor print detail",
                 "/log print where topics~\"switch_l2\""
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Estado verificado. Problema identificado.",
@@ -78456,13 +100536,17 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "mikrotik",
-        "juniper",
-        "fortinet",
+        "allied_telesis",
+        "arista",
+        "bdcom",
         "cisco_iosxe",
         "cisco_iosxr",
-        "arista",
-        "huawei"
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "raisecom"
       ]
     },
     "switch_l2_config": {
@@ -78606,6 +100690,99 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include switch_l2_config",
                 "debug switch_l2_config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -78956,6 +101133,99 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include switch_l2_config",
                 "debug switch_l2_config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -79342,6 +101612,99 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include switch_l2_config",
                 "debug switch_l2_config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -79741,6 +102104,99 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display logbuffer | include switch_l2_config",
                 "debug switch_l2_config"
+              ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
               ]
             }
           },
@@ -80176,6 +102632,99 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include switch_l2_config",
                 "debug switch_l2_config"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "STP/RSTP establecido. Root bridge elegido. Sin loops. Storm control activo.",
@@ -80560,6 +103109,99 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include switch_l2_config",
                 "debug switch_l2_config"
               ]
+            },
+            "raisecom": {
+              "tier1": [
+                "show interface",
+                "show vlan",
+                "show mac-address-table l2-address"
+              ],
+              "tier2": [
+                "show ether-ring",
+                "show ether-ring detail",
+                "show oam peer",
+                "show interface transceiver"
+              ],
+              "tier3": [
+                "show mac-address-table l2-address port 1/1/1",
+                "show port statistics",
+                "debug ether-ring"
+              ],
+              "arch": [
+                "show running-config",
+                "show system information"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
+            },
+            "allied_telesis": {
+              "tier1": [
+                "show interface brief",
+                "show vlan",
+                "show wan status",
+                "show ip interface vlan1 brief"
+              ],
+              "tier2": [
+                "show interface transceiver",
+                "show epsr",
+                "show spanning-tree",
+                "show mac address-table"
+              ],
+              "tier3": [
+                "show system log",
+                "show interface counters errors",
+                "debug switching"
+              ],
+              "arch": [
+                "show running-config",
+                "show boot config"
+              ]
+            },
+            "bdcom": {
+              "tier1": [
+                "show gpon onu-information",
+                "show gpon active-onu",
+                "show vlan",
+                "show interface brief"
+              ],
+              "tier2": [
+                "show gpon interface gpon 0/1:1 onu state",
+                "show mac address-table dynamic interface gpon 0/1:1",
+                "show igmp snooping"
+              ],
+              "tier3": [
+                "show gpon onu-optical-transceiver-diagnosis interface gpon 0/1",
+                "show gpon interface gpon 0/1:1 onu optical-transceiver-diagnosis",
+                "debug gpon oam"
+              ],
+              "arch": [
+                "show running-config",
+                "show version"
+              ]
             }
           },
           "expected": "Trunk operativo. VLANs allowed coinciden en ambos extremos. Native VLAN consistente.",
@@ -80773,15 +103415,19 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
+        "allied_telesis",
         "arista",
-        "huawei"
+        "bdcom",
+        "cisco_iosxe",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "raisecom",
+        "ta5k",
+        "zone"
       ]
     },
     "vrrp_hsrp_config": {
@@ -80913,6 +103559,77 @@ const NET_TSHOOT_DATA = {
               "tier3": [
                 "display vrrp interface GigabitEthernet1/0/1 verbose",
                 "display logbuffer | include VRRP"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -81218,6 +103935,77 @@ const NET_TSHOOT_DATA = {
               ],
               "tier3": [
                 "display vrrp interface GigabitEthernet1/0/1 verbose"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -81583,6 +104371,77 @@ const NET_TSHOOT_DATA = {
                 "display logbuffer | include VRRP",
                 "debug vrrp"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Master elegido. Backup en standby. Virtual IP reachable. Preemption activa.",
@@ -81839,15 +104698,18 @@ const NET_TSHOOT_DATA = {
         }
       },
       "vendors": [
-        "juniper",
-        "cisco_iosxe",
-        "mikrotik",
-        "fortinet",
         "adtran",
-        "ta5k",
-        "zone",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "mikrotik",
+        "sophos",
+        "ta5k",
+        "teltonika",
+        "zone"
       ]
     },
     "vxlan_config": {
@@ -85052,14 +107914,17 @@ const NET_TSHOOT_DATA = {
       "description": "Guía completa para NAT: Source NAT (PAT/Masquerade), Destination NAT (Port Forwarding) y Static NAT (1:1).",
       "name": "Configuración NAT Avanzada",
       "vendors": [
-        "juniper",
-        "cisco_iosxe",
-        "fortinet",
-        "mikrotik",
-        "zone",
-        "linux",
         "arista",
-        "huawei"
+        "cisco_iosxe",
+        "datacom",
+        "fortinet",
+        "huawei",
+        "juniper",
+        "linux",
+        "mikrotik",
+        "sophos",
+        "teltonika",
+        "zone"
       ],
       "steps": {
         "nat_config_start": {
@@ -85236,6 +108101,77 @@ const NET_TSHOOT_DATA = {
                 "iptables-save > /etc/iptables/rules.v4",
                 "# O con systemd-run:",
                 "sysctl net.ipv4.ip_forward"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -85644,6 +108580,77 @@ const NET_TSHOOT_DATA = {
                 "tcpdump -i <outside-if> -nn \"tcp port 8080\" -c 20",
                 "conntrack -E --dst 192.168.1.10"
               ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
+              ]
             }
           },
           "expected": "Tráfico al puerto 8080 en la IP pública externa es redirigido correctamente al servidor web interno en el puerto 80. Sesiones TCP creadas y visibles en la tabla.",
@@ -85967,6 +108974,77 @@ const NET_TSHOOT_DATA = {
                 "tcpdump -i any -nn \"host 203.0.113.10 or host 192.168.1.10\" -c 30",
                 "# Persistir reglas:",
                 "iptables-save > /etc/iptables/rules.v4"
+              ]
+            },
+            "sophos": {
+              "tier1": [
+                "show network interfaces",
+                "show static-route",
+                "system route_precedence show"
+              ],
+              "tier2": [
+                "system diagnostics utilities bandwidth-monitor",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\"",
+                "system ipsec status"
+              ],
+              "tier3": [
+                "tcpdump -nei any port 179 or port 500",
+                "cyberoam> option 4",
+                "system diagnostics utilities ping"
+              ],
+              "arch": [
+                "show running-config",
+                "system backup show"
+              ]
+            },
+            "teltonika": {
+              "tier1": [
+                "gsmctl -q",
+                "gsmctl -signal",
+                "ip route",
+                "ip addr show"
+              ],
+              "tier2": [
+                "gsmctl -A 'AT+QENG=\"SERVINGCELL\"'",
+                "uci show network",
+                "vtysh -c \"show ip bgp summary\"",
+                "vtysh -c \"show ip ospf neighbor\""
+              ],
+              "tier3": [
+                "logread -f",
+                "nft list ruleset",
+                "tcpdump -i any -n"
+              ],
+              "arch": [
+                "uci show",
+                "cat /etc/config/network"
+              ]
+            },
+            "datacom": {
+              "tier1": [
+                "show vlan brief",
+                "show interface ethernet brief",
+                "show ip route",
+                "show erps brief"
+              ],
+              "tier2": [
+                "show vlan membership detail",
+                "show mac-address-table",
+                "show l2vpn",
+                "show ip bgp summary",
+                "show ip ospf neighbor"
+              ],
+              "tier3": [
+                "show erps detail",
+                "show oam 802.3ah",
+                "show ip bgp neighbor",
+                "show ip ospf database"
+              ],
+              "arch": [
+                "show running-config vlan",
+                "show running-config router bgp",
+                "show running-config interface"
               ]
             }
           },
@@ -89151,20 +112229,27 @@ const NET_TSHOOT_DATA = {
     }
   },
   "VendorMap": {
-    "juniper": "Juniper JunOS",
-    "cisco_iosxr": "Cisco IOS-XR",
-    "cisco_iosxe": "Cisco IOS-XE / NX-OS",
-    "arista": "Arista EOS",
-    "huawei": "Huawei VRP / GPON OLT",
-    "mikrotik": "MikroTik RouterOS v7",
-    "fortinet": "Fortinet FortiOS",
-    "zone": "Vendor Genérico (ZTE/Huawei)",
-    "zte": "ZTE GPON OLT (C300/C600/XGS-PON)",
-    "zhone": "Zhone / DASAN GPON OLT (MXK/MXK-F)",
-    "adtran": "ADTRAN Total Access 5000 (AOS)",
-    "ta5k": "TA5000 / ADTRAN AOS (FTTH)",
-    "cisco_asr903": "Cisco ASR 903 / ASR 900",
-    "linux": "Linux / Generic tcpdump / Wireshark"
+    "juniper": "Juniper JunOS (MX / ACX / PTX / SRX)",
+    "cisco_iosxr": "Cisco IOS-XR (ASR 9000 / NCS / CRS)",
+    "cisco_iosxe": "Cisco IOS-XE / ISR / ASR 1000 / Catalyst 9000",
+    "cisco_asr903": "Cisco ASR 900 / 903 / 920 Series",
+    "arista": "Arista EOS (7000 Series / CloudVision)",
+    "huawei": "Huawei VRP (NetEngine / AR / OLT MA5800)",
+    "mikrotik": "MikroTik RouterOS v7 (CCR / CRS / RB)",
+    "fortinet": "Fortinet FortiOS (FortiGate 40F-3000F)",
+    "zone": "Vendor Carrier Genérico (ZTE/Huawei)",
+    "zte": "ZTE GPON OLT (ZXAN C300 / C600)",
+    "zhone": "Dasan Zhone GPON OLT (MXK / MXK-F)",
+    "adtran": "ADTRAN TA5000 OLT / NetVanta (AOS)",
+    "ta5k": "ADTRAN Total Access 5000 (AOS FTTH)",
+    "linux": "GNU/Linux Networking & FRRouting (iproute2/vtysh)",
+    "datacom": "Datacom DmOS (DM4073 / DM4170 / DM4370)",
+    "bdcom": "BDCOM GPON OLT P3600 / ONU 1705 / Switch L2",
+    "optone_vkom": "Optone OPT-1202 & VKOM Conversores / CPE",
+    "allied_telesis": "Allied Telesis AW+ & iMG CPE (x530/iMG606)",
+    "raisecom": "Raisecom ISCOM (2600G / 2608G / Carrier Eth)",
+    "sophos": "Sophos SFOS (XG / XGS Firewall & Central)",
+    "teltonika": "Teltonika RutOS (RUT / RUTX Industrial LTE)"
   },
   "TECH_CONCEPTS": {
     "mpls": {
@@ -89268,37 +112353,21 @@ const NET_TSHOOT_DATA = {
       "key_concepts": "• **Adyacencia Link-Local:** OSPFv3 forma vecinos utilizando únicamente direcciones de enlace local (link-local - fe80::/10).\n• **Router ID de 32 bits:** Es obligatorio configurar manualmente un Router ID de 32 bits (ej: 1.1.1.1) ya que IPv6 no autogenera Router IDs de 32 bits.\n• **Nuevos LSAs:** Introduce LSAs Tipo 8 (Link LSA) y Tipo 9 (Intra-Area-Prefix LSA) para propagar prefijos sin recalcular el árbol SPF completo.",
       "architecture": "Funciona sobre el protocolo IP 89 utilizando direccionamiento de multicast link-local (`ff02::5` para todos los routers OSPFv3 y `ff02::6` para DR/BDR). Los paquetes se originan siempre con la IP de enlace local del puerto."
     },
-    "nat": {
-      "definition": "Network Address Translation (NAT) es una tecnología que modifica las direcciones IP y puertos en las cabeceras de los paquetes IP mientras están en tránsito a través de un dispositivo de red. Su propósito principal es conservar el espacio de direccionamiento IPv4 público al permitir que múltiples hosts privados compartan un número limitado de direcciones públicas, además de ocultar la topología de red interna.",
-      "key_concepts": "• **Source NAT (SNAT):** Traduce la dirección IP origen de los paquetes (comúnmente usado para salida a Internet).\n• **Destination NAT (DNAT):** Traduce la dirección IP (y puerto) destino de los paquetes (comúnmente usado para publicar servidores internos).\n• **Static NAT (1:1):** Mapeo estático y bidireccional entre una IP privada y una IP pública dedicada.\n• **PAT / NAT Overload / Masquerade:** Tipo de Source NAT que traduce múltiples IPs privadas usando una sola IP pública y diferentes puertos TCP/UDP.\n• **Port Exhaustion:** Condición crítica donde se agotan los puertos efímeros disponibles para PAT, impidiendo nuevas conexiones.",
-      "architecture": "Los firewalls y routers mantienen una tabla de traducción de direcciones (NAT Session Table / Translation Table). Cuando llega el primer paquete de un flujo, el motor de NAT evalúa las reglas. Si hay coincidencia, crea una entrada de sesión y modifica el paquete (IP/Puerto). Los paquetes subsecuentes de la misma sesión se traducen de forma ultra rápida por hardware (fastpath) evitando re-evaluar las reglas. Al recibir el tráfico de retorno, el dispositivo realiza la traducción inversa consultando la misma sesión.",
-      "control_vs_data": "• **Plano de Control:** Definición de políticas, pools de direcciones, y la lógica inicial de asignación y creación de la sesión NAT en la CPU.\n• **Plano de Datos:** Sustitución en caliente de IPs/puertos y recalculación del checksum IP/TCP/UDP realizada por ASICs o procesadores de red a velocidad de línea.",
-      "troubleshooting_strategy": "1. **Paso 1 (Session Table):** Verificar si la sesión de traducción está registrada en la tabla de NAT con los puertos correctos.\n2. **Paso 2 (Resource Exhaustion):** Monitorear la utilización de puertos efímeros y el límite de sesiones del pool de NAT.\n3. **Paso 3 (Flow Trace):** Ejecutar depuración a nivel de flujo de paquetes (Flow Debug/Trace) para confirmar si el motor descarta el paquete o falla en traducirlo.\n4. **Paso 4 (Routing & Firewalls):** Asegurar que existan rutas de retorno para la IP pública traducida y que las políticas de seguridad permitan el tráfico post-NAT o pre-NAT según el vendor.",
-      "configuration_basics": "• Definir interfaces o zonas de confianza (Inside/Trust) y no confianza (Outside/Untrust).\n• Habilitar la regla de traducción (Source/Destination/Static) y asociarla a la interfaz de salida o pool público.\n• Crear las políticas de firewall correspondientes que permitan el paso de tráfico."
+    "switch_l2": {
+      "definition": "La conmutación de Capa 2 (L2 Switching) es el proceso de reenvío de tramas Ethernet dentro del mismo segmento de red física basándose en las direcciones MAC destino. Incluye el etiquetado de VLANs para segmentar redes virtuales y la agregación de enlaces físicos (LACP) para incrementar el ancho de banda y proporcionar redundancia.",
+      "key_concepts": "• **MAC Address Table (CAM):** Base de datos asociativa en memoria que relaciona direcciones MAC físicas con los puertos del switch.\n• **802.1Q VLAN Tagging:** Estándar industrial que inyecta una etiqueta de 4 bytes en la cabecera Ethernet para identificar a qué VLAN pertenece la trama.\n• **LACP (Link Aggregation Control Protocol):** Protocolo 802.3ad que negocia dinámicamente la agrupación de múltiples enlaces físicos en un único canal lógico (EtherChannel).\n• **Access vs Trunk:** Puertos Access transportan tráfico de una única VLAN sin etiqueta. Puertos Trunk transportan múltiples VLANs tagged.",
+      "architecture": "Cuando una trama Ethernet ingresa, el switch lee la MAC Origen y la registra en la tabla CAM asociándola al puerto. Luego lee la MAC Destino: si existe en la tabla CAM, la reenvía al puerto correspondiente; si no existe o es broadcast, inunda (flooding) la trama en todos los puertos miembros de la misma VLAN.",
+      "control_vs_data": "• **Plano de Control:** Protocolos LACP para agrupamiento de puertos y Spanning Tree para prevenir bucles de capa 2 en software.\n• **Plano de Datos:** Conmutación L2 ultra rápida por hardware (ASIC/CAM) basada en coincidencia exacta de direcciones MAC.",
+      "troubleshooting_strategy": "1. **Paso 1 (LACP Negotiation Check):** Validar que las interfaces del EtherChannel estén agrupadas y que LACP esté en estado `u` (in_use) mediante la CLI.\n2. **Paso 2 (VLAN Mismatches):** Confirmar que las VLANs permitidas en el enlace Trunk coincidan de manera exacta en ambos extremos físicos.\n3. **Paso 3 (MAC Flapping):** Si una dirección MAC oscila rápidamente entre diferentes puertos físicos, indica la presencia de un bucle de Capa 2 activo o problemas de direccionamiento.\n4. **Paso 4 (EtherChannel Hashing):** Si hay desbalance de tráfico entre los enlaces del EtherChannel, ajustar el algoritmo de balanceo de carga (hashing) para incluir IPs y puertos en lugar de solo MACs.",
+      "configuration_basics": "• Crear las VLANs deseadas en el switch.\n• Configurar puertos Trunk permitiendo el paso de las VLANs específicas.\n• Crear los canales de agregación asociando las interfaces físicas a un grupo LACP en modo `active`."
     },
-    "nat_config": {
-      "definition": "La configuración de NAT implica definir cómo el dispositivo debe mapear las direcciones IP locales (privadas) con las globales (públicas). Dependiendo del caso de uso, se requiere NAT de Origen (para que los clientes salgan a Internet), NAT de Destino (para publicar servicios web u otros al exterior) o NAT Estático 1:1.",
-      "key_concepts": "• **Inside Global / Inside Local:** Terminología Cisco para IP pública post-NAT e IP privada pre-NAT respectivamente.\n• **VIP (Virtual IP):** En Fortinet, objeto que realiza la función de DNAT y mapeo de puertos.\n• **Static NAT Prefix:** En Juniper, regla que realiza mapeo directo uno a uno de redes o hosts enteros.",
-      "architecture": "El procesamiento de NAT varía según el vendor: Cisco y Juniper procesan las políticas de seguridad/enrutamiento en momentos distintos con relación a la traducción NAT (ej. en Cisco el enrutamiento ocurre antes de Inside->Outside, en Fortinet el VIP se evalúa antes de la política de firewall).",
-      "control_vs_data": "• **Plano de Control:** Registro de configuración en el archivo de ejecución e instalación de reglas en la memoria de traducción.\n• **Plano de Datos:** Traducción y reenvío directo de flujos de datos.",
-      "troubleshooting_strategy": "1. **Paso 1 (Interface Assignment):** Asegurar que las interfaces estén correctamente designadas como internas o externas.\n2. **Paso 2 (ACL/Match Rules):** Validar que las listas de control de acceso o reglas de coincidencia apunten a los prefijos IP correctos.\n3. **Paso 3 (IP Pools):** Asegurar que los pools de IPs públicas no se traslapen con IPs de tránsito o de otros dispositivos.",
-      "configuration_basics": "• Habilitar NAT en las interfaces o zonas implicadas.\n• Crear reglas de coincidencia de tráfico (ACLs, Zonas, Prefijos).\n• Configurar la acción de traducción a aplicar."
-    },
-    "bfd": {
-      "definition": "Bidirectional Forwarding Detection (BFD) es un protocolo de detección rápida de fallas de enlace diseñado para proporcionar tiempos de convergencia ultra rápidos (sub-segundo) para protocolos de enrutamiento como BGP, OSPF, IS-IS. Su único objetivo es detectar fallas de conectividad bidireccional en el camino de datos.",
-      "key_concepts": "• **Hello Interval (Mínimo Transmit/Receive):** Tiempo en milisegundos entre paquetes de control BFD.\n• **Detection Multiplier:** Número de hellos perdidos seguidos antes de declarar el enlace como caído (down).\n• **Async Mode:** Modo por defecto donde ambos extremos envían hellos periódicos.\n• **Echo Function:** Función donde se envían paquetes de eco con la IP de origen del propio router para validar el plano de datos del switch adyacente sin procesar BFD en la CPU del vecino.",
-      "architecture": "BFD funciona encapsulado en UDP (puerto 3784 para enlaces simples de un solo salto, y puerto 3785 para múltiples saltos). Es independiente de los protocolos de capa de red y enrutamiento, pero interactúa con ellos: al caerse la sesión BFD, este notifica de inmediato a BGP/OSPF para que boten sus adyacencias de inmediato en lugar de esperar a que expiren los keepalives tradicionalmente.",
-      "control_vs_data": "• **Plano de Control:** Negociación inicial de los timers y estados de sesión BFD ejecutada por el software principal.\n• **Plano de Datos:** Procesamiento ultrarrápido y periódico de paquetes Hello UDP (a menudo implementado directamente en ASICs de las linecards en routers de gama alta para evitar sobrecargar el procesador principal).",
-      "troubleshooting_strategy": "1. **Paso 1 (Timer Alignment):** Validar que los timers configurados en ambos extremos sean soportados por el hardware local.\n2. **Paso 2 (UDP Reachability):** Confirmar que no existan ACLs o firewalls bloqueando el tráfico UDP puerto 3784/3785.\n3. **Paso 3 (Interface Status):** Verificar si la interfaz física reporta flaps de capa 1 que puedan interrumpir las ráfagas BFD.\n4. **Paso 4 (Control Plane Load):** Si la CPU del router está muy alta, BFD puede expirar falsamente (flapping) si no está descargado en hardware.",
-      "configuration_basics": "• Habilitar BFD bajo la interfaz física o lógica implicada.\n• Configurar el intervalo mínimo de transmisión (`min-tx-interval`), de recepción (`min-rx-interval`) y el multiplicador (`multiplier`).\n• Asociar BFD al protocolo de enrutamiento deseado (ej. `bfd` bajo el proceso OSPF o grupo BGP)."
-    },
-    "mpbgp": {
-      "definition": "Multiprotocol BGP (MP-BGP) es una extensión de Border Gateway Protocol (BGP) que le permite transportar información de alcanzabilidad de capa de red (NLRI) para múltiples protocolos de red y Address Families, tales como IPv6, VPNv4/VPNv6 (para L3VPNs), EVPN (para conmutación de Capa 2/3 sobre VXLAN) y tráfico Multicast.",
-      "key_concepts": "• **AFI / SAFI:** Address Family Identifier (ej. 1 para IPv4, 2 para IPv6) y Subsequent Address Family Identifier (ej. 128 para L3VPN).\n• **Route Distinguisher (RD):** Valor de 64 bits que se antepone a la dirección IP del cliente para hacerla única dentro del core de red.\n• **Route Target (RT):** Atributo BGP (Extended Community) que define cómo se importan y exportan las rutas entre las VRFs de los clientes.\n• **BGP Capability Negotiation:** Proceso durante el establecimiento de la sesión TCP (OPEN) donde los peers acuerdan qué address families soportan.",
-      "architecture": "MP-BGP utiliza dos nuevos atributos opcionales no transitivos: `MP_REACH_NLRI` (para anunciar rutas y sus etiquetas asociadas) y `MP_UNREACH_NLRI` (para retirar rutas). Esto le permite a una única sesión TCP BGP de transporte propagar múltiples servicios de red independientes sin mezclar las tablas de enrutamiento.",
-      "control_vs_data": "• **Plano de Control:** Intercambio de rutas, RDs, RTs y etiquetas de servicio MPLS mediante mensajes UPDATE de BGP sobre TCP 179.\n• **Plano de Datos:** Conmutación rápida de paquetes basada en etiquetas (MPLS) o encapsulación de túneles (VXLAN/GRE) utilizando la información distribuida por el plano de control BGP.",
-      "troubleshooting_strategy": "1. **Paso 1 (Capability Exchange):** Verificar que la address family necesaria esté activada (activate) bajo el peer BGP.\n2. **Paso 2 (RD/RT Consistency):** Confirmar que el PE de origen exporte el RT que el PE de destino esté importando en su VRF.\n3. **Paso 3 (Next-Hop Resolution):** Comprobar que el BGP Next-Hop (generalmente el Loopback0 del PE origen) sea alcanzable y tenga una etiqueta de transporte MPLS válida (LDP/RSVP).\n4. **Paso 4 (Route Reflector Status):** Si se usan RRs, verificar que las familias estén activadas en el RR y que las rutas no sean descartadas por prevención de bucles.",
-      "configuration_basics": "• Definir el peer BGP en el sistema autónomo.\n• Ingresar al modo específico de address-family (ej. `address-family vpnv4 unicast` o `address-family l2vpn evpn`).\n• Activar (`neighbor activate`) al peer dentro de esa address-family y habilitar el envío de comunidades extendidas."
+    "vrrp_hsrp": {
+      "definition": "Virtual Router Redundancy Protocol (VRRP) y Hot Standby Router Protocol (HSRP) son protocolos de redundancia de gateway de primera hop (FHRP) que permiten que múltiples routers compartan una IP virtual. Si el router activo falla, el router de standby asume automáticamente la responsabilidad de enrutar el tráfico.",
+      "key_concepts": "• **VIP (Virtual IP):** Dirección IP compartida entre los routers del grupo que actúa como gateway para los hosts.\n• **Priority:** Valor que determina qué router es el activo (mayor valor = preferido).\n• **Preemption:** Capacidad de un router con mayor prioridad de reclamar el rol activo cuando vuelve a estar online.\n• **Tracking:** Reducción dinámica de la prioridad si una interfaz o ruta upstream falla.",
+      "architecture": "Los routers del grupo intercambian mensajes de keepalive (Hellos) para supervisar la salud del activo. En VRRP, el activo responde a ARP requests para la VIP. En HSRP, el activo responde a las peticiones y el standby escucha. El failover típico es de 1-3 segundos (VRRP) o configurable (HSRP).",
+      "control_vs_data": "• **Plano de Control:** Intercambio de Hellos, elección de activo/standby, y respuesta ARP para la VIP.\n• **Plano de Datos:** Reenvío de tráfico de usuario a través del router activo.",
+      "troubleshooting_strategy": "1. **Paso 1 (Estado):** Verificar que un router esté en estado `Master` (VRRP) o `Active` (HSRP) y el otro en `Backup`.\n2. **Paso 2 (Hellos):** Confirmar que los Hellos se reciban en ambas direcciones (posible split-horizon o ACL bloqueando).\n3. **Paso 3 (Tracking):** Validar que el tracking de interfaces upstream funcione y reduzca la prioridad si la ruta falla.",
+      "configuration_basics": "• Definir el grupo VRRP/HSRP con un ID y la VIP.\n• Configurar prioridades diferentes para activo y standby.\n• Habilitar preemption y tracking de interfaces upstream."
     },
     "dhcp": {
       "definition": "Dynamic Host Configuration Protocol (DHCP) es un protocolo cliente-servidor que automatiza la asignación de direcciones IP y parámetros de red a hosts. En entornos de proveedores e infraestructura, se utiliza ampliamente el mecanismo DHCP Relay (o Helper Address) para reenviar las solicitudes broadcast DHCP a través de subredes hacia un servidor centralizado de DHCP.",
@@ -89308,62 +112377,6 @@ const NET_TSHOOT_DATA = {
       "troubleshooting_strategy": "1. **Paso 1 (Giaddr & Reachability):** Validar que la interfaz L3 (SVI, subinterfaz) del cliente tenga asignada la IP correcta y conectividad hacia el servidor DHCP.\n2. **Paso 2 (Helpers & Firewalls):** Asegurar que la ip de helper apunte a la IP real del servidor y que los firewalls permitan UDP 67 y 68.\n3. **Paso 3 (Option 82 Validation):** Comprobar si el servidor DHCP requiere o rechaza Option 82. Algunos servidores descartan paquetes si la Option 82 es inconsistente.\n4. **Paso 4 (Pool Capacity):** Verificar en el servidor que el pool de direcciones no esté saturado (sin IPs disponibles).",
       "configuration_basics": "• Configurar el servidor DHCP o definir la IP del helper/relay en la interfaz L3 local que recibe el broadcast del cliente (`ip helper-address <ip_servidor>` en Cisco).\n• Habilitar el procesamiento de Option 82 globalmente si se requiere identificar los puertos físicos de origen."
     },
-    "netflow": {
-      "definition": "NetFlow (y su estándar IPFIX / NetFlow v10) es un protocolo de telemetría de red que recopila metadatos e información estadística sobre flujos de tráfico IP que ingresan o salen de las interfaces de un dispositivo de red. Permite analizar quién, cuándo, cómo y hacia dónde se está enviando tráfico a través de la infraestructura.",
-      "key_concepts": "• **Flow (Flujo):** Secuencia unidireccional de paquetes con campos clave idénticos.\n• **7 Key Fields (Campos Clave):** IP Origen, IP Destino, Puerto Origen, Puerto Destino, Tipo de Protocolo L3, ToS (Class of Service), e Interfaz Física de entrada.\n• **NetFlow Cache:** Memoria local del router donde se almacenan y consolidan las estadísticas de flujos activos.\n• **Timers (Active/Inactive):** Tiempos de exportación de flujos. Un flujo activo prolongado se exporta cada X minutos (default 30) y un flujo inactivo se purga inmediatamente.",
-      "architecture": "A medida que los paquetes pasan por el router, se revisan sus cabeceras. Si coincide con un flujo existente en el caché, se actualizan los contadores (bytes, paquetes). Si no existe, se crea una entrada en el caché. Al expirar un flujo, los registros se encapsulan en datagramas UDP (comúnmente puerto 2055 o 9995) y se envían hacia un servidor colector de NetFlow para su análisis y almacenamiento.",
-      "control_vs_data": "• **Plano de Control:** Configuración de monitores, exportadores y samplers desde la CLI o plantillas del orquestador.\n• **Plano de Datos:** Inspección de cabeceras de paquetes a velocidad de línea en los ASICs para alimentar la caché de NetFlow sin CPU overhead.",
-      "troubleshooting_strategy": "1. **Paso 1 (Exporter Reachability):** Verificar que el router tenga ruta L3 hacia el colector NetFlow y que el puerto UDP no esté bloqueado.\n2. **Paso 2 (Sampling Rate):** En enlaces de alta capacidad (10G/100G), configurar muestreo aleatorio (Random Sampled NetFlow, ej. 1 de 1000) para no saturar la CPU ni desbordar la tabla de caché.\n3. **Paso 3 (Timer Adjustments):** Asegurar que el Active Timer esté configurado a 1 minuto (60s) para evitar ráfagas de exportaciones y reportes inexactos.\n4. **Paso 4 (Source Interface):** Configurar siempre una interfaz origen estable (como Loopback0) para la exportación de paquetes UDP.",
-      "configuration_basics": "• Crear un Record (define qué medir), un Exporter (define a dónde enviar) y un Monitor (vincula el record y el exporter).\n• Aplicar el Monitor bajo la interfaz deseada indicando la dirección del tráfico (`input` o `output`)."
-    },
-    "adtran_ta5000": {
-      "definition": "El ADTRAN Total Access 5000 (TA5000) es un chasis multiservicio de acceso de alta densidad ampliamente implementado por operadores de telecomunicaciones para desplegar servicios de fibra óptica FTTH (GPON, XGS-PON) y banda ancha. Actúa como la OLT (Optical Line Terminal) central que gestiona la conectividad física de los clientes de fibra.",
-      "key_concepts": "• **GPON / XGS-PON:** Tecnologías de red óptica pasiva que comparten fibra óptica en configuraciones punto a multipunto (splitters).\n• **T-CONT (Transmission Container):** Clases de tráfico asignadas a la ONT para gestionar el ancho de banda aguas arriba (Upstream DBA).\n• **GEM Port (GPON Encapsulation Method):** Puerto lógico utilizado para encapsular tramas Ethernet y enviarlas sobre GPON.\n• **OMCI:** Protocolo de señalización estándar de control utilizado por la OLT para aprovisionar y configurar la ONT remotamente.",
-      "architecture": "El TA5000 utiliza tarjetas de servicio PON que se conectan a través de una red óptica de distribución (ODN) pasiva hacia las ONTs de clientes. Aguas abajo (Downstream), el tráfico se envía mediante difusión TDM (todas las ONTs reciben, pero solo procesan lo encriptado para su ID). Aguas arriba (Upstream), se utiliza TDMA con asignación dinámica de slots de tiempo (DBA) para evitar colisiones entre ONTs.",
-      "control_vs_data": "• **Plano de Control:** Gestión de estados de ONTs, provisión de perfiles OMCI, encriptación de GEM ports y asignación DBA en la CPU del módulo de control (SCM).\n• **Plano de Datos:** Conmutación e inserción/remoción de VLANs (Q-in-Q o Single Tag) a velocidad de línea en las tarjetas de servicio y puertos uplink.",
-      "troubleshooting_strategy": "1. **Paso 1 (Optical Power Levels):** Monitorear la potencia óptica de Tx/Rx. Los umbrales típicos GPON deben mantenerse entre -8 dBm y -27 dBm. Un nivel peor causa descartes de tramas.\n2. **Paso 2 (ONT State Machine):** Verificar que la ONT alcance el estado `O5` (Operation State). Si oscila en O3/O4, indica problemas de distancia, atenuación o serial duplicado.\n3. **Paso 3 (VLAN/Service Port mapping):** Confirmar que el Service Port en la OLT coincida con la VLAN de cliente y GEM port provisto.\n4. **Paso 4 (GEM Port Errors):** Verificar contadores BIP (Bit Interleaved Parity) para identificar errores físicos en el hilo de fibra.",
-      "configuration_basics": "• Registrar el Serial Number de la ONT en la interfaz GPON.\n• Asociar perfiles de línea y T-CONTs para limitar el ancho de banda.\n• Crear el Service Port para asociar la VLAN del cliente desde el puerto GPON al puerto de Uplink del switch."
-    },
-    "ccc_interface_switch": {
-      "definition": "CCC (Cross-Connect / Circuit Cross-Connect) es una tecnología que permite establecer circuitos dedicados de Capa 2 entre dos interfaces lógicas o físicas (locales en el mismo equipo, o remotas a través de un core MPLS, lo que se conoce como L2Circuit o Pseudowire) transportando tramas de red de forma transparente sin inspección de direcciones MAC.",
-      "key_concepts": "• **Local Cross-Connect:** Conexión estática directa punto a punto entre dos interfaces físicas en el mismo switch/router.\n• **Remote L2Circuit / Pseudowire:** Túnel virtual de capa 2 que emula la conexión física a través de una red de transporte MPLS.\n• **Virtual Circuit ID (VC-ID):** Identificador numérico único de 32 bits utilizado por ambos extremos para establecer el pseudowire.\n• **Control Word:** Cabecera opcional de 4 bytes insertada entre la etiqueta MPLS y la trama Ethernet para secuenciación y control.",
-      "architecture": "En un L2Circuit, la trama Ethernet entrante en el PE de origen se encapsula en una pila de etiquetas MPLS: una etiqueta interna (etiqueta de circuito virtual / VC label distribuida por Targeted LDP) y una etiqueta externa (etiqueta de transporte distribuida por IGP LDP/RSVP). El core MPLS conmuta el paquete basándose únicamente en la etiqueta de transporte.",
-      "control_vs_data": "• **Plano de Control:** Negociación y señalización del estado del pseudowire utilizando sesiones Targeted LDP (UDP 646) directas entre los routers PEs.\n• **Plano de Datos:** Encapsulación de tramas de cliente y conmutación de etiquetas MPLS en hardware de alta velocidad.",
-      "troubleshooting_strategy": "1. **Paso 1 (Targeted LDP Session):** Validar que la sesión Targeted LDP entre los PEs origen/destino esté en estado `Established`.\n2. **Paso 2 (VC-ID Mismatch):** Confirmar que el VC-ID y tipo de encapsulación (VLAN o Ethernet) coincida exactamente en ambos lados.\n3. **Paso 3 (Core MTU):** La MTU a lo largo del core MPLS debe ser lo suficientemente grande (típicamente >= 1526 bytes) para acomodar la trama Ethernet original del cliente más la cabecera MPLS y Control Word.\n4. **Paso 4 (Control Word Consistency):** Deshabilitar o habilitar control word en ambos extremos de forma consistente.",
-      "configuration_basics": "• Configurar interfaces en modo de encapsulación L2 (ej. `ethernet-ccc` o `vlan-ccc`).\n• Definir el circuito L2 especificando el peer IP remoto, el VC-ID y la interfaz L2 local asociada."
-    },
-    "aaa": {
-      "definition": "AAA (Authentication, Authorization, and Accounting) es un marco de trabajo de seguridad para controlar de forma centralizada el acceso a los recursos de red. Autentica quién intenta acceder, Autoriza qué privilegios o comandos tiene permitidos ejecutar, y realiza la Auditoría (Accounting) registrando las acciones realizadas para fines de cumplimiento.",
-      "key_concepts": "• **TACACS+:** Protocolo propietario de Cisco basado en TCP (puerto 49). Cifra el paquete completo y separa las funciones de Autenticación, Autorización y Auditoría.\n• **RADIUS:** Protocolo estándar de la industria basado en UDP (puertos 1812/1813). Cifra únicamente la contraseña y combina la Autenticación y Autorización en un solo paso.\n• **Method List:** Lista ordenada de métodos (ej. tacacs, luego local, luego line) que el dispositivo evalúa para autenticar a un usuario.",
-      "architecture": "El dispositivo de red actúa como Network Access Server (NAS), interactuando con el usuario cliente y traduciendo la sesión a peticiones hacia los servidores AAA centralizados (como Cisco ISE, ClearPass o TACACS GUI) que contienen la base de datos de usuarios y políticas.",
-      "control_vs_data": "• **Plano de Control:** Validación de accesos administrativos, autorización de comandos CLI y envío de registros de contabilidad.\n• **Plano de Datos:** No se ve afectado directamente, pero las políticas de autorización pueden empujar atributos (como VLANs, ACLs) que controlen el plano de datos de los puertos de usuarios.",
-      "troubleshooting_strategy": "1. **Paso 1 (Server Reachability):** Comprobar conectividad L3 y puerto TCP 49 (TACACS) o UDP 1812/1813 (RADIUS) hacia el servidor.\n2. **Paso 2 (Shared Secret):** Validar que la clave compartida (shared secret) coincida exactamente en el dispositivo de red y en el servidor AAA.\n3. **Paso 3 (Local Failback):** Asegurar que exista un método local al final de la lista de métodos para no perder acceso administrativo en caso de caída del servidor central.\n4. **Paso 4 (Debug Application):** Utilizar depuración detallada (ej. `debug tacacs`) para analizar el intercambio de paquetes y los códigos de respuesta del servidor.",
-      "configuration_basics": "• Habilitar aaa globalmente (`aaa new-model`).\n• Definir los hosts de los servidores con sus llaves de cifrado.\n• Crear las listas de métodos para autenticación (`aaa authentication login ...`), autorización (`aaa authorization exec ...`) y accounting."
-    },
-    "dmvpn": {
-      "definition": "Dynamic Multipoint VPN (DMVPN) es una arquitectura de VPN multipunto de Cisco que permite establecer redes VPN dinámicas, seguras y escalables sobre redes públicas (Internet) utilizando una topología Hub-and-Spoke, con soporte para el establecimiento directo de túneles Spoke-to-Spoke sin transitar por el Hub.",
-      "key_concepts": "• **mGRE (Multipoint GRE):** Permite que una única interfaz de túnel GRE soporte múltiples túneles dinámicos reduciendo la configuración.\n• **NHRP (Next Hop Resolution Protocol):** Actúa como la base de datos tipo \"ARP\" que mapea la IP del túnel interna de los Spokes con su IP pública externa (NBMA).\n• **NBMA (Non-Broadcast Multi-Access):** Dirección IP pública real del dispositivo WAN.\n• **Spoke-to-Spoke Tunneling:** Capacidad de dos sucursales de comunicarse directamente resolviendo sus direcciones públicas a través del Hub.",
-      "architecture": "Los Spokes levantan un túnel mGRE permanente contra el Hub central y se registran en el servidor NHRP del Hub. Al enviar tráfico entre Spokes, el Spoke solicita la IP NBMA del Spoke destino al Hub a través de NHRP. Una vez resuelto, se negocia una asociación de seguridad IPsec directa y se establece un túnel directo dinámico sobre el cual fluyen los datos.",
-      "control_vs_data": "• **Plano de Control:** Registro NHRP, resolución de next-hops y negociación de llaves de cifrado IPsec (IKEv1/IKEv2) en software.\n• **Plano de Datos:** Encapsulación de tramas de datos del cliente en GRE y cifrado IPsec (ESP) con aceleración por hardware de cifrado.",
-      "troubleshooting_strategy": "1. **Paso 1 (NHRP Database):** Verificar en el Hub que los Spokes estén registrados en estado `dynamic` y ver sus IPs NBMA.\n2. **Paso 2 (IPsec Security Association):** Comprobar que el estado de ISAKMP/IPsec esté activo (`QM_IDLE` / `ACTIVE`).\n3. **Paso 3 (Routing over DMVPN):** Asegurar que las adyacencias del protocolo de enrutamiento (OSPF, EIGRP o BGP) se establezcan sobre las IPs del túnel. OSPF requiere cambiar la red a tipo point-to-multipoint.\n4. **Paso 4 (MTU/MSS Adjustments):** El doble overhead de GRE e IPsec requiere ajustar la MTU del túnel a 1400 bytes y el TCP MSS a 1360 bytes.",
-      "configuration_basics": "• Configurar interfaz Tunnel, asignarle una IP y establecer `tunnel mode gre multipoint`.\n• Habilitar NHRP, designar el NHS (Next Hop Server) del Hub central y mapear la IP del Hub a su dirección pública.\n• Configurar perfiles IPsec y asociarlos al túnel."
-    },
-    "eigrp": {
-      "definition": "Enhanced Interior Gateway Routing Protocol (EIGRP) es un protocolo de enrutamiento dinámico IGP vector-distancia avanzado (o híbrido) propietario de Cisco. Utiliza el algoritmo DUAL para calcular el camino más corto libre de bucles y ofrece convergencia extremadamente rápida.",
-      "key_concepts": "• **DUAL Algorithm:** Algoritmo matemático para calcular rutas libres de bucles en toda la topología.\n• **Successor / Feasible Successor:** El Successor es la mejor ruta activa para un prefijo. El Feasible Successor es una ruta de respaldo precalculada que cumple la condición de factibilidad.\n• **Reported Distance (RD) / Feasible Distance (FD):** RD es la métrica anunciada por el vecino. FD es la métrica local calculada hacia el destino.\n• **Feasibility Condition (Condición de Factibilidad):** Se cumple si la RD de un vecino es menor que la FD de la ruta actual.",
-      "architecture": "EIGRP establece adyacencias dinámicas mediante paquetes Hello multicast (224.0.0.10) en el protocolo de transporte IP 88. Intercambia actualizaciones de enrutamiento completas solo al inicio, y posteriormente envía únicamente actualizaciones parciales e incrementales limitadas cuando cambia la topología física, reduciendo el consumo de ancho de banda.",
-      "control_vs_data": "• **Plano de Control:** Envío de mensajes Hello, Update, Query y Reply sobre IP 88 y ejecución de DUAL en la CPU del router.\n• **Plano de Datos:** Reenvío de alta velocidad de paquetes IP basándose en la tabla FIB local.",
-      "troubleshooting_strategy": "1. **Paso 1 (AS & K-Values Mismatch):** Validar que el número de Sistema Autónomo y los coeficientes de métrica (K-Values) coincidan exactamente en ambos extremos de la sesión.\n2. **Paso 2 (Unicast/Multicast Reachability):** Comprobar que el tráfico multicast EIGRP (IP 224.0.0.10) no esté bloqueado. Si falla, las adyacencias no pasarán del estado inicial.\n3. **Paso 3 (Stuck In Active - SIA):** Ocurre si un router envía un Query para buscar una ruta alternativa y no recibe Reply de un vecino en 3 minutos. Requiere identificar cuál router intermedio está bloqueando los mensajes.\n4. **Paso 4 (MTU Issues):** Paquetes de actualización grandes pueden ser descartados si hay inconsistencias de MTU en el enlace.",
-      "configuration_basics": "• Levantar el proceso EIGRP con el número de AS (`router eigrp <AS>`).\n• Asociar las interfaces al proceso declarando los prefijos en la sección `network` con máscara wildcard.\n• Configurar `no auto-summary` para evitar la agregación automática de redes."
-    },
-    "fiber_ont": {
-      "definition": "El aprovisionamiento de fibra óptica GPON ONT/ONU implica registrar y configurar el equipamiento de terminación óptica en las instalaciones del cliente (Optical Network Terminal) desde el nodo central (OLT). Su objetivo es autenticar el hardware óptico del cliente y habilitar los flujos de servicios L2/L3 asociados.",
-      "key_concepts": "• **ONT State Machine:** Estados por los que pasa la ONT en su negociación: O1 (Inicial), O3 (Serial detectado), O5 (Operativo en línea), O7 (Falla en el enlace).\n• **PLOAM (Physical Layer OAM):** Canal de comunicación fuera de banda de baja velocidad para la gestión óptica inicial y negociación de llaves.\n• **Alloc-ID / GEM Port:** Alloc-ID identifica un T-CONT para la asignación dinámica de ancho de banda. GEM Port identifica el túnel lógico de datos de usuario.\n• **Rogue ONT:** ONT defectuosa que transmite luz de forma continua fuera de su ranura de tiempo TDMA asignada, saturando el puerto PON y desconectando a todos los clientes del mismo hilo.",
-      "architecture": "El estándar GPON utiliza transmisión descendente a 1490nm y ascendente a 1310nm. La OLT asigna un identificador de ONT (ONU-ID) único durante la fase de descubrimiento cuando detecta el número de serie de hardware.",
-      "control_vs_data": "• **Plano de Control:** Autenticación óptica, negociación de perfiles DBA y configuración de puertos de servicio vía OMCI.\n• **Plano de Datos:** Conversión electro-óptica y encapsulación de tramas Ethernet en tramas GPON a velocidad de línea óptica.",
-      "troubleshooting_strategy": "1. **Paso 1 (Optical Link Budget):** Medir la potencia con un OPM. La atenuación típica de un splitter 1:64 no debe exceder los -25 dBm a -28 dBm. Valores peores causan desconexión.\n2. **Paso 2 (Rogue ONU Isolation):** Si todas las ONTs de un puerto PON caen a estado O1/O2, apagar administrativamente las ONTs una a una o usar un analizador PON para aislar la ONT dañada que emite luz continua.\n3. **Paso 3 (OMCI Provisioning Check):** Si la ONT llega a O5 pero el cliente no navega, verificar que los perfiles de GEM ports y Service Ports estén instalados en la OLT y que la VLAN de cliente esté permitida en el uplink.",
-      "configuration_basics": "• Buscar la ONT no aprovisionada en el puerto PON (`show onu unconfigured` u homólogo).\n• Registrar el Serial Number y ONU-ID asignado.\n• Asociar perfiles de línea y de tráfico para mapear las VLANs de servicios."
-    },
     "ipv6": {
       "definition": "IPv6 (Internet Protocol Version 6) es la actualización del protocolo IP estándar diseñada para resolver el agotamiento de direcciones IPv4 al expandir el direccionamiento a 128 bits, simplificar la cabecera del paquete para mejorar el enrutamiento e integrar de forma nativa mecanismos de autoconfiguración y Neighbor Discovery.",
       "key_concepts": "• **Link-Local Address (fe80::/10):** Dirección IP generada automáticamente en cada interfaz IPv6, válida únicamente dentro del segmento local de Capa 2.\n• **NDP (Neighbor Discovery Protocol):** Protocolo basado en ICMPv6 que reemplaza las funciones de ARP de IPv4.\n• **SLAAC (Stateless Address Autoconfiguration):** Permite que un cliente autoconfigure su IP y gateway combinando el prefijo anunciado por el router con su ID de interfaz local.\n• **Solicited-Node Multicast Address:** Dirección multicast especial utilizada por NDP para mapear direcciones IP a MAC de forma mucho más eficiente que el broadcast de ARP.",
@@ -89372,45 +112385,13 @@ const NET_TSHOOT_DATA = {
       "troubleshooting_strategy": "1. **Paso 1 (Link-Local Ping):** Para validar conectividad básica punto a punto, hacer ping a la IP `fe80::` del vecino especificando la interfaz de salida.\n2. **Paso 2 (Neighbor Cache Check):** Revisar la tabla de vecinos (Neighbor Cache) para verificar que las direcciones MAC estén resueltas correctamente.\n3. **Paso 3 (Router Advertisement Filters):** Comprobar que no existan filtros o políticas bloqueando ICMPv6 en las interfaces, ya que esto rompería NDP y SLAAC por completo.\n4. **Paso 4 (IPv6 Routing Table):** Verificar que la tabla de rutas contenga la ruta por defecto IPv6 (`::/0`) apuntando a la dirección Link-Local del router gateway.",
       "configuration_basics": "• Habilitar el enrutamiento IPv6 global (`ipv6 unicast-routing`).\n• Asignar direcciones IPv6 estáticas o configurar autoconfiguración (`ipv6 address autoconfig`).\n• Habilitar los Router Advertisements en la interfaz interna."
     },
-    "pbr": {
-      "definition": "Policy-Based Routing (PBR) es una técnica que permite tomar decisiones de enrutamiento basadas en políticas definidas por el administrador de red. PBR permite desviar o redirigir paquetes basándose en criterios avanzados (como dirección IP origen, tipo de protocolo L4 o puerto de aplicación) en lugar de utilizar únicamente la tabla de enrutamiento estándar basada en la dirección IP destino.",
-      "key_concepts": "• **Route-Map:** Estructura condicional que agrupa las reglas de coincidencia (match) y las acciones a aplicar (set).\n• **Match Clause:** Define las condiciones del paquete (ej. `match ip address` haciendo referencia a una ACL).\n• **Set Clause:** Define la acción de desvío (ej. `set ip next-hop <ip>` o `set interface <int>`).\n• **Local Policy Routing:** PBR aplicado al tráfico generado internamente por la CPU del propio router.",
-      "architecture": "Cuando un paquete ingresa a una interfaz con PBR habilitado, el router evalúa secuencialmente las cláusulas del route-map. Si el paquete coincide con las condiciones de una cláusula, se ejecuta la acción `set` de inmediato y el paquete es reenviado. Si no coincide con ninguna cláusula, el paquete se enruta de forma normal utilizando el lookup tradicional de la RIB/FIB.",
-      "control_vs_data": "• **Plano de Control:** Definición de ACLs, route-maps y aplicación de las políticas a las interfaces de entrada.\n• **Plano de Datos:** Interceptación, análisis de cabeceras de paquetes entrantes y reescritura del siguiente salto en hardware (ASIC/TCAM).",
-      "troubleshooting_strategy": "1. **Paso 1 (ACL Match Verification):** Validar que la ACL de coincidencia tenga contadores activos (que esté haciendo match con el tráfico de origen real).\n2. **Paso 2 (Next-Hop Reachability):** Comprobar que el Next-Hop definido en la política esté activo y sea alcanzable. Si el next-hop está caído, PBR fallará silenciosamente y el router volverá a enrutar de forma normal.\n3. **Paso 3 (Interface Direction):** Asegurar que PBR esté aplicado en la interfaz de **entrada** de los paquetes. PBR no se puede aplicar a paquetes que están saliendo del router.\n4. **Paso 4 (PBR Statistics):** Monitorear la utilización de memoria TCAM, ya que reglas PBR excesivas o complejas pueden superar el límite de hardware y forzar el procesamiento por software (CPU).",
-      "configuration_basics": "• Crear una ACL indicando el tráfico origen y destino.\n• Definir un route-map con `match ip address <ACL>` y `set ip next-hop <IP_Salida>`.\n• Aplicar la política en la interfaz de entrada mediante `ip policy route-map <nombre>`."
-    },
-    "sdwan": {
-      "definition": "Software-Defined WAN (SD-WAN) es una arquitectura de red WAN definida por software que abstrae el hardware físico de transporte (MPLS, Internet, LTE) para construir una red overlay segura e inteligente, gestionada de forma centralizada a través de controladores de plano de control y de administración.",
-      "key_concepts": "• **Orchestrators (Controllers):** vManage (Administración/GUI), vSmart (Controlador de políticas y rutas BGP Overlay), vBond (Orquestador de autenticación inicial).\n• **TLOC (Transport Location):** Identificador único del puerto WAN físico del router (combina IP del puerto, color/transporte, y tipo de encapsulación).\n• **OMP (Overlay Management Protocol):** Protocolo de enrutamiento propietario que distribuye rutas de servicio, TLOCs y llaves IPsec entre los routers de borde.\n• **App-Aware Routing:** Selección dinámica de enlaces WAN en base al monitoreo en tiempo real de latencia, jitter y pérdida de paquetes.",
-      "architecture": "Los routers de borde (Edge) se registran dinámicamente con los controladores y establecen un plano de control seguro. Los routers construyen túneles IPsec de datos automáticos entre todos los TLOCs. OMP distribuye la topología, y BFD monitorea constantemente el rendimiento de cada túnel IPsec para mover el tráfico de aplicaciones de forma inteligente.",
-      "control_vs_data": "• **Plano de Control:** Intercambio de rutas y políticas OMP entre vSmart y los Edges sobre túneles seguros TLS/DTLS.\n• **Plano de Datos:** Reenvío cifrado de paquetes de usuarios sobre el mesh dinámico de túneles IPsec WAN (Data Plane Overlay).",
-      "troubleshooting_strategy": "1. **Paso 1 (Control Connections Status):** Verificar que el router Edge tenga sesiones activas hacia vManage, vSmart y vBond. Sin conexión de control, el Edge no recibirá políticas.\n2. **Paso 2 (BFD Session Flaps):** Analizar si hay caídas de BFD sobre los túneles IPsec, lo que indica pérdida de conectividad física L3 o atenuación severa en el enlace WAN.\n3. **Paso 3 (OMP Route Verification):** Comprobar que las redes locales de las sucursales sean aprendidas y anunciadas por OMP hacia el vSmart.\n4. **Paso 4 (Policy Matching):** Si el tráfico no utiliza el enlace WAN esperado, revisar la política central de App-Aware Routing instalada en el Edge.",
-      "configuration_basics": "• Configurar los parámetros del sistema (System IP, Site-ID, Organization Name).\n• Configurar las interfaces WAN físicas asignándoles un color TLOC y habilitando la encapsulación IPsec.\n• Levantar las conexiones de control hacia los controladores usando plantillas."
-    },
-    "switch_l2": {
-      "definition": "La conmutación de Capa 2 (L2 Switching) es el proceso de reenvío de tramas Ethernet dentro del mismo segmento de red física basándose en las direcciones MAC destino. Incluye el etiquetado de VLANs para segmentar redes virtuales y la agregación de enlaces físicos (LACP) para incrementar el ancho de banda y proporcionar redundancia.",
-      "key_concepts": "• **MAC Address Table (CAM):** Base de datos asociativa en memoria que relaciona direcciones MAC físicas con los puertos del switch.\n• **802.1Q VLAN Tagging:** Estándar industrial que inyecta una etiqueta de 4 bytes en la cabecera Ethernet para identificar a qué VLAN pertenece la trama.\n• **LACP (Link Aggregation Control Protocol):** Protocolo 802.3ad que negocia dinámicamente la agrupación de múltiples enlaces físicos en un único canal lógico (EtherChannel).\n• **Access vs Trunk:** Puertos Access transportan tráfico de una única VLAN sin etiqueta. Puertos Trunk transportan múltiples VLANs tagged.",
-      "architecture": "Cuando una trama Ethernet ingresa, el switch lee la MAC Origen y la registra en la tabla CAM asociándola al puerto. Luego lee la MAC Destino: si existe en la tabla CAM, la reenvía al puerto correspondiente; si no existe o es broadcast, inunda (flooding) la trama en todos los puertos miembros de la misma VLAN.",
-      "control_vs_data": "• **Plano de Control:** Protocolos LACP para agrupamiento de puertos y Spanning Tree para prevenir bucles de capa 2 en software.\n• **Plano de Datos:** Conmutación L2 ultra rápida por hardware (ASIC/CAM) basada en coincidencia exacta de direcciones MAC.",
-      "troubleshooting_strategy": "1. **Paso 1 (LACP Negotiation Check):** Validar que las interfaces del EtherChannel estén agrupadas y que LACP esté en estado `u` (in_use) mediante la CLI.\n2. **Paso 2 (VLAN Mismatches):** Confirmar que las VLANs permitidas en el enlace Trunk coincidan de manera exacta en ambos extremos físicos.\n3. **Paso 3 (MAC Flapping):** Si una dirección MAC oscila rápidamente entre diferentes puertos físicos, indica la presencia de un bucle de Capa 2 activo o problemas de direccionamiento.\n4. **Paso 4 (EtherChannel Hashing):** Si hay desbalance de tráfico entre los enlaces del EtherChannel, ajustar el algoritmo de balanceo de carga (hashing) para incluir IPs y puertos en lugar de solo MACs.",
-      "configuration_basics": "• Crear las VLANs deseadas en el switch.\n• Configurar puertos Trunk permitiendo el paso de las VLANs específicas.\n• Crear los canales de agregación asociando las interfaces físicas a un grupo LACP en modo `active`."
-    },
-    "wireshark_tcpdump": {
-      "definition": "Wireshark y tcpdump son herramientas estándar de captura y análisis de paquetes de red que permiten interceptar, registrar y visualizar en detalle el tráfico de datos crudo que viaja a través de una o más interfaces físicas o lógicas de un dispositivo.",
-      "key_concepts": "• **pcap (Packet Capture):** Formato de archivo estándar de la industria utilizado para almacenar paquetes capturados de red.\n• **Capture Filter (BPF):** Sintaxis usada para filtrar qué paquetes se guardan en el buffer (ej. `tcp port 80` en tcpdump).\n• **Display Filter (Wireshark):** Filtros aplicados sobre paquetes capturados para facilitar la búsqueda visual en la GUI (ej. `http.request`).\n• **Promiscuous Mode:** Modo que obliga a la tarjeta de red (NIC) a procesar todos los paquetes del medio físico, incluso aquellos que no están dirigidos a su propia dirección MAC.",
-      "architecture": "tcpdump y Wireshark utilizan una biblioteca de captura de paquetes (libpcap en Linux, WinPcap/Npcap en Windows) para conectarse directamente al driver de la NIC en modo kernel, copiando las tramas crudas del buffer de recepción antes de ser procesadas por el stack TCP/IP del sistema operativo.",
-      "control_vs_data": "• **Plano de Control:** Definición de filtros de captura BPF y gestión de sesiones de captura locales o remotas.\n• **Plano de Datos:** Copiado y procesamiento en segundo plano de tramas Ethernet a disco o pantalla.",
-      "troubleshooting_strategy": "1. **Paso 1 (Capture Target):** Asegurar que se capture en la interfaz correcta. Recordar que las interfaces lógicas (ej. VLAN, Túneles) pueden ocultar campos de cabeceras físicas.\n2. **Paso 2 (Promiscuous Mode SPAN):** Si se captura en un switch, asegurar de configurar puerto espejo (SPAN / RSPAN / ERSPAN) en el switch para redirigir el tráfico hacia la NIC de captura.\n3. **Paso 3 (BPF Optimization):** En interfaces Gigabit o superiores con mucho volumen de tráfico, usar siempre filtros de captura estrictos (`-f`) en tcpdump para evitar pérdida de paquetes (packet drops) por desbordamiento de buffer.\n4. **Paso 4 (Packet Truncation):** Utilizar la opción de snaplen adecuada (`-s 0`) en tcpdump para capturar el paquete completo en lugar de solo las cabeceras.",
-      "configuration_basics": "• Capturar paquetes en consola: `tcpdump -i eth0 -n -s 0 -w captura.pcap tcp port 179`.\n• Leer captura en consola: `tcpdump -nn -r captura.pcap`."
-    },
-    "evc": {
-      "definition": "Ethernet Virtual Connection (EVC) es un servicio de transporte L2 punto-a-punto o multipunto definido por el estándar MEF que abstrae la red física subyacente para entregar circuitos Ethernet virtuales entre interfaces de usuario (UNI) con calidad de servicio garantizada (SLA).",
-      "key_concepts": "• **UNI (User Network Interface):** Puerto físico donde el servicio EVC termina en el equipo del cliente.\n• **EVC (Ethernet Virtual Connection):** Circuito lógico que transporta tramas Ethernet entre UNIs.\n• **E-Line (P2P):** Servicio punto a punto (equivalente a un pseudowire).\n• **E-LAN (MP2MP):** Servicio multipunto que emula una LAN.\n• **EVPL (Ethernet Virtual Private Line):** Variante de E-Line que permite multiplexar múltiples VLANs sobre el mismo EVC.",
-      "architecture": "El proveedor configura una instancia de servicio (service instance) o bridge domain en el PE. Cada EVC se asocia a un conjunto de parámetros de calidad (CIR, EIR, CBS, EBS) y un identificador de VLAN. Las tramas del cliente se clasifican en el puerto UNI (por VLAN, CoS o MAC) y se asignan al EVC correspondiente.",
-      "control_vs_data": "• **Plano de Control:** Configuración de service instances, bridge domains, y políticas de clasificación/marcado.\n• **Plano de Datos:** Forwarding de tramas Ethernet basado en la clasificación de VLAN y el bridge domain asociado.",
-      "troubleshooting_strategy": "1. **Paso 1 (Clasificación):** Verificar que la clasificación de tramas en el puerto UNI coincida con la VLAN esperada.\n2. **Paso 2 (Bridge Domain):** Confirmar que el bridge domain o service instance esté activo y asociado a las interfaces correctas.\n3. **Paso 3 (CoS/QoS):** Validar que el marcado de prioridad y los parámetros de CIR/EIR no descarten tráfico legítimo.",
-      "configuration_basics": "• Crear un bridge domain o service instance con el ID del EVC.\n• Asociar el puerto UNI al bridge domain con la clasificación correcta (VLAN, CoS).\n• Configurar los parámetros de calidad (CIR, EIR) según el SLA del cliente."
+    "eigrp": {
+      "definition": "Enhanced Interior Gateway Routing Protocol (EIGRP) es un protocolo de enrutamiento dinámico IGP vector-distancia avanzado (o híbrido) propietario de Cisco. Utiliza el algoritmo DUAL para calcular el camino más corto libre de bucles y ofrece convergencia extremadamente rápida.",
+      "key_concepts": "• **DUAL Algorithm:** Algoritmo matemático para calcular rutas libres de bucles en toda la topología.\n• **Successor / Feasible Successor:** El Successor es la mejor ruta activa para un prefijo. El Feasible Successor es una ruta de respaldo precalculada que cumple la condición de factibilidad.\n• **Reported Distance (RD) / Feasible Distance (FD):** RD es la métrica anunciada por el vecino. FD es la métrica local calculada hacia el destino.\n• **Feasibility Condition (Condición de Factibilidad):** Se cumple si la RD de un vecino es menor que la FD de la ruta actual.",
+      "architecture": "EIGRP establece adyacencias dinámicas mediante paquetes Hello multicast (224.0.0.10) en el protocolo de transporte IP 88. Intercambia actualizaciones de enrutamiento completas solo al inicio, y posteriormente envía únicamente actualizaciones parciales e incrementales limitadas cuando cambia la topología física, reduciendo el consumo de ancho de banda.",
+      "control_vs_data": "• **Plano de Control:** Envío de mensajes Hello, Update, Query y Reply sobre IP 88 y ejecución de DUAL en la CPU del router.\n• **Plano de Datos:** Reenvío de alta velocidad de paquetes IP basándose en la tabla FIB local.",
+      "troubleshooting_strategy": "1. **Paso 1 (AS & K-Values Mismatch):** Validar que el número de Sistema Autónomo y los coeficientes de métrica (K-Values) coincidan exactamente en ambos extremos de la sesión.\n2. **Paso 2 (Unicast/Multicast Reachability):** Comprobar que el tráfico multicast EIGRP (IP 224.0.0.10) no esté bloqueado. Si falla, las adyacencias no pasarán del estado inicial.\n3. **Paso 3 (Stuck In Active - SIA):** Ocurre si un router envía un Query para buscar una ruta alternativa y no recibe Reply de un vecino en 3 minutos. Requiere identificar cuál router intermedio está bloqueando los mensajes.\n4. **Paso 4 (MTU Issues):** Paquetes de actualización grandes pueden ser descartados si hay inconsistencias de MTU en el enlace.",
+      "configuration_basics": "• Levantar el proceso EIGRP con el número de AS (`router eigrp <AS>`).\n• Asociar las interfaces al proceso declarando los prefijos en la sección `network` con máscara wildcard.\n• Configurar `no auto-summary` para evitar la agregación automática de redes."
     },
     "ripv2": {
       "definition": "Routing Information Protocol version 2 (RIPv2) es un protocolo IGP vector-distancia que utiliza el número de saltos (hop count) como métrica. Es simple pero limitado a 15 saltos (16 = inalcanzable).",
@@ -89428,21 +112409,29 @@ const NET_TSHOOT_DATA = {
       "troubleshooting_strategy": "1. **Paso 1 (SRGB):** Verificar que todos los routers usen el mismo SRGB (ej. 16000-23999).\n2. **Paso 2 (IGP Extensions):** Confirmar que OSPF/IS-IS tengan habilitadas las extensiones SR y que los SIDs se propaguen.\n3. **Paso 3 (LFIB):** Validar que la LFIB contenga entradas para los Prefix-SIDs locales y remotos.",
       "configuration_basics": "• Configurar el SRGB global en cada router.\n• Habilitar las extensiones SR en el proceso IGP.\n• Asignar un Prefix-SID único a la loopback principal."
     },
-    "seguridad": {
-      "definition": "Seguridad de red a nivel de infraestructura incluye el control de acceso a puertos (NAC), filtrado de tráfico mediante ACLs, y cifrado de enlaces con MACsec para proteger la confidencialidad e integridad de los datos en tránsito.",
-      "key_concepts": "• **ACL (Access Control List):** Reglas de filtrado de tráfico basadas en direcciones IP, puertos, protocolos o VLANs.\n• **802.1X (Port-Based NAC):** Mecanismo de autenticación de dispositivos antes de permitir el acceso a la red mediante un servidor RADIUS.\n• **MACsec (IEEE 802.1AE):** Cifrado de Capa 2 que protege tramas Ethernet entre dos dispositivos físicos.\n• **DHCP Snooping:** Función de seguridad que valida mensajes DHCP y construye una tabla de bindings confiables.",
-      "architecture": "Las ACLs se evalúan secuencialmente en hardware (TCAM) para permitir o denegar tráfico. 802.1X utiliza el protocolo EAPOL para intercambiar credenciales entre el supplicant (cliente), el authenticator (switch) y el authentication server (RADIUS). MACsec cifra el payload Ethernet entre dos peers conectados directamente.",
-      "control_vs_data": "• **Plano de Control:** Gestión de sesiones EAPOL, autenticación RADIUS, y aplicación de políticas de seguridad.\n• **Plano de Datos:** Filtrado de tramas por ACLs en TCAM, cifrado/descifrado MACsec en hardware, y validación de bindings DHCP.",
-      "troubleshooting_strategy": "1. **Paso 1 (802.1X):** Verificar que el puerto esté en estado `authorized` y que el servidor RADIUS responda.\n2. **Paso 2 (ACLs):** Comprobar contadores de matches en las ACLs para confirmar que las reglas están siendo evaluadas.\n3. **Paso 3 (MACsec):** Validar que la sesión MACsec esté `secured` y que los contadores de descarte de integridad no crezcan.",
-      "configuration_basics": "• Configurar ACLs con reglas explícitas de permit/deny y aplicarlas en interfaces.\n• Habilitar 802.1X en los puertos de acceso y definir el servidor RADIUS.\n• Configurar MACsec con claves precompartidas (PSK) o 802.1X-derived keys."
+    "aaa": {
+      "definition": "AAA (Authentication, Authorization, and Accounting) es un marco de trabajo de seguridad para controlar de forma centralizada el acceso a los recursos de red. Autentica quién intenta acceder, Autoriza qué privilegios o comandos tiene permitidos ejecutar, y realiza la Auditoría (Accounting) registrando las acciones realizadas para fines de cumplimiento.",
+      "key_concepts": "• **TACACS+:** Protocolo propietario de Cisco basado en TCP (puerto 49). Cifra el paquete completo y separa las funciones de Autenticación, Autorización y Auditoría.\n• **RADIUS:** Protocolo estándar de la industria basado en UDP (puertos 1812/1813). Cifra únicamente la contraseña y combina la Autenticación y Autorización en un solo paso.\n• **Method List:** Lista ordenada de métodos (ej. tacacs, luego local, luego line) que el dispositivo evalúa para autenticar a un usuario.",
+      "architecture": "El dispositivo de red actúa como Network Access Server (NAS), interactuando con el usuario cliente y traduciendo la sesión a peticiones hacia los servidores AAA centralizados (como Cisco ISE, ClearPass o TACACS GUI) que contienen la base de datos de usuarios y políticas.",
+      "control_vs_data": "• **Plano de Control:** Validación de accesos administrativos, autorización de comandos CLI y envío de registros de contabilidad.\n• **Plano de Datos:** No se ve afectado directamente, pero las políticas de autorización pueden empujar atributos (como VLANs, ACLs) que controlen el plano de datos de los puertos de usuarios.",
+      "troubleshooting_strategy": "1. **Paso 1 (Server Reachability):** Comprobar conectividad L3 y puerto TCP 49 (TACACS) o UDP 1812/1813 (RADIUS) hacia el servidor.\n2. **Paso 2 (Shared Secret):** Validar que la clave compartida (shared secret) coincida exactamente en el dispositivo de red y en el servidor AAA.\n3. **Paso 3 (Local Failback):** Asegurar que exista un método local al final de la lista de métodos para no perder acceso administrativo en caso de caída del servidor central.\n4. **Paso 4 (Debug Application):** Utilizar depuración detallada (ej. `debug tacacs`) para analizar el intercambio de paquetes y los códigos de respuesta del servidor.",
+      "configuration_basics": "• Habilitar aaa globalmente (`aaa new-model`).\n• Definir los hosts de los servidores con sus llaves de cifrado.\n• Crear las listas de métodos para autenticación (`aaa authentication login ...`), autorización (`aaa authorization exec ...`) y accounting."
     },
-    "vrrp_hsrp": {
-      "definition": "Virtual Router Redundancy Protocol (VRRP) y Hot Standby Router Protocol (HSRP) son protocolos de redundancia de gateway de primera hop (FHRP) que permiten que múltiples routers compartan una IP virtual. Si el router activo falla, el router de standby asume automáticamente la responsabilidad de enrutar el tráfico.",
-      "key_concepts": "• **VIP (Virtual IP):** Dirección IP compartida entre los routers del grupo que actúa como gateway para los hosts.\n• **Priority:** Valor que determina qué router es el activo (mayor valor = preferido).\n• **Preemption:** Capacidad de un router con mayor prioridad de reclamar el rol activo cuando vuelve a estar online.\n• **Tracking:** Reducción dinámica de la prioridad si una interfaz o ruta upstream falla.",
-      "architecture": "Los routers del grupo intercambian mensajes de keepalive (Hellos) para supervisar la salud del activo. En VRRP, el activo responde a ARP requests para la VIP. En HSRP, el activo responde a las peticiones y el standby escucha. El failover típico es de 1-3 segundos (VRRP) o configurable (HSRP).",
-      "control_vs_data": "• **Plano de Control:** Intercambio de Hellos, elección de activo/standby, y respuesta ARP para la VIP.\n• **Plano de Datos:** Reenvío de tráfico de usuario a través del router activo.",
-      "troubleshooting_strategy": "1. **Paso 1 (Estado):** Verificar que un router esté en estado `Master` (VRRP) o `Active` (HSRP) y el otro en `Backup`.\n2. **Paso 2 (Hellos):** Confirmar que los Hellos se reciban en ambas direcciones (posible split-horizon o ACL bloqueando).\n3. **Paso 3 (Tracking):** Validar que el tracking de interfaces upstream funcione y reduzca la prioridad si la ruta falla.",
-      "configuration_basics": "• Definir el grupo VRRP/HSRP con un ID y la VIP.\n• Configurar prioridades diferentes para activo y standby.\n• Habilitar preemption y tracking de interfaces upstream."
+    "nat": {
+      "definition": "Network Address Translation (NAT) es una tecnología que modifica las direcciones IP y puertos en las cabeceras de los paquetes IP mientras están en tránsito a través de un dispositivo de red. Su propósito principal es conservar el espacio de direccionamiento IPv4 público al permitir que múltiples hosts privados compartan un número limitado de direcciones públicas, además de ocultar la topología de red interna.",
+      "key_concepts": "• **Source NAT (SNAT):** Traduce la dirección IP origen de los paquetes (comúnmente usado para salida a Internet).\n• **Destination NAT (DNAT):** Traduce la dirección IP (y puerto) destino de los paquetes (comúnmente usado para publicar servidores internos).\n• **Static NAT (1:1):** Mapeo estático y bidireccional entre una IP privada y una IP pública dedicada.\n• **PAT / NAT Overload / Masquerade:** Tipo de Source NAT que traduce múltiples IPs privadas usando una sola IP pública y diferentes puertos TCP/UDP.\n• **Port Exhaustion:** Condición crítica donde se agotan los puertos efímeros disponibles para PAT, impidiendo nuevas conexiones.",
+      "architecture": "Los firewalls y routers mantienen una tabla de traducción de direcciones (NAT Session Table / Translation Table). Cuando llega el primer paquete de un flujo, el motor de NAT evalúa las reglas. Si hay coincidencia, crea una entrada de sesión y modifica el paquete (IP/Puerto). Los paquetes subsecuentes de la misma sesión se traducen de forma ultra rápida por hardware (fastpath) evitando re-evaluar las reglas. Al recibir el tráfico de retorno, el dispositivo realiza la traducción inversa consultando la misma sesión.",
+      "control_vs_data": "• **Plano de Control:** Definición de políticas, pools de direcciones, y la lógica inicial de asignación y creación de la sesión NAT en la CPU.\n• **Plano de Datos:** Sustitución en caliente de IPs/puertos y recalculación del checksum IP/TCP/UDP realizada por ASICs o procesadores de red a velocidad de línea.",
+      "troubleshooting_strategy": "1. **Paso 1 (Session Table):** Verificar si la sesión de traducción está registrada en la tabla de NAT con los puertos correctos.\n2. **Paso 2 (Resource Exhaustion):** Monitorear la utilización de puertos efímeros y el límite de sesiones del pool de NAT.\n3. **Paso 3 (Flow Trace):** Ejecutar depuración a nivel de flujo de paquetes (Flow Debug/Trace) para confirmar si el motor descarta el paquete o falla en traducirlo.\n4. **Paso 4 (Routing & Firewalls):** Asegurar que existan rutas de retorno para la IP pública traducida y que las políticas de seguridad permitan el tráfico post-NAT o pre-NAT según el vendor.",
+      "configuration_basics": "• Definir interfaces o zonas de confianza (Inside/Trust) y no confianza (Outside/Untrust).\n• Habilitar la regla de traducción (Source/Destination/Static) y asociarla a la interfaz de salida o pool público.\n• Crear las políticas de firewall correspondientes que permitan el paso de tráfico."
+    },
+    "mpbgp": {
+      "definition": "Multiprotocol BGP (MP-BGP) es una extensión de Border Gateway Protocol (BGP) que le permite transportar información de alcanzabilidad de capa de red (NLRI) para múltiples protocolos de red y Address Families, tales como IPv6, VPNv4/VPNv6 (para L3VPNs), EVPN (para conmutación de Capa 2/3 sobre VXLAN) y tráfico Multicast.",
+      "key_concepts": "• **AFI / SAFI:** Address Family Identifier (ej. 1 para IPv4, 2 para IPv6) y Subsequent Address Family Identifier (ej. 128 para L3VPN).\n• **Route Distinguisher (RD):** Valor de 64 bits que se antepone a la dirección IP del cliente para hacerla única dentro del core de red.\n• **Route Target (RT):** Atributo BGP (Extended Community) que define cómo se importan y exportan las rutas entre las VRFs de los clientes.\n• **BGP Capability Negotiation:** Proceso durante el establecimiento de la sesión TCP (OPEN) donde los peers acuerdan qué address families soportan.",
+      "architecture": "MP-BGP utiliza dos nuevos atributos opcionales no transitivos: `MP_REACH_NLRI` (para anunciar rutas y sus etiquetas asociadas) y `MP_UNREACH_NLRI` (para retirar rutas). Esto le permite a una única sesión TCP BGP de transporte propagar múltiples servicios de red independientes sin mezclar las tablas de enrutamiento.",
+      "control_vs_data": "• **Plano de Control:** Intercambio de rutas, RDs, RTs y etiquetas de servicio MPLS mediante mensajes UPDATE de BGP sobre TCP 179.\n• **Plano de Datos:** Conmutación rápida de paquetes basada en etiquetas (MPLS) o encapsulación de túneles (VXLAN/GRE) utilizando la información distribuida por el plano de control BGP.",
+      "troubleshooting_strategy": "1. **Paso 1 (Capability Exchange):** Verificar que la address family necesaria esté activada (activate) bajo el peer BGP.\n2. **Paso 2 (RD/RT Consistency):** Confirmar que el PE de origen exporte el RT que el PE de destino esté importando en su VRF.\n3. **Paso 3 (Next-Hop Resolution):** Comprobar que el BGP Next-Hop (generalmente el Loopback0 del PE origen) sea alcanzable y tenga una etiqueta de transporte MPLS válida (LDP/RSVP).\n4. **Paso 4 (Route Reflector Status):** Si se usan RRs, verificar que las familias estén activadas en el RR y que las rutas no sean descartadas por prevención de bucles.",
+      "configuration_basics": "• Definir el peer BGP en el sistema autónomo.\n• Ingresar al modo específico de address-family (ej. `address-family vpnv4 unicast` o `address-family l2vpn evpn`).\n• Activar (`neighbor activate`) al peer dentro de esa address-family y habilitar el envío de comunidades extendidas."
     },
     "static": {
       "definition": "El enrutamiento estático es la asignación manual de rutas de red en la tabla de enrutamiento de un dispositivo. A diferencia del enrutamiento dinámico, no se adapta automáticamente a cambios topológicos, por lo que requiere intervención administrativa para la redundancia. El diagnóstico incluye la presencia de rutas, inalcanzabilidad del siguiente salto y loops de resolución recursivos.",
@@ -89451,6 +112440,110 @@ const NET_TSHOOT_DATA = {
       "control_vs_data": "• **Plano de Control:** Evaluación del estado de la interfaz de salida, resolución del siguiente salto recursivo e instalación de la ruta en la RIB.\\n• **Plano de Datos:** Reenvío del paquete a velocidad de línea mediante la coincidencia LPM en la FIB.",
       "troubleshooting_strategy": "1. **Paso 1 (Route Presence):** Verificar si la ruta está configurada y activa en la tabla de rutas (RIB).\\n2. **Paso 2 (Next-Hop Reachability):** Validar si el siguiente salto es alcanzable mediante ping o si la interfaz de salida física está activa.\\n3. **Paso 3 (Recursive Resolution):** Comprobar si existe una ruta IGP/BGP para resolver el siguiente salto recursivo y descartar bucles recursivos.\\n4. **Paso 4 (Floating/Precedence):** Confirmar si hay otra ruta con mejor distancia administrativa/preferencia que esté ocultando la ruta estática.",
       "configuration_basics": "• Definir la red de destino y máscara de red.\\n• Especificar la dirección IP del siguiente salto o la interfaz de salida física.\\n• Opcionalmente configurar una distancia administrativa/preferencia personalizada."
+    },
+    "sdwan": {
+      "definition": "Software-Defined WAN (SD-WAN) es una arquitectura de red WAN definida por software que abstrae el hardware físico de transporte (MPLS, Internet, LTE) para construir una red overlay segura e inteligente, gestionada de forma centralizada a través de controladores de plano de control y de administración.",
+      "key_concepts": "• **Orchestrators (Controllers):** vManage (Administración/GUI), vSmart (Controlador de políticas y rutas BGP Overlay), vBond (Orquestador de autenticación inicial).\n• **TLOC (Transport Location):** Identificador único del puerto WAN físico del router (combina IP del puerto, color/transporte, y tipo de encapsulación).\n• **OMP (Overlay Management Protocol):** Protocolo de enrutamiento propietario que distribuye rutas de servicio, TLOCs y llaves IPsec entre los routers de borde.\n• **App-Aware Routing:** Selección dinámica de enlaces WAN en base al monitoreo en tiempo real de latencia, jitter y pérdida de paquetes.",
+      "architecture": "Los routers de borde (Edge) se registran dinámicamente con los controladores y establecen un plano de control seguro. Los routers construyen túneles IPsec de datos automáticos entre todos los TLOCs. OMP distribuye la topología, y BFD monitorea constantemente el rendimiento de cada túnel IPsec para mover el tráfico de aplicaciones de forma inteligente.",
+      "control_vs_data": "• **Plano de Control:** Intercambio de rutas y políticas OMP entre vSmart y los Edges sobre túneles seguros TLS/DTLS.\n• **Plano de Datos:** Reenvío cifrado de paquetes de usuarios sobre el mesh dinámico de túneles IPsec WAN (Data Plane Overlay).",
+      "troubleshooting_strategy": "1. **Paso 1 (Control Connections Status):** Verificar que el router Edge tenga sesiones activas hacia vManage, vSmart y vBond. Sin conexión de control, el Edge no recibirá políticas.\n2. **Paso 2 (BFD Session Flaps):** Analizar si hay caídas de BFD sobre los túneles IPsec, lo que indica pérdida de conectividad física L3 o atenuación severa en el enlace WAN.\n3. **Paso 3 (OMP Route Verification):** Comprobar que las redes locales de las sucursales sean aprendidas y anunciadas por OMP hacia el vSmart.\n4. **Paso 4 (Policy Matching):** Si el tráfico no utiliza el enlace WAN esperado, revisar la política central de App-Aware Routing instalada en el Edge.",
+      "configuration_basics": "• Configurar los parámetros del sistema (System IP, Site-ID, Organization Name).\n• Configurar las interfaces WAN físicas asignándoles un color TLOC y habilitando la encapsulación IPsec.\n• Levantar las conexiones de control hacia los controladores usando plantillas."
+    },
+    "bfd": {
+      "definition": "Bidirectional Forwarding Detection (BFD) es un protocolo de detección rápida de fallas de enlace diseñado para proporcionar tiempos de convergencia ultra rápidos (sub-segundo) para protocolos de enrutamiento como BGP, OSPF, IS-IS. Su único objetivo es detectar fallas de conectividad bidireccional en el camino de datos.",
+      "key_concepts": "• **Hello Interval (Mínimo Transmit/Receive):** Tiempo en milisegundos entre paquetes de control BFD.\n• **Detection Multiplier:** Número de hellos perdidos seguidos antes de declarar el enlace como caído (down).\n• **Async Mode:** Modo por defecto donde ambos extremos envían hellos periódicos.\n• **Echo Function:** Función donde se envían paquetes de eco con la IP de origen del propio router para validar el plano de datos del switch adyacente sin procesar BFD en la CPU del vecino.",
+      "architecture": "BFD funciona encapsulado en UDP (puerto 3784 para enlaces simples de un solo salto, y puerto 3785 para múltiples saltos). Es independiente de los protocolos de capa de red y enrutamiento, pero interactúa con ellos: al caerse la sesión BFD, este notifica de inmediato a BGP/OSPF para que boten sus adyacencias de inmediato en lugar de esperar a que expiren los keepalives tradicionalmente.",
+      "control_vs_data": "• **Plano de Control:** Negociación inicial de los timers y estados de sesión BFD ejecutada por el software principal.\n• **Plano de Datos:** Procesamiento ultrarrápido y periódico de paquetes Hello UDP (a menudo implementado directamente en ASICs de las linecards en routers de gama alta para evitar sobrecargar el procesador principal).",
+      "troubleshooting_strategy": "1. **Paso 1 (Timer Alignment):** Validar que los timers configurados en ambos extremos sean soportados por el hardware local.\n2. **Paso 2 (UDP Reachability):** Confirmar que no existan ACLs o firewalls bloqueando el tráfico UDP puerto 3784/3785.\n3. **Paso 3 (Interface Status):** Verificar si la interfaz física reporta flaps de capa 1 que puedan interrumpir las ráfagas BFD.\n4. **Paso 4 (Control Plane Load):** Si la CPU del router está muy alta, BFD puede expirar falsamente (flapping) si no está descargado en hardware.",
+      "configuration_basics": "• Habilitar BFD bajo la interfaz física o lógica implicada.\n• Configurar el intervalo mínimo de transmisión (`min-tx-interval`), de recepción (`min-rx-interval`) y el multiplicador (`multiplier`).\n• Asociar BFD al protocolo de enrutamiento deseado (ej. `bfd` bajo el proceso OSPF o grupo BGP)."
+    },
+    "netflow": {
+      "definition": "NetFlow (y su estándar IPFIX / NetFlow v10) es un protocolo de telemetría de red que recopila metadatos e información estadística sobre flujos de tráfico IP que ingresan o salen de las interfaces de un dispositivo de red. Permite analizar quién, cuándo, cómo y hacia dónde se está enviando tráfico a través de la infraestructura.",
+      "key_concepts": "• **Flow (Flujo):** Secuencia unidireccional de paquetes con campos clave idénticos.\n• **7 Key Fields (Campos Clave):** IP Origen, IP Destino, Puerto Origen, Puerto Destino, Tipo de Protocolo L3, ToS (Class of Service), e Interfaz Física de entrada.\n• **NetFlow Cache:** Memoria local del router donde se almacenan y consolidan las estadísticas de flujos activos.\n• **Timers (Active/Inactive):** Tiempos de exportación de flujos. Un flujo activo prolongado se exporta cada X minutos (default 30) y un flujo inactivo se purga inmediatamente.",
+      "architecture": "A medida que los paquetes pasan por el router, se revisan sus cabeceras. Si coincide con un flujo existente en el caché, se actualizan los contadores (bytes, paquetes). Si no existe, se crea una entrada en el caché. Al expirar un flujo, los registros se encapsulan en datagramas UDP (comúnmente puerto 2055 o 9995) y se envían hacia un servidor colector de NetFlow para su análisis y almacenamiento.",
+      "control_vs_data": "• **Plano de Control:** Configuración de monitores, exportadores y samplers desde la CLI o plantillas del orquestador.\n• **Plano de Datos:** Inspección de cabeceras de paquetes a velocidad de línea en los ASICs para alimentar la caché de NetFlow sin CPU overhead.",
+      "troubleshooting_strategy": "1. **Paso 1 (Exporter Reachability):** Verificar que el router tenga ruta L3 hacia el colector NetFlow y que el puerto UDP no esté bloqueado.\n2. **Paso 2 (Sampling Rate):** En enlaces de alta capacidad (10G/100G), configurar muestreo aleatorio (Random Sampled NetFlow, ej. 1 de 1000) para no saturar la CPU ni desbordar la tabla de caché.\n3. **Paso 3 (Timer Adjustments):** Asegurar que el Active Timer esté configurado a 1 minuto (60s) para evitar ráfagas de exportaciones y reportes inexactos.\n4. **Paso 4 (Source Interface):** Configurar siempre una interfaz origen estable (como Loopback0) para la exportación de paquetes UDP.",
+      "configuration_basics": "• Crear un Record (define qué medir), un Exporter (define a dónde enviar) y un Monitor (vincula el record y el exporter).\n• Aplicar el Monitor bajo la interfaz deseada indicando la dirección del tráfico (`input` o `output`)."
+    },
+    "noc_operaciones": {
+      "definition": "Principios operativos y diagnóstico de la tecnología noc_operaciones.",
+      "key_concepts": "• **Concepto 1:** Parámetros operativos.\n• **Concepto 2:** Verificación por vendor.",
+      "architecture": "Arquitectura de referencia integrando segmentos ONT, Capa 2 y Capa 3.",
+      "control_vs_data": "• **Plano de Control:** Protocolos y señalización.\n• **Plano de Datos:** Forwarding a velocidad de línea.",
+      "troubleshooting_strategy": "1. Verificar física y enlaces.\n2. Validar adyacencias.\n3. Confirmar forwarding.",
+      "configuration_basics": "• Configurar parámetros base por vendor."
+    },
+    "pbr": {
+      "definition": "Policy-Based Routing (PBR) es una técnica que permite tomar decisiones de enrutamiento basadas en políticas definidas por el administrador de red. PBR permite desviar o redirigir paquetes basándose en criterios avanzados (como dirección IP origen, tipo de protocolo L4 o puerto de aplicación) en lugar de utilizar únicamente la tabla de enrutamiento estándar basada en la dirección IP destino.",
+      "key_concepts": "• **Route-Map:** Estructura condicional que agrupa las reglas de coincidencia (match) y las acciones a aplicar (set).\n• **Match Clause:** Define las condiciones del paquete (ej. `match ip address` haciendo referencia a una ACL).\n• **Set Clause:** Define la acción de desvío (ej. `set ip next-hop <ip>` o `set interface <int>`).\n• **Local Policy Routing:** PBR aplicado al tráfico generado internamente por la CPU del propio router.",
+      "architecture": "Cuando un paquete ingresa a una interfaz con PBR habilitado, el router evalúa secuencialmente las cláusulas del route-map. Si el paquete coincide con las condiciones de una cláusula, se ejecuta la acción `set` de inmediato y el paquete es reenviado. Si no coincide con ninguna cláusula, el paquete se enruta de forma normal utilizando el lookup tradicional de la RIB/FIB.",
+      "control_vs_data": "• **Plano de Control:** Definición de ACLs, route-maps y aplicación de las políticas a las interfaces de entrada.\n• **Plano de Datos:** Interceptación, análisis de cabeceras de paquetes entrantes y reescritura del siguiente salto en hardware (ASIC/TCAM).",
+      "troubleshooting_strategy": "1. **Paso 1 (ACL Match Verification):** Validar que la ACL de coincidencia tenga contadores activos (que esté haciendo match con el tráfico de origen real).\n2. **Paso 2 (Next-Hop Reachability):** Comprobar que el Next-Hop definido en la política esté activo y sea alcanzable. Si el next-hop está caído, PBR fallará silenciosamente y el router volverá a enrutar de forma normal.\n3. **Paso 3 (Interface Direction):** Asegurar que PBR esté aplicado en la interfaz de **entrada** de los paquetes. PBR no se puede aplicar a paquetes que están saliendo del router.\n4. **Paso 4 (PBR Statistics):** Monitorear la utilización de memoria TCAM, ya que reglas PBR excesivas o complejas pueden superar el límite de hardware y forzar el procesamiento por software (CPU).",
+      "configuration_basics": "• Crear una ACL indicando el tráfico origen y destino.\n• Definir un route-map con `match ip address <ACL>` y `set ip next-hop <IP_Salida>`.\n• Aplicar la política en la interfaz de entrada mediante `ip policy route-map <nombre>`."
+    },
+    "dmvpn": {
+      "definition": "Dynamic Multipoint VPN (DMVPN) es una arquitectura de VPN multipunto de Cisco que permite establecer redes VPN dinámicas, seguras y escalables sobre redes públicas (Internet) utilizando una topología Hub-and-Spoke, con soporte para el establecimiento directo de túneles Spoke-to-Spoke sin transitar por el Hub.",
+      "key_concepts": "• **mGRE (Multipoint GRE):** Permite que una única interfaz de túnel GRE soporte múltiples túneles dinámicos reduciendo la configuración.\n• **NHRP (Next Hop Resolution Protocol):** Actúa como la base de datos tipo \"ARP\" que mapea la IP del túnel interna de los Spokes con su IP pública externa (NBMA).\n• **NBMA (Non-Broadcast Multi-Access):** Dirección IP pública real del dispositivo WAN.\n• **Spoke-to-Spoke Tunneling:** Capacidad de dos sucursales de comunicarse directamente resolviendo sus direcciones públicas a través del Hub.",
+      "architecture": "Los Spokes levantan un túnel mGRE permanente contra el Hub central y se registran en el servidor NHRP del Hub. Al enviar tráfico entre Spokes, el Spoke solicita la IP NBMA del Spoke destino al Hub a través de NHRP. Una vez resuelto, se negocia una asociación de seguridad IPsec directa y se establece un túnel directo dinámico sobre el cual fluyen los datos.",
+      "control_vs_data": "• **Plano de Control:** Registro NHRP, resolución de next-hops y negociación de llaves de cifrado IPsec (IKEv1/IKEv2) en software.\n• **Plano de Datos:** Encapsulación de tramas de datos del cliente en GRE y cifrado IPsec (ESP) con aceleración por hardware de cifrado.",
+      "troubleshooting_strategy": "1. **Paso 1 (NHRP Database):** Verificar en el Hub que los Spokes estén registrados en estado `dynamic` y ver sus IPs NBMA.\n2. **Paso 2 (IPsec Security Association):** Comprobar que el estado de ISAKMP/IPsec esté activo (`QM_IDLE` / `ACTIVE`).\n3. **Paso 3 (Routing over DMVPN):** Asegurar que las adyacencias del protocolo de enrutamiento (OSPF, EIGRP o BGP) se establezcan sobre las IPs del túnel. OSPF requiere cambiar la red a tipo point-to-multipoint.\n4. **Paso 4 (MTU/MSS Adjustments):** El doble overhead de GRE e IPsec requiere ajustar la MTU del túnel a 1400 bytes y el TCP MSS a 1360 bytes.",
+      "configuration_basics": "• Configurar interfaz Tunnel, asignarle una IP y establecer `tunnel mode gre multipoint`.\n• Habilitar NHRP, designar el NHS (Next Hop Server) del Hub central y mapear la IP del Hub a su dirección pública.\n• Configurar perfiles IPsec y asociarlos al túnel."
+    },
+    "adtran_ta5000": {
+      "definition": "El ADTRAN Total Access 5000 (TA5000) es un chasis multiservicio de acceso de alta densidad ampliamente implementado por operadores de telecomunicaciones para desplegar servicios de fibra óptica FTTH (GPON, XGS-PON) y banda ancha. Actúa como la OLT (Optical Line Terminal) central que gestiona la conectividad física de los clientes de fibra.",
+      "key_concepts": "• **GPON / XGS-PON:** Tecnologías de red óptica pasiva que comparten fibra óptica en configuraciones punto a multipunto (splitters).\n• **T-CONT (Transmission Container):** Clases de tráfico asignadas a la ONT para gestionar el ancho de banda aguas arriba (Upstream DBA).\n• **GEM Port (GPON Encapsulation Method):** Puerto lógico utilizado para encapsular tramas Ethernet y enviarlas sobre GPON.\n• **OMCI:** Protocolo de señalización estándar de control utilizado por la OLT para aprovisionar y configurar la ONT remotamente.",
+      "architecture": "El TA5000 utiliza tarjetas de servicio PON que se conectan a través de una red óptica de distribución (ODN) pasiva hacia las ONTs de clientes. Aguas abajo (Downstream), el tráfico se envía mediante difusión TDM (todas las ONTs reciben, pero solo procesan lo encriptado para su ID). Aguas arriba (Upstream), se utiliza TDMA con asignación dinámica de slots de tiempo (DBA) para evitar colisiones entre ONTs.",
+      "control_vs_data": "• **Plano de Control:** Gestión de estados de ONTs, provisión de perfiles OMCI, encriptación de GEM ports y asignación DBA en la CPU del módulo de control (SCM).\n• **Plano de Datos:** Conmutación e inserción/remoción de VLANs (Q-in-Q o Single Tag) a velocidad de línea en las tarjetas de servicio y puertos uplink.",
+      "troubleshooting_strategy": "1. **Paso 1 (Optical Power Levels):** Monitorear la potencia óptica de Tx/Rx. Los umbrales típicos GPON deben mantenerse entre -8 dBm y -27 dBm. Un nivel peor causa descartes de tramas.\n2. **Paso 2 (ONT State Machine):** Verificar que la ONT alcance el estado `O5` (Operation State). Si oscila en O3/O4, indica problemas de distancia, atenuación o serial duplicado.\n3. **Paso 3 (VLAN/Service Port mapping):** Confirmar que el Service Port en la OLT coincida con la VLAN de cliente y GEM port provisto.\n4. **Paso 4 (GEM Port Errors):** Verificar contadores BIP (Bit Interleaved Parity) para identificar errores físicos en el hilo de fibra.",
+      "configuration_basics": "• Registrar el Serial Number de la ONT en la interfaz GPON.\n• Asociar perfiles de línea y T-CONTs para limitar el ancho de banda.\n• Crear el Service Port para asociar la VLAN del cliente desde el puerto GPON al puerto de Uplink del switch."
+    },
+    "ccc_interface_switch": {
+      "definition": "CCC (Cross-Connect / Circuit Cross-Connect) es una tecnología que permite establecer circuitos dedicados de Capa 2 entre dos interfaces lógicas o físicas (locales en el mismo equipo, o remotas a través de un core MPLS, lo que se conoce como L2Circuit o Pseudowire) transportando tramas de red de forma transparente sin inspección de direcciones MAC.",
+      "key_concepts": "• **Local Cross-Connect:** Conexión estática directa punto a punto entre dos interfaces físicas en el mismo switch/router.\n• **Remote L2Circuit / Pseudowire:** Túnel virtual de capa 2 que emula la conexión física a través de una red de transporte MPLS.\n• **Virtual Circuit ID (VC-ID):** Identificador numérico único de 32 bits utilizado por ambos extremos para establecer el pseudowire.\n• **Control Word:** Cabecera opcional de 4 bytes insertada entre la etiqueta MPLS y la trama Ethernet para secuenciación y control.",
+      "architecture": "En un L2Circuit, la trama Ethernet entrante en el PE de origen se encapsula en una pila de etiquetas MPLS: una etiqueta interna (etiqueta de circuito virtual / VC label distribuida por Targeted LDP) y una etiqueta externa (etiqueta de transporte distribuida por IGP LDP/RSVP). El core MPLS conmuta el paquete basándose únicamente en la etiqueta de transporte.",
+      "control_vs_data": "• **Plano de Control:** Negociación y señalización del estado del pseudowire utilizando sesiones Targeted LDP (UDP 646) directas entre los routers PEs.\n• **Plano de Datos:** Encapsulación de tramas de cliente y conmutación de etiquetas MPLS en hardware de alta velocidad.",
+      "troubleshooting_strategy": "1. **Paso 1 (Targeted LDP Session):** Validar que la sesión Targeted LDP entre los PEs origen/destino esté en estado `Established`.\n2. **Paso 2 (VC-ID Mismatch):** Confirmar que el VC-ID y tipo de encapsulación (VLAN o Ethernet) coincida exactamente en ambos lados.\n3. **Paso 3 (Core MTU):** La MTU a lo largo del core MPLS debe ser lo suficientemente grande (típicamente >= 1526 bytes) para acomodar la trama Ethernet original del cliente más la cabecera MPLS y Control Word.\n4. **Paso 4 (Control Word Consistency):** Deshabilitar o habilitar control word en ambos extremos de forma consistente.",
+      "configuration_basics": "• Configurar interfaces en modo de encapsulación L2 (ej. `ethernet-ccc` o `vlan-ccc`).\n• Definir el circuito L2 especificando el peer IP remoto, el VC-ID y la interfaz L2 local asociada."
+    },
+    "fiber_ont": {
+      "definition": "El aprovisionamiento de fibra óptica GPON ONT/ONU implica registrar y configurar el equipamiento de terminación óptica en las instalaciones del cliente (Optical Network Terminal) desde el nodo central (OLT). Su objetivo es autenticar el hardware óptico del cliente y habilitar los flujos de servicios L2/L3 asociados.",
+      "key_concepts": "• **ONT State Machine:** Estados por los que pasa la ONT en su negociación: O1 (Inicial), O3 (Serial detectado), O5 (Operativo en línea), O7 (Falla en el enlace).\n• **PLOAM (Physical Layer OAM):** Canal de comunicación fuera de banda de baja velocidad para la gestión óptica inicial y negociación de llaves.\n• **Alloc-ID / GEM Port:** Alloc-ID identifica un T-CONT para la asignación dinámica de ancho de banda. GEM Port identifica el túnel lógico de datos de usuario.\n• **Rogue ONT:** ONT defectuosa que transmite luz de forma continua fuera de su ranura de tiempo TDMA asignada, saturando el puerto PON y desconectando a todos los clientes del mismo hilo.",
+      "architecture": "El estándar GPON utiliza transmisión descendente a 1490nm y ascendente a 1310nm. La OLT asigna un identificador de ONT (ONU-ID) único durante la fase de descubrimiento cuando detecta el número de serie de hardware.",
+      "control_vs_data": "• **Plano de Control:** Autenticación óptica, negociación de perfiles DBA y configuración de puertos de servicio vía OMCI.\n• **Plano de Datos:** Conversión electro-óptica y encapsulación de tramas Ethernet en tramas GPON a velocidad de línea óptica.",
+      "troubleshooting_strategy": "1. **Paso 1 (Optical Link Budget):** Medir la potencia con un OPM. La atenuación típica de un splitter 1:64 no debe exceder los -25 dBm a -28 dBm. Valores peores causan desconexión.\n2. **Paso 2 (Rogue ONU Isolation):** Si todas las ONTs de un puerto PON caen a estado O1/O2, apagar administrativamente las ONTs una a una o usar un analizador PON para aislar la ONT dañada que emite luz continua.\n3. **Paso 3 (OMCI Provisioning Check):** Si la ONT llega a O5 pero el cliente no navega, verificar que los perfiles de GEM ports y Service Ports estén instalados en la OLT y que la VLAN de cliente esté permitida en el uplink.",
+      "configuration_basics": "• Buscar la ONT no aprovisionada en el puerto PON (`show onu unconfigured` u homólogo).\n• Registrar el Serial Number y ONU-ID asignado.\n• Asociar perfiles de línea y de tráfico para mapear las VLANs de servicios."
+    },
+    "seguridad": {
+      "definition": "Seguridad de red a nivel de infraestructura incluye el control de acceso a puertos (NAC), filtrado de tráfico mediante ACLs, y cifrado de enlaces con MACsec para proteger la confidencialidad e integridad de los datos en tránsito.",
+      "key_concepts": "• **ACL (Access Control List):** Reglas de filtrado de tráfico basadas en direcciones IP, puertos, protocolos o VLANs.\n• **802.1X (Port-Based NAC):** Mecanismo de autenticación de dispositivos antes de permitir el acceso a la red mediante un servidor RADIUS.\n• **MACsec (IEEE 802.1AE):** Cifrado de Capa 2 que protege tramas Ethernet entre dos dispositivos físicos.\n• **DHCP Snooping:** Función de seguridad que valida mensajes DHCP y construye una tabla de bindings confiables.",
+      "architecture": "Las ACLs se evalúan secuencialmente en hardware (TCAM) para permitir o denegar tráfico. 802.1X utiliza el protocolo EAPOL para intercambiar credenciales entre el supplicant (cliente), el authenticator (switch) y el authentication server (RADIUS). MACsec cifra el payload Ethernet entre dos peers conectados directamente.",
+      "control_vs_data": "• **Plano de Control:** Gestión de sesiones EAPOL, autenticación RADIUS, y aplicación de políticas de seguridad.\n• **Plano de Datos:** Filtrado de tramas por ACLs en TCAM, cifrado/descifrado MACsec en hardware, y validación de bindings DHCP.",
+      "troubleshooting_strategy": "1. **Paso 1 (802.1X):** Verificar que el puerto esté en estado `authorized` y que el servidor RADIUS responda.\n2. **Paso 2 (ACLs):** Comprobar contadores de matches en las ACLs para confirmar que las reglas están siendo evaluadas.\n3. **Paso 3 (MACsec):** Validar que la sesión MACsec esté `secured` y que los contadores de descarte de integridad no crezcan.",
+      "configuration_basics": "• Configurar ACLs con reglas explícitas de permit/deny y aplicarlas en interfaces.\n• Habilitar 802.1X en los puertos de acceso y definir el servidor RADIUS.\n• Configurar MACsec con claves precompartidas (PSK) o 802.1X-derived keys."
+    },
+    "wireshark_tcpdump": {
+      "definition": "Wireshark y tcpdump son herramientas estándar de captura y análisis de paquetes de red que permiten interceptar, registrar y visualizar en detalle el tráfico de datos crudo que viaja a través de una o más interfaces físicas o lógicas de un dispositivo.",
+      "key_concepts": "• **pcap (Packet Capture):** Formato de archivo estándar de la industria utilizado para almacenar paquetes capturados de red.\n• **Capture Filter (BPF):** Sintaxis usada para filtrar qué paquetes se guardan en el buffer (ej. `tcp port 80` en tcpdump).\n• **Display Filter (Wireshark):** Filtros aplicados sobre paquetes capturados para facilitar la búsqueda visual en la GUI (ej. `http.request`).\n• **Promiscuous Mode:** Modo que obliga a la tarjeta de red (NIC) a procesar todos los paquetes del medio físico, incluso aquellos que no están dirigidos a su propia dirección MAC.",
+      "architecture": "tcpdump y Wireshark utilizan una biblioteca de captura de paquetes (libpcap en Linux, WinPcap/Npcap en Windows) para conectarse directamente al driver de la NIC en modo kernel, copiando las tramas crudas del buffer de recepción antes de ser procesadas por el stack TCP/IP del sistema operativo.",
+      "control_vs_data": "• **Plano de Control:** Definición de filtros de captura BPF y gestión de sesiones de captura locales o remotas.\n• **Plano de Datos:** Copiado y procesamiento en segundo plano de tramas Ethernet a disco o pantalla.",
+      "troubleshooting_strategy": "1. **Paso 1 (Capture Target):** Asegurar que se capture en la interfaz correcta. Recordar que las interfaces lógicas (ej. VLAN, Túneles) pueden ocultar campos de cabeceras físicas.\n2. **Paso 2 (Promiscuous Mode SPAN):** Si se captura en un switch, asegurar de configurar puerto espejo (SPAN / RSPAN / ERSPAN) en el switch para redirigir el tráfico hacia la NIC de captura.\n3. **Paso 3 (BPF Optimization):** En interfaces Gigabit o superiores con mucho volumen de tráfico, usar siempre filtros de captura estrictos (`-f`) en tcpdump para evitar pérdida de paquetes (packet drops) por desbordamiento de buffer.\n4. **Paso 4 (Packet Truncation):** Utilizar la opción de snaplen adecuada (`-s 0`) en tcpdump para capturar el paquete completo en lugar de solo las cabeceras.",
+      "configuration_basics": "• Capturar paquetes en consola: `tcpdump -i eth0 -n -s 0 -w captura.pcap tcp port 179`.\n• Leer captura en consola: `tcpdump -nn -r captura.pcap`."
+    },
+    "evc": {
+      "definition": "Ethernet Virtual Connection (EVC) es un servicio de transporte L2 punto-a-punto o multipunto definido por el estándar MEF que abstrae la red física subyacente para entregar circuitos Ethernet virtuales entre interfaces de usuario (UNI) con calidad de servicio garantizada (SLA).",
+      "key_concepts": "• **UNI (User Network Interface):** Puerto físico donde el servicio EVC termina en el equipo del cliente.\n• **EVC (Ethernet Virtual Connection):** Circuito lógico que transporta tramas Ethernet entre UNIs.\n• **E-Line (P2P):** Servicio punto a punto (equivalente a un pseudowire).\n• **E-LAN (MP2MP):** Servicio multipunto que emula una LAN.\n• **EVPL (Ethernet Virtual Private Line):** Variante de E-Line que permite multiplexar múltiples VLANs sobre el mismo EVC.",
+      "architecture": "El proveedor configura una instancia de servicio (service instance) o bridge domain en el PE. Cada EVC se asocia a un conjunto de parámetros de calidad (CIR, EIR, CBS, EBS) y un identificador de VLAN. Las tramas del cliente se clasifican en el puerto UNI (por VLAN, CoS o MAC) y se asignan al EVC correspondiente.",
+      "control_vs_data": "• **Plano de Control:** Configuración de service instances, bridge domains, y políticas de clasificación/marcado.\n• **Plano de Datos:** Forwarding de tramas Ethernet basado en la clasificación de VLAN y el bridge domain asociado.",
+      "troubleshooting_strategy": "1. **Paso 1 (Clasificación):** Verificar que la clasificación de tramas en el puerto UNI coincida con la VLAN esperada.\n2. **Paso 2 (Bridge Domain):** Confirmar que el bridge domain o service instance esté activo y asociado a las interfaces correctas.\n3. **Paso 3 (CoS/QoS):** Validar que el marcado de prioridad y los parámetros de CIR/EIR no descarten tráfico legítimo.",
+      "configuration_basics": "• Crear un bridge domain o service instance con el ID del EVC.\n• Asociar el puerto UNI al bridge domain con la clasificación correcta (VLAN, CoS).\n• Configurar los parámetros de calidad (CIR, EIR) según el SLA del cliente."
+    },
+    "nat_config": {
+      "definition": "La configuración de NAT implica definir cómo el dispositivo debe mapear las direcciones IP locales (privadas) con las globales (públicas). Dependiendo del caso de uso, se requiere NAT de Origen (para que los clientes salgan a Internet), NAT de Destino (para publicar servicios web u otros al exterior) o NAT Estático 1:1.",
+      "key_concepts": "• **Inside Global / Inside Local:** Terminología Cisco para IP pública post-NAT e IP privada pre-NAT respectivamente.\n• **VIP (Virtual IP):** En Fortinet, objeto que realiza la función de DNAT y mapeo de puertos.\n• **Static NAT Prefix:** En Juniper, regla que realiza mapeo directo uno a uno de redes o hosts enteros.",
+      "architecture": "El procesamiento de NAT varía según el vendor: Cisco y Juniper procesan las políticas de seguridad/enrutamiento en momentos distintos con relación a la traducción NAT (ej. en Cisco el enrutamiento ocurre antes de Inside->Outside, en Fortinet el VIP se evalúa antes de la política de firewall).",
+      "control_vs_data": "• **Plano de Control:** Registro de configuración en el archivo de ejecución e instalación de reglas en la memoria de traducción.\n• **Plano de Datos:** Traducción y reenvío directo de flujos de datos.",
+      "troubleshooting_strategy": "1. **Paso 1 (Interface Assignment):** Asegurar que las interfaces estén correctamente designadas como internas o externas.\n2. **Paso 2 (ACL/Match Rules):** Validar que las listas de control de acceso o reglas de coincidencia apunten a los prefijos IP correctos.\n3. **Paso 3 (IP Pools):** Asegurar que los pools de IPs públicas no se traslapen con IPs de tránsito o de otros dispositivos.",
+      "configuration_basics": "• Habilitar NAT en las interfaces o zonas implicadas.\n• Crear reglas de coincidencia de tráfico (ACLs, Zonas, Prefijos).\n• Configurar la acción de traducción a aplicar."
     },
     "static_config": {
       "definition": "La configuración de rutas estáticas permite definir manualmente caminos de reenvío. Incluye la creación de rutas estándar, rutas flotantes de respaldo con distancias administrativas elevadas, balanceo de carga ECMP con múltiples siguientes saltos y la asociación de trackeo IP SLA/BFD para retiros automáticos.",
@@ -106306,5 +129399,277 @@ const NET_TSHOOT_DATA = {
         "author": "Ing. Marta Lopez"
       }
     ]
+  },
+  "CONFIG_TEMPLATES": {
+    "noc_ccna_base": {
+      "title": "🛡️ CCNA / CCNP — Inicialización, Hardening & Gestión NOC (Todos los Vendors)",
+      "description": "Plantilla estándar de inicialización y hardening (ISO 27001) desde cero antes de integrar el equipo a producción.",
+      "vendors": {
+        "cisco_iosxe": {
+          "vendor_name": "Cisco IOS-XE / ISR / ASR / Catalyst",
+          "code": "configure terminal\nhostname Router-NOC-CE1\nbanner motd ^C ACCESO AUTORIZADO UNICAMENTE PERSONAL NOC ^C\nenable secret SuperPasswordNOC123!\nusername admin privilege 15 secret SuperAdminNOC123!\nclock timezone COT -5\nip domain name noc.operador.net\ncrypto key generate rsa modulus 2048\nip ssh version 2\nline vty 0 4\n exec-timeout 5 0\n transport input ssh\n login local\nntp server 10.0.0.1 prefer\nlogging host 10.0.0.50\nsnmp-server community NOC_READ RO\nend\nwrite memory",
+          "breakdown": [
+            {
+              "cmd": "configure terminal",
+              "desc": "Modo de configuración global."
+            },
+            {
+              "cmd": "hostname Router-NOC-CE1",
+              "desc": "Asigna nombre de host."
+            },
+            {
+              "cmd": "enable secret SuperPasswordNOC123!",
+              "desc": "Clave enable cifrada SHA-256."
+            },
+            {
+              "cmd": "crypto key generate rsa modulus 2048",
+              "desc": "Genera llaves SSH 2048-bit."
+            },
+            {
+              "cmd": "transport input ssh",
+              "desc": "Bloquea Telnet y restringe acceso a SSHv2."
+            }
+          ]
+        },
+        "cisco_iosxr": {
+          "vendor_name": "Cisco IOS-XR (ASR 9000 / NCS 5500)",
+          "code": "configure\nhostname Router-NOC-CORE1\nusername admin group root-lr secret SuperAdminNOC123!\nclock timezone COT -5\ndomain name noc.operador.net\ncrypto key generate rsa 2048\nssh server v2\nline default exec-timeout 5 0\nntp server 10.0.0.1 prefer\ncommit",
+          "breakdown": [
+            {
+              "cmd": "configure",
+              "desc": "Inicia sesión en candidato de IOS-XR."
+            },
+            {
+              "cmd": "username admin group root-lr...",
+              "desc": "Crea usuario en el grupo de permisos totales root-lr."
+            },
+            {
+              "cmd": "commit",
+              "desc": "Aplica los cambios atómicamente."
+            }
+          ]
+        },
+        "juniper": {
+          "vendor_name": "Juniper JunOS (MX / ACX / PTX / SRX)",
+          "code": "configure\nset system host-name Router-NOC-CE1\nset system root-authentication plain-text-password\nset system login user admin class super-user authentication plain-text-password\nset system time-zone America/Bogota\nset system services ssh protocol-version v2\nset system idle-timeout 5\nset system ntp server 10.0.0.1 prefer\nset system syslog host 10.0.0.50 any notice\nset snmp community NOC_READ authorization read-only\ncommit check\ncommit comment \"Inicializacion NOC JunOS\"",
+          "breakdown": [
+            {
+              "cmd": "set system host-name Router-NOC-CE1",
+              "desc": "Define hostname en la jerarquía JunOS."
+            },
+            {
+              "cmd": "commit check",
+              "desc": "Verifica la validez sintáctica de la configuración."
+            }
+          ]
+        },
+        "huawei": {
+          "vendor_name": "Huawei VRP (NetEngine / AR Router)",
+          "code": "system-view\nsysname Router-NOC-CE1\nheader shell information \"ACCESO RESTRINGIDO - NOC\"\naaa\n local-user admin password irreversible-cipher SuperAdminNOC123!\n local-user admin service-type terminal ssh http\n local-user admin privilege level 15\nquit\nclock timezone COT minus 05:00:00\nrsa local-key-pair create\nstelnet server enable\nuser-interface vty 0 4\n authentication-mode aaa\n protocol inbound ssh\n idle-timeout 5 0\nquit\nntp-service unicast-peer 10.0.0.1\ninfo-center loghost 10.0.0.50\nsnmp-agent community read NOC_READ\nsave",
+          "breakdown": [
+            {
+              "cmd": "system-view",
+              "desc": "Entra a System View en Huawei VRP."
+            },
+            {
+              "cmd": "stelnet server enable",
+              "desc": "Habilita el servicio SSH seguro en VRP."
+            }
+          ]
+        },
+        "fortinet": {
+          "vendor_name": "Fortinet FortiOS (FortiGate Firewall)",
+          "code": "config system global\n  set hostname \"FGT-NOC-GW1\"\n  set timezone 12\n  set admin-sport 8443\n  set admintimeout 15\nend\nconfig system admin\n  edit \"admin-noc\"\n    set password \"SuperAdminForti2026!\"\n    set accprofile \"super_admin\"\n  next\nend\nconfig system ntp\n  set status enable\n  set ntpserver1 \"10.0.0.1\"\n  set type custom\nend",
+          "breakdown": [
+            {
+              "cmd": "config system global",
+              "desc": "Entra a la configuración global de FortiOS."
+            },
+            {
+              "cmd": "set admin-sport 8443",
+              "desc": "Protege el acceso HTTPS administrativo."
+            }
+          ]
+        },
+        "sophos": {
+          "vendor_name": "Sophos SFOS (XG / XGS Firewall)",
+          "code": "system hostname set XGS-NOC-GW1\nsystem time-zone set America/Bogota\nsystem ntp server add 10.0.0.1\nshow network interfaces",
+          "breakdown": [
+            {
+              "cmd": "system hostname set XGS-NOC-GW1",
+              "desc": "Asigna hostname en Sophos SFOS CLI."
+            }
+          ]
+        },
+        "mikrotik": {
+          "vendor_name": "MikroTik RouterOS (CCR / CRS / RB)",
+          "code": "/system identity set name=Router-NOC-CE1\n/user add name=admin-noc password=\"SuperAdminNOC123!\" group=full\n/system clock set time-zone-name=America/Bogota\n/ip service disable telnet,ftp,www\n/ip service set ssh port=22 disabled=no\n/system ntp client set enabled=yes servers=10.0.0.1\n/snmp community add name=NOC_READ addresses=10.0.0.0/24\n/snmp set enabled=yes",
+          "breakdown": [
+            {
+              "cmd": "/system identity set name=...",
+              "desc": "Ajusta identidad MikroTik."
+            },
+            {
+              "cmd": "/ip service disable telnet,ftp,www",
+              "desc": "Cierra servicios vulnerables."
+            }
+          ]
+        },
+        "datacom": {
+          "vendor_name": "Datacom DmOS (DM4000 / DM4300)",
+          "code": "configure terminal\nhostname Switch-NOC-CE1\nusername admin password secret SuperAdminNOC123!\nclock timezone COT -5\nip ssh server enable\nip ssh version 2\nntp server 10.0.0.1\nsnmp-server community NOC_READ ro\nend\ncopy running-config startup-config",
+          "breakdown": [
+            {
+              "cmd": "hostname Switch-NOC-CE1",
+              "desc": "Asigna hostname en DmOS."
+            }
+          ]
+        },
+        "bdcom": {
+          "vendor_name": "BDCOM GPON OLT / Switch L2",
+          "code": "config\nhostname BDCOM-NOC-OLT1\nusername admin password 0 SuperAdminNOC123! privilege 15\nip ssh server enable\ntime-zone COT -5\nntp server 10.0.0.1\nwrite memory",
+          "breakdown": [
+            {
+              "cmd": "ip ssh server enable",
+              "desc": "Activa SSH en BDCOM."
+            }
+          ]
+        },
+        "allied_telesis": {
+          "vendor_name": "Allied Telesis AW+ (x530 / x950)",
+          "code": "configure terminal\nhostname Switch-AT-NOC1\nusername admin privilege 15 password SuperAdminNOC123!\nclock timezone COT -5\nservice ssh\nntp server 10.0.0.1\nend\nwrite memory",
+          "breakdown": [
+            {
+              "cmd": "service ssh",
+              "desc": "Habilita el daemon SSH en AlliedWare Plus."
+            }
+          ]
+        },
+        "raisecom": {
+          "vendor_name": "Raisecom ISCOM (2600G / Carrier Ethernet)",
+          "code": "config\nhostname Switch-Raisecom-NOC1\nuser admin password SuperAdminNOC123! level 15\nssh server enable\nwrite",
+          "breakdown": [
+            {
+              "cmd": "ssh server enable",
+              "desc": "Habilita SSH en Raisecom ISCOM."
+            }
+          ]
+        },
+        "teltonika": {
+          "vendor_name": "Teltonika RutOS (RUT / RUTX Industrial LTE/5G)",
+          "code": "uci set system.@system[0].hostname='Router-NOC-CE1'\nuci commit system\nuci set dropbear.@dropbear[0].Port='22'\nuci commit dropbear\nuci set system.ntp.server='10.0.0.1'\nuci commit system",
+          "breakdown": [
+            {
+              "cmd": "uci set system.@system[0].hostname=...",
+              "desc": "Configura hostname en el subsistema UCI."
+            }
+          ]
+        },
+        "zte": {
+          "vendor_name": "ZTE GPON OLT (ZXAN C300 / C600)",
+          "code": "configure terminal\nhostname OLT-ZTE-NOC1\nusername admin password SuperAdminNOC123! privilege 15\nssh server enable\nwrite memory",
+          "breakdown": [
+            {
+              "cmd": "ssh server enable",
+              "desc": "Activa el servidor SSH en la OLT ZTE."
+            }
+          ]
+        },
+        "adtran": {
+          "vendor_name": "ADTRAN Total Access 5000 (AOS)",
+          "code": "enable\nconfigure terminal\nhostname TA5000-NOC1\nusername admin password SuperAdminNOC123!\nip ssh server\nwrite",
+          "breakdown": [
+            {
+              "cmd": "ip ssh server",
+              "desc": "Activa SSH en ADTRAN AOS."
+            }
+          ]
+        },
+        "optone_vkom": {
+          "vendor_name": "Optone / VKOM Conversores de Medio & CPE",
+          "code": "system-view\nsysname OPT-VKOM-CPE1\ninterface ip 192.168.1.1 255.255.255.0\nsave",
+          "breakdown": [
+            {
+              "cmd": "sysname OPT-VKOM-CPE1",
+              "desc": "Asigna nombre en conversores/CPE Optone/VKOM."
+            }
+          ]
+        },
+        "arista": {
+          "vendor_name": "Arista EOS (7000 Series Switches)",
+          "code": "configure terminal\nhostname Switch-Arista-NOC1\nusername admin secret SuperAdminNOC123!\nclock timezone COT -5\nmanagement api http-commands\n  no shutdown\nend\nwrite memory",
+          "breakdown": [
+            {
+              "cmd": "management api http-commands",
+              "desc": "Habilita la API eAPI de Arista EOS para automatización."
+            }
+          ]
+        },
+        "linux": {
+          "vendor_name": "GNU/Linux Networking & FRRouting (vtysh)",
+          "code": "hostname Router-Linux-NOC1\nvtysh -c 'configure terminal' -c 'hostname Router-Linux-NOC1'\nsystemctl enable sshd --now\ntimedatectl set-timezone America/Bogota",
+          "breakdown": [
+            {
+              "cmd": "vtysh -c ...",
+              "desc": "Ejecuta comandos de enrutamiento mediante FRRouting vtysh en Linux."
+            }
+          ]
+        }
+      }
+    },
+    "ccna_switching_master": {
+      "title": "📘 CCNA / CCNP — Switch L2/L3 (VLANs, Trunking, STP/RSTP/MSTP, EtherChannel LACP)",
+      "description": "Configuración completa de switching de campus para todos los fabricantes de la red.",
+      "vendors": {
+        "cisco_iosxe": {
+          "vendor_name": "Cisco IOS-XE / Catalyst 9000",
+          "code": "configure terminal\nvlan 10,20,30,99\nspanning-tree mode rapid-pvst\nspanning-tree vlan 10,20,30,99 root primary\ninterface range GigabitEthernet0/1 - 2\n channel-group 1 mode active\nexit\ninterface Port-channel1\n switchport mode trunk\n switchport trunk native vlan 99\nexit\ninterface GigabitEthernet1/0/1\n switchport mode access\n switchport access vlan 10\n switchport voice vlan 20\n switchport port-security\n switchport port-security maximum 2\n switchport port-security violation shutdown\nend\nwrite memory",
+          "breakdown": [
+            {
+              "cmd": "spanning-tree mode rapid-pvst",
+              "desc": "Activa RPVST+."
+            },
+            {
+              "cmd": "channel-group 1 mode active",
+              "desc": "EtherChannel LACP activo."
+            }
+          ]
+        },
+        "juniper": {
+          "vendor_name": "Juniper JunOS (EX / QFX Series)",
+          "code": "configure\nset vlans DATOS vlan-id 10\nset vlans VOZ vlan-id 20\nset protocols rstp interface ge-0/0/0.0 edge\nset interfaces ge-0/0/1 ether-options 802.3ad ae0\nset interfaces ae0 unit 0 family ethernet-switching interface-mode trunk\ncommit",
+          "breakdown": [
+            {
+              "cmd": "set interfaces ae0 unit 0...",
+              "desc": "Modo trunk en agregación ae0."
+            }
+          ]
+        },
+        "huawei": {
+          "vendor_name": "Huawei VRP (CloudEngine / Switch L2/L3)",
+          "code": "system-view\nvlan batch 10 20 30 99\nstp mode rstp\nstp root primary\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk allow-pass vlan 10 20 30 99\nquit\ninterface GigabitEthernet0/0/1\n eth-trunk 1\nsave",
+          "breakdown": [
+            {
+              "cmd": "stp mode rstp",
+              "desc": "Activa RSTP en Huawei VRP."
+            },
+            {
+              "cmd": "interface Eth-Trunk 1",
+              "desc": "Crea el agregador LACP en Huawei."
+            }
+          ]
+        },
+        "datacom": {
+          "vendor_name": "Datacom DmOS (DM4000 / DM4300)",
+          "code": "configure terminal\nvlan 10,20,30,99\ninterface lag 1\n mode lacp\n switchport mode trunk\nend",
+          "breakdown": [
+            {
+              "cmd": "interface lag 1",
+              "desc": "Crea el grupo LAG LACP en DmOS."
+            }
+          ]
+        }
+      }
+    }
   }
 };

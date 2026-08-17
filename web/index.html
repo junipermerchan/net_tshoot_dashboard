@@ -120,6 +120,14 @@
                             <span>Diagnóstico Mágico (Analizador)</span>
                         </button>
                     </div>
+
+                    <!-- Plantillas & Explicador de Comandos Button -->
+                    <div class="simulator-trigger-wrapper" style="margin-top: 8px;">
+                        <button class="simulator-btn" id="btn-templates-trigger" onclick="app.openTemplatesView()" style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);">
+                            <i data-lucide="book-open"></i>
+                            <span>📚 Plantillas & Explicador</span>
+                        </button>
+                    </div>
                 </div>
             </aside>
 
@@ -811,6 +819,40 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 6: CONFIGURATION TEMPLATES & COMMAND EXPLANATION GALLERY -->
+                <section id="view-templates" class="content-view">
+                    <div class="templates-header-card hero-gradient" style="background: linear-gradient(135deg, #059669 0%, #2563eb 100%); padding: 24px; border-radius: 12px; margin-bottom: 20px; color: #fff;">
+                        <div class="header-content">
+                            <span class="badge" style="background: rgba(255,255,255,0.2); color: #fff;">PLANTILLAS DE CONFIGURACIÓN & EXPLICADOR DE COMANDOS</span>
+                            <h2 style="margin-top: 8px; font-size: 1.8rem; font-weight: 700;">Guía Detallada Comando por Comando por Vendor</h2>
+                            <p style="margin-top: 6px; font-size: 0.95rem; opacity: 0.9;">Consulte plantillas de configuración listas para producción y entienda exactamente la función, parámetros e impacto técnico de cada comando en la red.</p>
+                        </div>
+                    </div>
+
+                    <!-- Template Controls -->
+                    <div class="selector-bar-card" style="margin-bottom: 20px; background: rgba(15,23,42,0.6); padding: 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                        <div class="matrix-select-group" style="display: flex; gap: 16px; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 250px;">
+                                <label style="font-weight: 600; display: block; margin-bottom: 6px; color: #a78bfa;">Seleccionar Plantilla:</label>
+                                <select id="template-select" onchange="app.renderSelectedTemplate()" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(30,41,59,0.8); color: #fff; border: 1px solid rgba(255,255,255,0.15); font-size: 0.95rem;">
+                                    <!-- Dynamic template options -->
+                                </select>
+                            </div>
+                            <div style="flex: 1; min-width: 250px;">
+                                <label style="font-weight: 600; display: block; margin-bottom: 6px; color: #38bdf8;">Seleccionar Vendor / Plataforma:</label>
+                                <select id="template-vendor-select" onchange="app.renderSelectedTemplateVendor()" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(30,41,59,0.8); color: #fff; border: 1px solid rgba(255,255,255,0.15); font-size: 0.95rem;">
+                                    <!-- Dynamic vendor options -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Template Output Display Card -->
+                    <div id="template-display-card" class="glass-panel" style="padding: 24px; border-radius: 12px; background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.1);">
+                        <!-- Injected dynamically by app.js -->
                     </div>
                 </section>
             </main>

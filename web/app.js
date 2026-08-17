@@ -4,6 +4,124 @@
  */
 
 class WebApp {
+
+    openTemplatesView() {
+        this.showView('templates');
+        this.renderTemplateSelectOptions();
+    }
+
+    renderTemplateSelectOptions() {
+        const templates = this.data.CONFIG_TEMPLATES || {};
+        const tmplSelect = document.getElementById('template-select');
+        if (!tmplSelect) return;
+        
+        tmplSelect.innerHTML = '';
+        const keys = Object.keys(templates);
+        if (keys.length === 0) {
+            tmplSelect.innerHTML = '<option value="">No hay plantillas disponibles</option>';
+            return;
+        }
+
+        keys.forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k;
+            opt.innerText = templates[k].title;
+            tmplSelect.appendChild(opt);
+        });
+
+        this.renderSelectedTemplate();
+    }
+
+    renderSelectedTemplate() {
+        const tmplSelect = document.getElementById('template-select');
+        const vendorSelect = document.getElementById('template-vendor-select');
+        if (!tmplSelect || !vendorSelect) return;
+
+        const tmplKey = tmplSelect.value;
+        const templates = this.data.CONFIG_TEMPLATES || {};
+        const tmplData = templates[tmplKey];
+        if (!tmplData) return;
+
+        const vendors = tmplData.vendors || {};
+        vendorSelect.innerHTML = '';
+        const vKeys = Object.keys(vendors);
+
+        vKeys.forEach(vk => {
+            const opt = document.createElement('option');
+            opt.value = vk;
+            opt.innerText = vendors[vk].vendor_name || vk;
+            vendorSelect.appendChild(opt);
+        });
+
+        this.renderSelectedTemplateVendor();
+    }
+
+    renderSelectedTemplateVendor() {
+        const tmplSelect = document.getElementById('template-select');
+        const vendorSelect = document.getElementById('template-vendor-select');
+        const displayCard = document.getElementById('template-display-card');
+        if (!tmplSelect || !vendorSelect || !displayCard) return;
+
+        const tmplKey = tmplSelect.value;
+        const vendorKey = vendorSelect.value;
+        const templates = this.data.CONFIG_TEMPLATES || {};
+        const tmplData = templates[tmplKey];
+        if (!tmplData) return;
+
+        const vendorData = (tmplData.vendors || {})[vendorKey];
+        if (!vendorData) {
+            displayCard.innerHTML = '<p>No hay datos disponibles para este vendor.</p>';
+            return;
+        }
+
+        let html = `
+            <div style="margin-bottom: 20px;">
+                <h3 style="font-size: 1.4rem; color: #38bdf8; font-weight: 700; margin-bottom: 6px;">${this.escapeHtml(tmplData.title)}</h3>
+                <p style="color: #cbd5e1; font-size: 0.95rem;">${this.escapeHtml(tmplData.description)}</p>
+                <div style="margin-top: 10px; font-weight: 600; color: #a78bfa;">Vendor: ${this.escapeHtml(vendorData.vendor_name || vendorKey)}</div>
+            </div>
+
+            <div style="margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h4 style="color: #34d399; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="code"></i> Código de Configuración Listo para Producción
+                    </h4>
+                    <button class="btn-copy" onclick="navigator.clipboard.writeText(document.getElementById('tmpl-code-block').innerText); alert('¡Código copiado al portapapeles!');" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 6px; background: rgba(52, 211, 153, 0.2); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4); cursor: pointer;">
+                        <i data-lucide="copy" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Copiar Configuración
+                    </button>
+                </div>
+                <pre style="background: #090d16; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 16px; font-family: 'Fira Code', monospace; color: #f8fafc; font-size: 0.9rem; line-height: 1.5; overflow-x: auto;"><code id="tmpl-code-block">${this.escapeHtml(vendorData.code || '')}</code></pre>
+            </div>
+
+            <div>
+                <h4 style="color: #fbbf24; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="list-checks"></i> Explicación Detallada Comando por Comando
+                </h4>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+        `;
+
+        (vendorData.breakdown || []).forEach(item => {
+            html += `
+                <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.08); border-left: 4px solid #38bdf8; border-radius: 6px; padding: 12px 16px;">
+                    <div style="font-family: 'Fira Code', monospace; color: #38bdf8; font-weight: 600; font-size: 0.95rem; margin-bottom: 4px;">
+                        $ ${this.escapeHtml(item.cmd)}
+                    </div>
+                    <div style="color: #e2e8f0; font-size: 0.9rem; line-height: 1.4;">
+                        ${this.escapeHtml(item.desc)}
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+
+        displayCard.innerHTML = html;
+        if (window.lucide) window.lucide.createIcons();
+    }
+
     constructor() {
         this.data = NET_TSHOOT_DATA;
         
