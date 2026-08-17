@@ -457,6 +457,65 @@ write memory
 - `crypto key generate rsa modulus 2048`: Genera el par de llaves RSA de 2048 bits para SSH.
 - `transport input ssh`: Deshabilita Telnet y fuerza el uso exclusivo de SSHv2.
 
+### 🌐 Configuración BGP Avanzada (eBGP, iBGP, Route Reflector & Filter Maps)
+*Aprovisionamiento de BGP con políticas de exportación/importación, comunidades, filtros de prefijos y sesiones de peering.*
+
+#### 📟 Fabricante: Cisco IOS-XE (ISR / ASR / Catalyst)
+```bash
+router bgp <local_as>
+ bgp router-id <router_id>
+ bgp log-neighbor-changes
+ neighbor <peer_ip> remote-as <peer_as>
+ neighbor <peer_ip> update-source Loopback0
+ address-family ipv4 unicast
+  neighbor <peer_ip> activate
+  neighbor <peer_ip> route-map RM_BGP_IN in
+  neighbor <peer_ip> route-map RM_BGP_OUT out
+ exit-address-family
+!
+route-map RM_BGP_IN permit 10
+ set local-preference 200
+!
+```
+**Desglose de Comandos:**
+- `router bgp <local_as>`: Inicia el proceso BGP con el Sistema Autónomo local.
+- `bgp router-id <router_id>`: Asigna la ID única de 32 bits para el proceso BGP.
+- `neighbor <peer_ip> remote-as <peer_as>`: Define la dirección IP y AS del router vecino.
+- `neighbor <peer_ip> update-source Loopback0`: Fuerza el origen de los paquetes BGP a la interfaz Loopback0.
+- `neighbor <peer_ip> route-map RM_BGP_IN in`: Aplica un mapa de ruta a los prefijos recibidos del vecino.
+
+#### 📟 Fabricante: Juniper JunOS (MX / ACX / PTX / SRX)
+```bash
+set routing-options autonomous-system <local_as>
+set routing-options router-id <router_id>
+set protocols bgp group EXTERNAL_BGP type external
+set protocols bgp group EXTERNAL_BGP peer-as <peer_as>
+set protocols bgp group EXTERNAL_BGP neighbor <peer_ip>
+set protocols bgp group EXTERNAL_BGP import POLICY_BGP_IN
+set protocols bgp group EXTERNAL_BGP export POLICY_BGP_OUT
+```
+**Desglose de Comandos:**
+- `set routing-options autonomous-system...`: Configura el número de AS global de la instancia de enrutamiento.
+- `set protocols bgp group EXTERNAL_BGP type external`: Crea un grupo de sesiones eBGP externas.
+- `set protocols bgp group EXTERNAL_BGP neighbor...`: Agrega la IP del vecino al grupo BGP.
+
+#### 📟 Fabricante: Fortinet FortiOS (FortiGate)
+```bash
+config router bgp
+  set as <local_as>
+  set router-id <router_id>
+  config neighbor
+    edit "<peer_ip>"
+      set remote-as <peer_as>
+      set update-source "port1"
+    next
+  end
+end
+```
+**Desglose de Comandos:**
+- `config router bgp`: Abre la jerarquía de configuración BGP en FortiOS.
+- `set remote-as <peer_as>`: Asigna el AS remoto al vecino especificado.
+
 ---
 
 ## 4. Procedimientos de Búsqueda Operacional de Red

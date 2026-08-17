@@ -371,3 +371,74 @@ CONFIG_TEMPLATES: Dict[str, Dict[str, Any]] = {
         }
     }
 }
+
+
+# Master BGP, OSPF & MPLS Configuration Modules Breakdown
+CONFIG_TEMPLATES['bgp_config'] = {
+    'title': '🌐 Configuración BGP Avanzada (eBGP, iBGP, Route Reflector & Filter Maps)',
+    'description': 'Aprovisionamiento de BGP con políticas de exportación/importación, comunidades, filtros de prefijos y sesiones de peering.',
+    'vendors': {
+        'cisco_iosxe': {
+            'vendor_name': 'Cisco IOS-XE (ISR / ASR / Catalyst)',
+            'code': (
+                "router bgp <local_as>\n"
+                " bgp router-id <router_id>\n"
+                " bgp log-neighbor-changes\n"
+                " neighbor <peer_ip> remote-as <peer_as>\n"
+                " neighbor <peer_ip> update-source Loopback0\n"
+                " address-family ipv4 unicast\n"
+                "  neighbor <peer_ip> activate\n"
+                "  neighbor <peer_ip> route-map RM_BGP_IN in\n"
+                "  neighbor <peer_ip> route-map RM_BGP_OUT out\n"
+                " exit-address-family\n"
+                "!\n"
+                "route-map RM_BGP_IN permit 10\n"
+                " set local-preference 200\n"
+                "!"
+            ),
+            'breakdown': [
+                {'cmd': 'router bgp <local_as>', 'desc': 'Inicia el proceso BGP con el Sistema Autónomo local.'},
+                {'cmd': 'bgp router-id <router_id>', 'desc': 'Asigna la ID única de 32 bits para el proceso BGP.'},
+                {'cmd': 'neighbor <peer_ip> remote-as <peer_as>', 'desc': 'Define la dirección IP y AS del router vecino.'},
+                {'cmd': 'neighbor <peer_ip> update-source Loopback0', 'desc': 'Fuerza el origen de los paquetes BGP a la interfaz Loopback0.'},
+                {'cmd': 'neighbor <peer_ip> route-map RM_BGP_IN in', 'desc': 'Aplica un mapa de ruta a los prefijos recibidos del vecino.'}
+            ]
+        },
+        'juniper': {
+            'vendor_name': 'Juniper JunOS (MX / ACX / PTX / SRX)',
+            'code': (
+                "set routing-options autonomous-system <local_as>\n"
+                "set routing-options router-id <router_id>\n"
+                "set protocols bgp group EXTERNAL_BGP type external\n"
+                "set protocols bgp group EXTERNAL_BGP peer-as <peer_as>\n"
+                "set protocols bgp group EXTERNAL_BGP neighbor <peer_ip>\n"
+                "set protocols bgp group EXTERNAL_BGP import POLICY_BGP_IN\n"
+                "set protocols bgp group EXTERNAL_BGP export POLICY_BGP_OUT"
+            ),
+            'breakdown': [
+                {'cmd': 'set routing-options autonomous-system...', 'desc': 'Configura el número de AS global de la instancia de enrutamiento.'},
+                {'cmd': 'set protocols bgp group EXTERNAL_BGP type external', 'desc': 'Crea un grupo de sesiones eBGP externas.'},
+                {'cmd': 'set protocols bgp group EXTERNAL_BGP neighbor...', 'desc': 'Agrega la IP del vecino al grupo BGP.'}
+            ]
+        },
+        'fortinet': {
+            'vendor_name': 'Fortinet FortiOS (FortiGate)',
+            'code': (
+                "config router bgp\n"
+                "  set as <local_as>\n"
+                "  set router-id <router_id>\n"
+                "  config neighbor\n"
+                "    edit \"<peer_ip>\"\n"
+                "      set remote-as <peer_as>\n"
+                "      set update-source \"port1\"\n"
+                "    next\n"
+                "  end\n"
+                "end"
+            ),
+            'breakdown': [
+                {'cmd': 'config router bgp', 'desc': 'Abre la jerarquía de configuración BGP en FortiOS.'},
+                {'cmd': 'set remote-as <peer_as>', 'desc': 'Asigna el AS remoto al vecino especificado.'}
+            ]
+        }
+    }
+}
